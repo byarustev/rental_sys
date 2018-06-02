@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.CardPane?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="564.0" prefWidth="716.0" style="-fx-background-color: #ecf0f1;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rentalsystem.DashboardController">
+   <children>
+      <Pane prefHeight="564.0" prefWidth="185.0" style="-fx-background-color: #40739e;">
+         <children>
+            <Label id="system_name" layoutX="12.0" layoutY="15.0" text="Daati Rental System" textFill="#fffafa">
+               <font>
+                  <Font name="Tahoma Bold" size="15.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Separator layoutX="185.0" orientation="VERTICAL" prefHeight="564.0" prefWidth="4.0" />
+      <CardPane layoutY="50.0" prefHeight="514.0" prefWidth="185.0">
+          <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="42.0" prefWidth="157.0" style="-fx-padding:10;" text="Payments">
+            <graphic>
+               <FontAwesomeIconView glyphName="CREDIT_CARD" size="16" />
+            </graphic>
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+         <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="37.0" prefWidth="159.0" style="-fx-padding:10;" text="Tenants    ">
+            <graphic>
+               <FontAwesomeIconView glyphName="DIAMOND" size="16" />
+            </graphic>
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+         <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="42.0" prefWidth="157.0" style="-fx-padding:10;" text="Rooms     ">
+            <graphic>
+               <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
+            </graphic>
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+         <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="37.0" prefWidth="159.0" style="-fx-padding:10;" text="Users        ">
+            <graphic>
+               <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
+            </graphic>
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+         <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="37.0" prefWidth="159.0" style="-fx-padding:10;" text="Blocks        ">
+            <graphic>
+               <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
+            </graphic>
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Label>
+         <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="42.0" prefWidth="157.0" style="-fx-padding:10;" text="Logout        ">
+            <graphic>
+               <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
+            </graphic>
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+      </CardPane>
+   </children>
+</AnchorPane>

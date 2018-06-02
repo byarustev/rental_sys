@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/DashboardController.java</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/login.fxml</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/loginController.java</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/dashboard.fxml</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/RegisterBlockController.java</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/UpdateRoomController.java</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/blockreport.fxml</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/registerBlock.fxml</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/registerpayment.fxml</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/registerblock.css</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/RentalSystem.java</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/RegisterTenantController.java</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/RegisterpaymentController.java</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/updateRoom.fxml</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/registerTenant.fxml</file>
+            <file>file:/D:/JavaProjects/RentalSystem/src/rentalsystem/BlockreportController.java</file>
+        </group>
+    </open-files>
+</project-private>
