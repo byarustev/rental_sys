@@ -8,13 +8,13 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="RentalSystem.jar" size="85397" download="eager" />
-    <jar href="lib\fontawesomefx-8.9.jar" size="571068" download="eager" />
-    <jar href="lib\jfoenix-8.0.4.jar" size="2487326" download="eager" />
+    <jar href="RentalSystem.jar" size="88763" download="eager" />
+    <jar href="lib/fontawesomefx-8.9.jar" size="571068" download="eager" />
+    <jar href="lib/jfoenix-8.0.4.jar" size="2487326" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="RentalSystem" >
     <param name="requiredFXVersion" value="8.0+"/>
   </applet-desc>
-  <jfx:javafx-desc  width="800" height="600" main-class="rentalsystem.RentalSystem"  name="RentalSystem" />
+  <jfx:javafx-desc  width="800" height="600" main-class="controllers.RentalSystem"  name="RentalSystem" />
   <update check="always"/>
 </jnlp>
