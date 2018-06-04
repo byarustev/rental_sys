@@ -7,7 +7,11 @@ package controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -24,4 +28,37 @@ public class RegisterBlockController implements Initializable {
         // TODO
     }    
     
+    
+    @FXML
+    private TextField blockNameTxt;
+
+    @FXML
+    private TextField blockLocationTxt;
+
+    @FXML
+    private TextField numUnitsTxt;
+    
+    @FXML
+    private Label submitButton;
+
+    @FXML
+    void submitEntry(MouseEvent event) {
+        //validate input length
+         if(blockNameTxt.getCharacters().length()==0){
+             blockNameTxt.requestFocus();
+             return;
+         }
+         else if(blockLocationTxt.getCharacters().length()==0){
+             blockLocationTxt.requestFocus();
+             return;
+         }
+         else if(Integer.parseInt(numUnitsTxt.getCharacters().toString())<1){
+             numUnitsTxt.requestFocus();
+             return;
+         }
+         
+         System.out.println("NAME: "+blockNameTxt.getCharacters()+"\nLocation "+blockLocationTxt.toString()+"\n Rentals"+numUnitsTxt.toString());
+    }
+
 }
+

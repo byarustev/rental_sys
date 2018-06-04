@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import database.DatabaseHandler;
+import javafx.scene.layout.Pane;
 
 /**
  * FXML Controller class
@@ -68,7 +69,7 @@ public class DashboardController implements Initializable {
     void showBlockTab(MouseEvent event) {
         mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            mainPane.getChildren().setAll((AnchorPane)FXMLLoader.load(getClass().getResource("/views/blockreport.fxml")));
+            mainPane.getChildren().setAll((Pane)FXMLLoader.load(getClass().getResource("/views/registerBlock.fxml")));
         } catch (IOException ex) {
             
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);

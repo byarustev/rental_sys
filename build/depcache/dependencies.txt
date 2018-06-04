@@ -1,7 +1,13 @@
 ||:controllers.RegisterBlockController
-java.lang.Object
-javafx.fxml.Initializable
 controllers.RegisterBlockController
+java.lang.StringBuilder
+javafx.scene.control.TextField
+javafx.fxml.Initializable
+java.io.PrintStream
+java.lang.System
+java.lang.CharSequence
+java.lang.Object
+java.lang.Integer
 ||:controllers.RegisterpaymentController
 java.lang.Object
 javafx.fxml.Initializable
@@ -55,6 +61,7 @@ javafx.scene.Node
 javafx.fxml.FXMLLoader
 java.lang.AssertionError
 javafx.fxml.Initializable
+javafx.scene.layout.Pane
 database.DatabaseHandler
 java.lang.Class
 java.util.logging.Level

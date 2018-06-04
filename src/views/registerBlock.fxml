@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterBlockController">
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -24,7 +23,7 @@
                         <Font name="Tahoma" size="16.0" />
                      </font>
                   </Label>
-                  <TextField id="block_name" prefHeight="38.0" prefWidth="335.0" promptText="e.g. Block A" />
+                  <TextField id="block_name" fx:id="blockNameTxt" prefHeight="38.0" prefWidth="335.0" promptText="e.g. Block A" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -37,7 +36,7 @@
                         <Font name="Tahoma" size="16.0" />
                      </font>
                   </Label>
-                  <TextField id="block_location" prefHeight="38.0" prefWidth="333.0" promptText="e.g. katwe" />
+                  <TextField id="block_location" fx:id="blockLocationTxt" prefHeight="38.0" prefWidth="333.0" promptText="e.g. katwe" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -50,7 +49,7 @@
                         <Font name="Tahoma" size="16.0" />
                      </font>
                   </Label>
-                  <TextField id="no_units" prefHeight="38.0" prefWidth="100.0" promptText="10" />
+                  <TextField id="no_units" fx:id="numUnitsTxt" prefHeight="38.0" prefWidth="100.0" promptText="10" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -71,7 +70,7 @@
       <HBox prefHeight="27.0" prefWidth="591.0" BorderPane.alignment="CENTER">
          <children>
             <Label prefHeight="17.0" prefWidth="178.0" text="powered by Kibsys Techs " />
-            <Label text="kibsys.com" />
+            <Label fx:id="submitButton" onMouseClicked="#submitEntry" text="kibsys.com" />
             <Region prefHeight="17.0" prefWidth="136.0" />
             <Label text="kibsysapps@gmail.com" />
          </children>

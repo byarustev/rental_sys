@@ -27,7 +27,20 @@ public class DatabaseHandler {
         createConnection();
     }
     private void createTables(){
-        String BLOCKS_TABLE_NAME = "blocks";      
+        String BLOCKS_TABLE_NAME = "blocks";  
+       
+        try {
+            statement = connection.createStatement();
+            statement.execute("CREATE IF NOT EXISTS TABLE "+BLOCKS_TABLE_NAME+" ("
+                    + "id int(11) NOT NULL,"
+                    + "block_name varchar(30) NOT NULL,"
+                    + "location varchar(80) NOT NULL,"
+                    + "number_of_rentals int(11) NOT NULL,"
+                    + "added_by int(11) DEFAULT NULL");
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
     
     
