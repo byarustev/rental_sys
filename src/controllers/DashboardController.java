@@ -38,8 +38,8 @@ public class DashboardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         
-                AnchorPane.setLeftAnchor(mainPane, 0.0);
-                AnchorPane.setRightAnchor(mainPane, 0.0);
+               // AnchorPane.setLeftAnchor(mainPane, 0.0);
+               // AnchorPane.setRightAnchor(mainPane, 0.0);
     }    
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
