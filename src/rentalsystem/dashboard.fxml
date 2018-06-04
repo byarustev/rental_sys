@@ -31,7 +31,7 @@
          </Label>
          <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="37.0" prefWidth="159.0" style="-fx-padding:10;" text="Tenants    ">
             <graphic>
-               <FontAwesomeIconView glyphName="DIAMOND" size="16" />
+               <FontAwesomeIconView glyphName="DIAMOND" size="16" text="" />
             </graphic>
             <font>
                <Font size="15.0" />

@@ -1,15 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.gluonhq.charm.glisten.control.TextField?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="rentalsystem.RegisterTenantController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rentalsystem.RegisterTenantController">
    <children>
       <TabPane prefHeight="401.0" prefWidth="601.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Register Tenants" />
+          <Tab text="Register Tenants">
+               <content>
+                  <Pane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fitHeight="99.0" fitWidth="120.0" layoutX="237.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/avator.jpg" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="117.0" layoutY="161.0" prefHeight="25.0" prefWidth="47.0" text="Name">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="117.0" layoutY="210.0" prefHeight="25.0" prefWidth="75.0" text="Nationality">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField layoutX="192.0" layoutY="160.0" prefHeight="26.0" prefWidth="369.0" />
+                        <TextField layoutX="192.0" layoutY="214.0" prefHeight="25.0" prefWidth="183.0" />
+                     </children>
+                  </Pane>
+               </content></Tab>
           <Tab text="Find Tenant" />
         </tabs>
       </TabPane>
