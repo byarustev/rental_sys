@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -12,10 +11,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="438.0" prefWidth="705.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="370.0" prefWidth="639.0" BorderPane.alignment="CENTER">
          <children>
             <HBox spacing="10.0">
                <children>
@@ -56,14 +54,15 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </HBox>
-            <Separator layoutY="177.0" prefHeight="34.0" prefWidth="600.0" />
-            <TableView layoutX="2.0" layoutY="200.0" prefHeight="170.0" prefWidth="596.0">
+            <TableView layoutX="53.0" layoutY="200.0" prefHeight="170.0" prefWidth="593.0">
               <columns>
                 <TableColumn prefWidth="138.0" text="Unit No." />
                 <TableColumn prefWidth="146.0" text="Rental Name" />
                   <TableColumn prefWidth="168.0" text="No. Rooms" />
               </columns>
             </TableView>
+            <Region layoutX="2.0" layoutY="200.0" prefHeight="169.0" prefWidth="50.0" />
+            <Region layoutX="653.0" layoutY="204.0" prefHeight="169.0" prefWidth="48.0" />
          </children>
       </AnchorPane>
    </center>
