@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
+import database.DatabaseHandler;
 
 /**
  * FXML Controller class
@@ -27,8 +28,9 @@ import javafx.scene.layout.Priority;
 public class DashboardController implements Initializable {
 
     private AnchorPane dynamicAnchorPane; 
-    public DashboardController() throws MalformedURLException {
+    public DashboardController()  {
         //this.location = new URL("views/dashboard.fxml");
+        new DatabaseHandler();
     }
 
     /**
