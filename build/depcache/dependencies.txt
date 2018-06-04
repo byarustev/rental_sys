@@ -6,6 +6,19 @@ controllers.RegisterBlockController
 java.lang.Object
 javafx.fxml.Initializable
 controllers.RegisterpaymentController
+||:database.DatabaseHandler
+java.sql.DriverManager
+database.DatabaseHandler
+java.lang.Class
+java.util.logging.Level
+java.lang.IllegalAccessException
+java.io.PrintStream
+java.lang.System
+java.lang.InstantiationException
+java.util.logging.Logger
+java.lang.ClassNotFoundException
+java.lang.Object
+java.sql.SQLException
 ||:controllers.BlockreportController
 java.lang.Object
 javafx.fxml.Initializable
@@ -42,6 +55,7 @@ javafx.scene.Node
 javafx.fxml.FXMLLoader
 java.lang.AssertionError
 javafx.fxml.Initializable
+database.DatabaseHandler
 java.lang.Class
 java.util.logging.Level
 javafx.collections.ObservableList
@@ -51,5 +65,4 @@ java.util.logging.Logger
 java.lang.Object
 java.io.IOException
 controllers.DashboardController
-java.net.MalformedURLException
 javafx.scene.layout.AnchorPane

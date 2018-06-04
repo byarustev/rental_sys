@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Jun 04 16:47:47 EAT 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0163-cb0d-c31a-0000066f0fd8 
+on database directory /Users/robert/Documents/Desktop Application/rental_sys/database with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
+Loaded from file:/Users/robert/Documents/Desktop%20Application/rental_sys/dist/run741347276/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_131-b11
+user.dir=/Users/robert/Documents/Desktop Application/rental_sys
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.12.6
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

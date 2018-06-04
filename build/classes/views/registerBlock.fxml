@@ -1,14 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterBlockController">
-    <stylesheets>
-        <URL value="@registerblock.css"/>
-    </stylesheets>
-</AnchorPane>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox spacing="10.0">
+               <children>
+                  <Label prefHeight="35.0" prefWidth="127.0" text="Block Name">
+                     <font>
+                        <Font name="Tahoma" size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField id="block_name" prefHeight="38.0" prefWidth="335.0" promptText="e.g. Block A" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+            <HBox layoutY="58.0" spacing="10.0">
+               <children>
+                  <Label prefHeight="35.0" prefWidth="127.0" text="Location">
+                     <font>
+                        <Font name="Tahoma" size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField id="block_location" prefHeight="38.0" prefWidth="333.0" promptText="e.g. katwe" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+            <HBox layoutY="116.0" spacing="10.0">
+               <children>
+                  <Label prefHeight="35.0" prefWidth="127.0" text="No. Rental Units">
+                     <font>
+                        <Font name="Tahoma" size="16.0" />
+                     </font>
+                  </Label>
+                  <TextField id="no_units" prefHeight="38.0" prefWidth="100.0" promptText="10" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+            <Separator layoutY="177.0" prefHeight="34.0" prefWidth="600.0" />
+            <TableView layoutX="2.0" layoutY="200.0" prefHeight="170.0" prefWidth="596.0">
+              <columns>
+                <TableColumn prefWidth="138.0" text="Unit No." />
+                <TableColumn prefWidth="146.0" text="Rental Name" />
+                  <TableColumn prefWidth="168.0" text="No. Rooms" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+   </center>
+   <bottom>
+      <HBox prefHeight="27.0" prefWidth="591.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="17.0" prefWidth="178.0" text="powered by Kibsys Techs " />
+            <Label text="kibsys.com" />
+            <Region prefHeight="17.0" prefWidth="136.0" />
+            <Label text="kibsysapps@gmail.com" />
+         </children>
+         <padding>
+            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>
