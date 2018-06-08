@@ -5,7 +5,9 @@
  */
 package database;
 
-import controllers.RentalUnit;
+import GeneralClasses.Block;
+import GeneralClasses.House;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -73,10 +75,11 @@ public class DatabaseHandler {
             else{
                 String sql ="CREATE TABLE "+HOUSES_TABLE_NAME+" (id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY \n" +
 "                (START WITH 1, INCREMENT BY 1) ,"+
-                        "houseID varchar(20) NOT NULL,"+"  houseNumber varchar(20) NOT NULL,"+
+                       "  houseNumber varchar(20) NOT NULL,"+
                         "houseName varchar(30) NOT NULL,"+
-                        "  monthlyPrice double NOT NULL,"+
-                        "  blockID int  NOT NULL)";
+                        "monthlyPrice double NOT NULL,"+
+                        "numberOfRooms int NOT NULL,"+
+                        "blockID int  NOT NULL)";
                 statement = connection.createStatement();
                 statement.execute(sql);
             }
@@ -212,24 +215,7 @@ public class DatabaseHandler {
         
     }
     
-    public Boolean insertBlock(String name, String location, int number_of_retals, ArrayList<RentalUnit> housesList){
-        String sql ="INSERT INTO "+BLOCKS_TABLE_NAME+" (block_name,location,number_of_rentals) VALUES(?,?,?)";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, location);
-            preparedStatement.setInt(3, number_of_retals);
-            preparedStatement.execute();
-            
-            for(RentalUnit x: housesList){
-                System.out.println(x.getUnitNo()+" : "+x.getRentalName()+" : "+x.getRentalNumOfUnits());
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return true;
-    }
+    
     
     
     public void createConnection(){
@@ -248,5 +234,66 @@ public class DatabaseHandler {
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ex.getMessage());
         }
+    }
+
+    public boolean insertBlock(Block block) {
+        String blockInsertSql ="INSERT INTO "+BLOCKS_TABLE_NAME+" (block_name,location,number_of_rentals) VALUES(?,?,?)";
+        String blockIdQuery ="SELECT id FROM "+BLOCKS_TABLE_NAME+" WHERE block_name = ? AND location = ? AND number_of_rentals = ?";
+        String houseInsertSql ="INSERT INTO "+HOUSES_TABLE_NAME+" (houseNumber,houseName,monthlyPrice,numberOfRooms,blockID) VALUES (?,?,?,?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(blockInsertSql);
+            preparedStatement.setString(1, block.getName());
+            preparedStatement.setString(2, block.getLocation());
+            preparedStatement.setInt(3, block.getNumberOfRentals());
+            preparedStatement.execute();
+            //get the created Id
+            preparedStatement = connection.prepareStatement(blockIdQuery);
+            preparedStatement.setString(1, block.getName());
+            preparedStatement.setString(2, block.getLocation());
+            preparedStatement.setInt(3, block.getNumberOfRentals());
+            
+            ResultSet rs = preparedStatement.executeQuery();
+            
+            if(rs.next()){
+                int id=rs.getInt("id");
+                String defHouseName = block.getName().length()>8?block.getName().substring(0, 7):block.getName();
+                System.out.println("ID GIVEN "+id);
+                for(House x: block.getHousesList()){
+                    System.out.println(x.getUnitNo()+" : "+x.getRentalName()+" : "+x.getRentalNumOfUnits());
+                    preparedStatement = connection.prepareStatement(houseInsertSql);
+                    preparedStatement.setString(1, x.getUnitNo());
+                    preparedStatement.setString(2, x.getRentalName());
+                    preparedStatement.setDouble(3, x.getMonthlyAmount());
+                    preparedStatement.setInt(4,x.getRentalNumOfUnits());
+                     preparedStatement.setInt(4,id);
+                    preparedStatement.execute();
+                }
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return true;
+    }
+
+    public ArrayList<House> getHousesList(String databaseId) {
+        String housesQuery ="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE blockID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(housesQuery);
+            preparedStatement.setString(1,databaseId);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<House> list = new ArrayList();
+            while(rs.next()){
+                list.add(new House(rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice")));
+            }
+            
+            return list;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+         return null;
     }
 }

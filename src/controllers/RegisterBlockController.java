@@ -5,6 +5,8 @@
  */
 package controllers;
 
+import GeneralClasses.Block;
+import GeneralClasses.House;
 import database.DatabaseHandler;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,18 +40,22 @@ public class RegisterBlockController implements Initializable {
         TableColumn column1 = new TableColumn("Rental Unit No");
         TableColumn column2 = new TableColumn("Rental Name");
         TableColumn column3 = new TableColumn("No of Rooms");
+        TableColumn column4 = new TableColumn("Monthly Amount");
         PropertyValueFactory<RentalUnitTableRow, TextField> rentalNameFactory = new PropertyValueFactory("rentalName");
         PropertyValueFactory<RentalUnitTableRow, TextField> unitNoFactory = new PropertyValueFactory("unitNo");
         PropertyValueFactory<RentalUnitTableRow, TextField> rentalNumOfUnitsFactory = new PropertyValueFactory("rentalNumOfUnits");
+        PropertyValueFactory<RentalUnitTableRow, TextField> monthlyAmountFactory = new PropertyValueFactory("monthlyAmount");
         column1.setCellValueFactory(unitNoFactory);
         column2.setCellValueFactory(rentalNameFactory);
         column3.setCellValueFactory(rentalNumOfUnitsFactory);
+        column4.setCellValueFactory(monthlyAmountFactory);
         column1.setMinWidth(150);
         column2.setMinWidth(150);
         column3.setMinWidth(150);
+        column4.setMinWidth(150);
         rentalUnitsTable.getColumns().clear();
         rentalUnitsTable.setItems(rentalUnitsList);
-        rentalUnitsTable.getColumns().addAll(column1,column2,column3);
+        rentalUnitsTable.getColumns().addAll(column1,column2,column3,column4);
     }    
     
     
@@ -80,7 +86,7 @@ public class RegisterBlockController implements Initializable {
      @FXML
     void saveBlock(MouseEvent event) {
         //validate input length
-        ArrayList <RentalUnit> housesList = new ArrayList();
+        ArrayList <House> housesList = new ArrayList();
          if(blockNameTxt.getCharacters().length()==0){
              blockNameTxt.requestFocus();
              return;
@@ -94,19 +100,17 @@ public class RegisterBlockController implements Initializable {
              return;
          }
          for(RentalUnitTableRow x:rentalUnitsList){
-             if(x.getRentalName().getCharacters().length()==0){
-                 x.getRentalName().requestFocus();
-                 break;
+             House y = x.generateHouse();
+             if(y==null){
+                 return;
              }
-             else if(x.getRentalNumOfUnits().getCharacters().length()==0){
-                 x.getRentalNumOfUnits().requestFocus();
-                  break;
-             }
-             housesList.add(new RentalUnit(x.getUnitNo(),x.getRentalName().getText(),x.getRentalNumOfUnits().getText()));
+             housesList.add(y);
          }
          
          System.out.println("NAME: "+blockNameTxt.getCharacters()+"\nLocation "+blockLocationTxt.toString()+"\n Rentals"+numUnitsTxt.toString());
-         DatabaseHandler.getInstance().insertBlock(blockNameTxt.getCharacters().toString(), blockLocationTxt.getCharacters().toString(), Integer.parseInt(numUnitsTxt.getCharacters().toString()),housesList);
+         
+         Block enteredBlock = new Block(blockNameTxt.getCharacters().toString(), blockLocationTxt.getCharacters().toString(), Integer.parseInt(numUnitsTxt.getCharacters().toString()),housesList);
+         enteredBlock.save();
          
         
     }
@@ -123,6 +127,7 @@ public class RegisterBlockController implements Initializable {
                     }
                 }
                 else if(count<currentUnits){
+                    //remove Units
                     for(int i=currentUnits; i>count; i--){
                         rentalUnitsList.remove(i-1);
                     }
@@ -145,7 +150,20 @@ public class RegisterBlockController implements Initializable {
     }
     
     public static class RentalUnitTableRow{
-       private TextField rentalName, rentalNumOfUnits;
+       private TextField rentalName, rentalNumOfUnits, monthlyAmount;
+       public RentalUnitTableRow(String unitNo){
+            this.setUnitNo(unitNo);
+            this.setRentalName(new TextField());
+            this.setRentalNumOfUnits(new TextField());
+            this.setMonthlyAmount(new TextField());
+       }
+        public TextField getMonthlyAmount() {
+            return monthlyAmount;
+        }
+
+        public void setMonthlyAmount(TextField monthlyAmount) {
+            this.monthlyAmount = monthlyAmount;
+        }
        private String unitNo;
 
         public String getUnitNo() {
@@ -161,6 +179,7 @@ public class RegisterBlockController implements Initializable {
 
         public void setRentalName(TextField rentalName) {
             this.rentalName = rentalName;
+            //this.rentalName.
         }
 
         public TextField getRentalNumOfUnits() {
@@ -170,11 +189,18 @@ public class RegisterBlockController implements Initializable {
         public void setRentalNumOfUnits(TextField rentalNumOfUnits) {
             this.rentalNumOfUnits = rentalNumOfUnits;
         }
-       public RentalUnitTableRow(String unitNo){
-            this.setUnitNo(unitNo);
-            this.setRentalName(new TextField());
-            this.setRentalNumOfUnits(new TextField());
-       }
+        
+        public House generateHouse(){
+            if(this.getRentalName().getCharacters().length()==0){
+                 this.getRentalName().requestFocus();
+                 return null;
+             }
+             else if(this.getRentalNumOfUnits().getCharacters().length()==0){
+                 this.getRentalNumOfUnits().requestFocus();
+                  return null;
+             }
+            return new House(this.getUnitNo(),this.getRentalName().getText(),Integer.parseInt(this.getRentalNumOfUnits().getText()),Double.parseDouble(monthlyAmount.getText()));
+        }
     }
     
     

@@ -1,17 +1,28 @@
+package GeneralClasses;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controllers;
+
 
 /**
  *
  * @author robert
  */
-public class RentalUnit{
+public class House{
        private String rentalName, rentalNumOfUnits;
        private String unitNo;
+       private Double monthlyAmount;
+
+    public Double getMonthlyAmount() {
+        return monthlyAmount;
+    }
+
+    public void setMonthlyAmount(Double monthlyAmount) {
+        this.monthlyAmount = monthlyAmount;
+    }
 
         public String getUnitNo() {
             return unitNo;
@@ -35,9 +46,10 @@ public class RentalUnit{
         public void setRentalNumOfUnits(String rentalNumOfUnits) {
             this.rentalNumOfUnits = rentalNumOfUnits;
         }
-       public RentalUnit(String unitNo, String rentalName, String rentalNumOfUnits){
+       public House(String unitNo, String rentalName, String rentalNumOfUnits, Double monthlyAmount){
             this.setUnitNo(unitNo);
             this.setRentalName(rentalName);
             this.setRentalNumOfUnits(rentalNumOfUnits);
+            this.setMonthlyAmount(monthlyAmount);
        }
     }
