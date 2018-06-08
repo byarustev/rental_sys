@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterBlockController">
 
    <center>
@@ -51,13 +50,13 @@
                         <Font name="Tahoma" size="16.0" />
                      </font>
                   </Label>
-                  <TextField id="no_units" fx:id="numUnitsTxt" prefHeight="38.0" prefWidth="100.0" promptText="10" />
+                  <TextField id="no_units" fx:id="numUnitsTxt" onMouseExited="#updateRentalUnitsTable" prefHeight="38.0" prefWidth="100.0" promptText="10" />
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </HBox>
-            <TableView layoutX="53.0" layoutY="200.0" prefHeight="148.0" prefWidth="593.0">
+            <TableView fx:id="rentalUnitsTable" layoutX="53.0" layoutY="200.0" prefHeight="148.0" prefWidth="593.0">
               <columns>
                 <TableColumn prefWidth="138.0" text="Unit No." />
                 <TableColumn prefWidth="146.0" text="Rental Name" />
@@ -66,7 +65,7 @@
             </TableView>
             <Region layoutX="2.0" layoutY="200.0" prefHeight="169.0" prefWidth="50.0" />
             <Region layoutX="653.0" layoutY="204.0" prefHeight="169.0" prefWidth="48.0" />
-            <Button layoutX="506.0" layoutY="362.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="SAVE" />
+            <Button fx:id="saveBtn" layoutX="506.0" layoutY="362.0" mnemonicParsing="false" onMouseClicked="#saveBlock" prefHeight="34.0" prefWidth="135.0" text="SAVE" />
             <Button layoutX="357.0" layoutY="362.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="CANCEL" />
          </children>
       </AnchorPane>
@@ -75,7 +74,7 @@
       <HBox prefHeight="27.0" prefWidth="591.0" BorderPane.alignment="CENTER">
          <children>
             <Label prefHeight="17.0" prefWidth="178.0" text="powered by Kibsys Techs " />
-            <Label fx:id="submitButton" onMouseClicked="#submitEntry" text="kibsys.com" />
+            <Label text="kibsys.com" />
             <Region prefHeight="17.0" prefWidth="136.0" />
             <Label text="kibsysapps@gmail.com" />
          </children>

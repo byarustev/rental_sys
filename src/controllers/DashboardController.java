@@ -31,7 +31,6 @@ public class DashboardController implements Initializable {
     private AnchorPane dynamicAnchorPane; 
     public DashboardController()  {
         //this.location = new URL("views/dashboard.fxml");
-        new DatabaseHandler();
     }
 
     /**
