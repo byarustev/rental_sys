@@ -19,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import database.DatabaseHandler;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
 
 /**
@@ -28,7 +29,7 @@ import javafx.scene.layout.Pane;
  */
 public class DashboardController implements Initializable {
 
-    private AnchorPane dynamicAnchorPane; 
+    private SplitPane dynamicSplitPane; 
     public DashboardController()  {
         //this.location = new URL("views/dashboard.fxml");
     }
@@ -68,7 +69,7 @@ public class DashboardController implements Initializable {
     void showBlockTab(MouseEvent event) {
         mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            mainPane.getChildren().setAll((Pane)FXMLLoader.load(getClass().getResource("/views/registerBlock.fxml")));
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerBlock.fxml")));
         } catch (IOException ex) {
             
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,9 +81,9 @@ public class DashboardController implements Initializable {
     void showPaymentsTab(MouseEvent event) {
         mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            dynamicAnchorPane =(AnchorPane)FXMLLoader.load(getClass().getResource("/views/registerpayment.fxml"));
-            dynamicAnchorPane.setPrefSize(mainPane.getHeight(),mainPane.getWidth());
-            mainPane.getChildren().setAll(dynamicAnchorPane);
+            dynamicSplitPane =(SplitPane)FXMLLoader.load(getClass().getResource("/views/registerpayment.fxml"));
+            dynamicSplitPane.setPrefSize(mainPane.getHeight(),mainPane.getWidth());
+            mainPane.getChildren().setAll(dynamicSplitPane);
         } catch (IOException ex) {
             
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,7 +95,7 @@ public class DashboardController implements Initializable {
     void showRoomsTab(MouseEvent event) {
          mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            mainPane.getChildren().setAll((AnchorPane)FXMLLoader.load(getClass().getResource("/views/updateRoom.fxml")));
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/updateRoom.fxml")));
         } catch (IOException ex) {
             
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,7 +107,7 @@ public class DashboardController implements Initializable {
     void showTenantsTab(MouseEvent event) {
          mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            mainPane.getChildren().setAll((AnchorPane)FXMLLoader.load(getClass().getResource("/views/registerTenant.fxml")));
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerTenant.fxml")));
         } catch (IOException ex) {
             
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);

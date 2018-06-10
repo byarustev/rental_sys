@@ -3,84 +3,114 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterBlockController">
 
-   <center>
-      <AnchorPane prefHeight="370.0" prefWidth="639.0" BorderPane.alignment="CENTER">
+<SplitPane prefHeight="486.0" prefWidth="703.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterBlockController">
+   <items>
+      <AnchorPane prefHeight="340.0" prefWidth="701.0">
          <children>
-            <HBox spacing="10.0">
+            <VBox prefHeight="360.0" prefWidth="701.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label prefHeight="35.0" prefWidth="127.0" text="Block Name">
-                     <font>
-                        <Font name="Tahoma" size="16.0" />
-                     </font>
-                  </Label>
-                  <TextField id="block_name" fx:id="blockNameTxt" prefHeight="38.0" prefWidth="335.0" promptText="e.g. Block A" />
+                  <HBox spacing="10.0">
+                     <children>
+                        <Label prefHeight="40.0" prefWidth="94.0" text="Block Name">
+                           <font>
+                              <Font name="Tahoma" size="14.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="6.0" top="6.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
+                        <TextField id="block_name" fx:id="blockNameTxt" prefHeight="31.0" prefWidth="335.0" promptText="e.g. Block A">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                           </padding>
+                        </TextField>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  
+                        <HBox spacing="10.0">
+                     <children>
+                        <Label prefHeight="39.0" prefWidth="96.0" text="Location">
+                           <font>
+                              <Font name="Tahoma" size="14.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets bottom="6.0" top="6.0" />
+                           </padding>
+                        </Label>
+                        <TextField id="block_location" fx:id="blockLocationTxt" prefHeight="32.0" prefWidth="338.0" promptText="e.g. katwe">
+                           <padding>
+                              <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+                           </padding>
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  
+                        <HBox spacing="10.0">
+                     <children>
+                        <Label prefHeight="32.0" prefWidth="101.0" text="No. Rental Units">
+                           <font>
+                              <Font name="Tahoma" size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField id="no_units" fx:id="numUnitsTxt" onMouseExited="#updateRentalUnitsTable" prefHeight="33.0" prefWidth="100.0" promptText="10" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  
+                        <TableView fx:id="rentalUnitsTable" layoutX="53.0" layoutY="200.0" prefHeight="227.0" prefWidth="681.0">
+                    <columns>
+                      <TableColumn prefWidth="138.0" text="Unit No." />
+                      <TableColumn prefWidth="146.0" text="Rental Name" />
+                        <TableColumn prefWidth="168.0" text="No. Rooms" />
+                    </columns>
+                  </TableView>
+                  
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="33.0" prefWidth="81.0" text="CANCEL" />
+                  <Button fx:id="saveBtn" mnemonicParsing="false" onMouseClicked="#saveBlock" prefHeight="32.0" prefWidth="97.0" text="SAVE" />
+               </children>
+               <padding>
+                  <Insets bottom="9.0" top="9.0" />
+               </padding>
+            </HBox>
                </children>
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-            </HBox>
-            <HBox layoutY="58.0" spacing="10.0">
-               <children>
-                  <Label prefHeight="35.0" prefWidth="127.0" text="Location">
-                     <font>
-                        <Font name="Tahoma" size="16.0" />
-                     </font>
-                  </Label>
-                  <TextField id="block_location" fx:id="blockLocationTxt" prefHeight="38.0" prefWidth="333.0" promptText="e.g. katwe" />
+            </VBox>
+            
                </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </HBox>
-            <HBox layoutY="116.0" spacing="10.0">
-               <children>
-                  <Label prefHeight="35.0" prefWidth="127.0" text="No. Rental Units">
-                     <font>
-                        <Font name="Tahoma" size="16.0" />
-                     </font>
-                  </Label>
-                  <TextField id="no_units" fx:id="numUnitsTxt" onMouseExited="#updateRentalUnitsTable" prefHeight="38.0" prefWidth="100.0" promptText="10" />
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </HBox>
-            <TableView fx:id="rentalUnitsTable" layoutX="53.0" layoutY="200.0" prefHeight="148.0" prefWidth="593.0">
-              <columns>
-                <TableColumn prefWidth="138.0" text="Unit No." />
-                <TableColumn prefWidth="146.0" text="Rental Name" />
-                  <TableColumn prefWidth="168.0" text="No. Rooms" />
-              </columns>
-            </TableView>
-            <Region layoutX="2.0" layoutY="200.0" prefHeight="169.0" prefWidth="50.0" />
-            <Region layoutX="653.0" layoutY="204.0" prefHeight="169.0" prefWidth="48.0" />
-            <Button fx:id="saveBtn" layoutX="506.0" layoutY="362.0" mnemonicParsing="false" onMouseClicked="#saveBlock" prefHeight="34.0" prefWidth="135.0" text="SAVE" />
-            <Button layoutX="357.0" layoutY="362.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="135.0" text="CANCEL" />
-         </children>
       </AnchorPane>
-   </center>
-   <bottom>
-      <HBox prefHeight="27.0" prefWidth="591.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label prefHeight="17.0" prefWidth="178.0" text="powered by Kibsys Techs " />
-            <Label text="kibsys.com" />
-            <Region prefHeight="17.0" prefWidth="136.0" />
-            <Label text="kibsysapps@gmail.com" />
-         </children>
-         <padding>
-            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-         </padding>
-      </HBox>
-   </bottom>
-</BorderPane>
+   </items>
+</SplitPane>
