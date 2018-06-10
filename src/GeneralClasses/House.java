@@ -12,7 +12,8 @@ package GeneralClasses;
  * @author robert
  */
 public class House{
-       private String rentalName, rentalNumOfUnits;
+       private String rentalName;
+       private int rentalNumOfUnits;
        private String unitNo;
        private Double monthlyAmount;
 
@@ -39,17 +40,22 @@ public class House{
             this.rentalName = rentalName;
         }
 
-        public String getRentalNumOfUnits() {
+        public int getRentalNumOfUnits() {
             return rentalNumOfUnits;
         }
 
-        public void setRentalNumOfUnits(String rentalNumOfUnits) {
+        public void setRentalNumOfUnits(int rentalNumOfUnits) {
             this.rentalNumOfUnits = rentalNumOfUnits;
         }
-       public House(String unitNo, String rentalName, String rentalNumOfUnits, Double monthlyAmount){
+       public House(String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount){
             this.setUnitNo(unitNo);
             this.setRentalName(rentalName);
             this.setRentalNumOfUnits(rentalNumOfUnits);
             this.setMonthlyAmount(monthlyAmount);
        }
+       
+       @Override
+        public String toString(){
+          return String.format("%s(%s)-%s",this.rentalName,this.rentalNumOfUnits,this.monthlyAmount);
+        }
     }

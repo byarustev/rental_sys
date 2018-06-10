@@ -29,12 +29,19 @@ public class Block {
     }
     
     public Block(String name, String location, int number_of_retals, ArrayList<House> housesList){
-        this.setName(name);
-        this.setLocation(location);
-        this.setNumberOfRentals(number_of_retals);
+        this(name,location,number_of_retals);
         this.setHousesList(housesList);
     }
 
+    public Block(String name, String location, int number_of_retals){
+        this.setName(name);
+        this.setLocation(location);
+        this.setNumberOfRentals(number_of_retals); 
+    }
+    public Block(String id,String name, String location, int number_of_retals){
+        this(name,location,number_of_retals);
+        this.setDatabaseId(id); 
+    }
     public String getName() {
         return name;
     }
@@ -60,7 +67,14 @@ public class Block {
     }
 
     public ArrayList<House> getHousesList() {
-        return housesList;
+        if(housesList != null){
+            return housesList;
+        }
+        else{
+            ArrayList <House> list = DatabaseHandler.getInstance().getHousesList(this.databaseId);
+            setHousesList(list);
+            return list;
+        }
     }
 
     public void setHousesList(ArrayList<House> housesList) {
@@ -70,4 +84,9 @@ public class Block {
     public void save(){
         DatabaseHandler.getInstance().insertBlock(this);
     }
+    
+    @Override
+   public String toString(){
+     return String.format("%s - %s", this.name,this.location);
+   }
 }

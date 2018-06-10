@@ -27,18 +27,18 @@ public class DatabaseHandler {
     
     private Connection connection;
     private Statement statement;
-    private String DB_URL = "jdbc:derby:database;create=true";
-    private String BLOCKS_TABLE_NAME = "BLOCKS";  
-    private String HOUSES_TABLE_NAME = "houses";  
-    private String PAYMENTS_TABLE_NAME = "payments"; 
-    private String ROOMS_TABLE_NAME = "rooms"; 
-    private String ROOM_RENTAL_CONTRACT_TABLE_NAME = "room_rental_contracts"; 
-    private String TENANTS_TABLE_NAME = "tenants"; 
-    private String USERS_TABLE_NAME = "users"; 
-    private String HOUSE_RENTAL_CONTRACT_TABLE_NAME = "house_rental_contracts";  
+    private final String DB_URL = "jdbc:derby:database;create=true";
+    private final String BLOCKS_TABLE_NAME = "BLOCKS";  
+    private final String HOUSES_TABLE_NAME = "houses";  
+    private final String PAYMENTS_TABLE_NAME = "payments"; 
+    private final String ROOMS_TABLE_NAME = "rooms"; 
+    private final String ROOM_RENTAL_CONTRACT_TABLE_NAME = "room_rental_contracts"; 
+    private final String TENANTS_TABLE_NAME = "tenants"; 
+    private final String USERS_TABLE_NAME = "users"; 
+    private final String HOUSE_RENTAL_CONTRACT_TABLE_NAME = "house_rental_contracts";  
     //eager instatiation of the of the instance
     
-    private static DatabaseHandler dbHandler =new DatabaseHandler();
+    private static  DatabaseHandler dbHandler =new DatabaseHandler();
     
     private DatabaseHandler(){
         createConnection();
@@ -79,6 +79,7 @@ public class DatabaseHandler {
                         "houseName varchar(30) NOT NULL,"+
                         "monthlyPrice double NOT NULL,"+
                         "numberOfRooms int NOT NULL,"+
+                        "avaibility int DEFAULT 1,"+
                         "blockID int  NOT NULL)";
                 statement = connection.createStatement();
                 statement.execute(sql);
@@ -239,7 +240,7 @@ public class DatabaseHandler {
     public boolean insertBlock(Block block) {
         String blockInsertSql ="INSERT INTO "+BLOCKS_TABLE_NAME+" (block_name,location,number_of_rentals) VALUES(?,?,?)";
         String blockIdQuery ="SELECT id FROM "+BLOCKS_TABLE_NAME+" WHERE block_name = ? AND location = ? AND number_of_rentals = ?";
-        String houseInsertSql ="INSERT INTO "+HOUSES_TABLE_NAME+" (houseNumber,houseName,monthlyPrice,numberOfRooms,blockID) VALUES (?,?,?,?)";
+        String houseInsertSql ="INSERT INTO "+HOUSES_TABLE_NAME+" (houseNumber,houseName,monthlyPrice,numberOfRooms,blockID) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(blockInsertSql);
             preparedStatement.setString(1, block.getName());
@@ -265,7 +266,7 @@ public class DatabaseHandler {
                     preparedStatement.setString(2, x.getRentalName());
                     preparedStatement.setDouble(3, x.getMonthlyAmount());
                     preparedStatement.setInt(4,x.getRentalNumOfUnits());
-                     preparedStatement.setInt(4,id);
+                     preparedStatement.setInt(5,id);
                     preparedStatement.execute();
                 }
             }
@@ -295,5 +296,26 @@ public class DatabaseHandler {
         }
          
          return null;
+    }
+    
+    public ArrayList<Block> getBlocks(){
+        String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(blockQuery);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<Block> blocksList = new ArrayList();
+            while(rs.next()){
+                blocksList.add(new Block(rs.getString("id"),rs.getString("block_name"),rs.getString("location"),rs.getInt("number_of_rentals")));
+            }
+            
+            for (Block x:blocksList){
+                x.getHousesList();
+            }
+            return blocksList;
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;     
     }
 }

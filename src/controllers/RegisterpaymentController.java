@@ -7,7 +7,10 @@ package controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -24,4 +27,5 @@ public class RegisterpaymentController implements Initializable {
         // TODO
     }    
     
+   
 }
