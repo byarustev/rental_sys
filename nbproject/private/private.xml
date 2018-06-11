@@ -5,6 +5,13 @@
         <group>
             <file>file:/D:/JavaProjects/RentalSystem/src/views/registerBlock.fxml</file>
             <file>file:/D:/JavaProjects/RentalSystem/src/views/dashboard.fxml</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/RegisterpaymentController.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/nbproject/jfx-impl.xml</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/RegisterBlockController.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/RegisterTenantController.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/DashboardController.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/House.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/database/DatabaseHandler.java</file>
         </group>
     </open-files>
 </project-private>
