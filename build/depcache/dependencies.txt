@@ -73,6 +73,10 @@ java.lang.Object
 javafx.fxml.Initializable
 java.lang.System
 controllers.loginController
+||:controllers.UpdateRoomController
+java.lang.Object
+javafx.fxml.Initializable
+controllers.UpdateRoomController
 ||:controllers.RegisterTenantController
 java.lang.AssertionError
 javafx.fxml.Initializable
@@ -87,10 +91,6 @@ java.lang.System
 java.lang.NullPointerException
 javafx.scene.control.ComboBox
 java.lang.Object
-||:controllers.UpdateRoomController
-java.lang.Object
-javafx.fxml.Initializable
-controllers.UpdateRoomController
 ||:GeneralClasses.Block
 java.lang.Object
 java.lang.String
@@ -112,7 +112,6 @@ javafx.scene.Node
 javafx.fxml.FXMLLoader
 java.lang.AssertionError
 javafx.fxml.Initializable
-javafx.scene.layout.Pane
 java.lang.Class
 java.util.logging.Level
 javafx.collections.ObservableList
@@ -121,5 +120,6 @@ java.io.PrintStream
 java.util.logging.Logger
 java.lang.Object
 java.io.IOException
+javafx.scene.control.SplitPane
 controllers.DashboardController
 javafx.scene.layout.AnchorPane
