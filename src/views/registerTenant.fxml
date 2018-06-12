@@ -9,12 +9,15 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane prefHeight="615.0" prefWidth="637.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterTenantController">
+<SplitPane prefHeight="615.0" prefWidth="662.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterTenantController">
    <items>
       <TabPane tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -27,9 +30,9 @@
                               <HBox prefHeight="53.0" prefWidth="619.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="106.0" text="First Name" />
-                                    <TextField prefHeight="35.0" prefWidth="211.0" />
+                                    <TextField fx:id="fNameTxt" prefHeight="35.0" prefWidth="211.0" />
                                     <Label prefHeight="28.0" prefWidth="87.0" text="Last Name" />
-                                    <TextField prefHeight="35.0" prefWidth="221.0" />
+                                    <TextField fx:id="lastNameTxt" prefHeight="35.0" prefWidth="221.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -40,7 +43,7 @@
                                     <Label prefHeight="28.0" prefWidth="99.0" text="Nationality" />
                                     <ComboBox fx:id="countriesCombo" prefHeight="33.0" prefWidth="200.0" />
                                     <Label prefHeight="28.0" prefWidth="96.0" text="Phone Number" />
-                                    <TextField prefHeight="30.0" prefWidth="191.0" />
+                                    <TextField fx:id="phoneNumberTxt" prefHeight="30.0" prefWidth="191.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -51,7 +54,7 @@
                                     <Label prefHeight="28.0" prefWidth="100.0" text="ID Type" />
                                     <ComboBox fx:id="idTypeCombo" prefHeight="27.0" prefWidth="202.0" />
                                     <Label prefHeight="28.0" prefWidth="93.0" text="ID number" />
-                                    <TextField prefHeight="30.0" prefWidth="180.0" />
+                                    <TextField fx:id="idNumberTxt" prefHeight="30.0" prefWidth="180.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -63,7 +66,7 @@
                                     <RadioButton mnemonicParsing="false" prefHeight="29.0" prefWidth="71.0" text="Single" />
                                     <RadioButton mnemonicParsing="false" prefHeight="29.0" prefWidth="76.0" text="Maried" />
                                     <Label prefHeight="28.0" prefWidth="141.0" text="No. Family Members" />
-                                    <TextField prefHeight="30.0" prefWidth="202.0" />
+                                    <TextField fx:id="noFamMembersTxt" prefHeight="30.0" prefWidth="202.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -76,7 +79,7 @@
                               <HBox prefHeight="53.0" prefWidth="619.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="65.0" text="Name" />
-                                    <TextField prefHeight="29.0" prefWidth="259.0" />
+                                    <TextField fx:id="nokNameTxt" prefHeight="29.0" prefWidth="259.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -85,7 +88,7 @@
                               <HBox prefHeight="53.0" prefWidth="619.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="67.0" text="Contact" />
-                                    <TextField prefHeight="29.0" prefWidth="257.0" />
+                                    <TextField fx:id="nokContactTxt" prefHeight="29.0" prefWidth="257.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -114,9 +117,9 @@
                                  <children>
                                     <Label prefHeight="25.0" prefWidth="61.0" text="Deposit" />
                                     <NumberValidator />
-                                    <TextField prefHeight="35.0" prefWidth="260.0" />
+                                    <TextField fx:id="depositTxt" prefHeight="35.0" prefWidth="260.0" />
                                     <Label prefHeight="26.0" prefWidth="83.0" text="Received By" />
-                                    <TextField prefHeight="31.0" prefWidth="167.0" />
+                                    <TextField fx:id="receivedByTxt" prefHeight="31.0" prefWidth="167.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -125,7 +128,7 @@
                               <HBox prefWidth="651.0" spacing="15.0">
                                  <children>
                                     <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="112.0" text="CANCEL" />
-                                    <Button mnemonicParsing="false" prefHeight="49.0" prefWidth="112.0" text="SAVE" />
+                                    <Button mnemonicParsing="false" onMouseClicked="#saveTenant" prefHeight="49.0" prefWidth="112.0" text="SAVE" />
                                  </children>
                                  <padding>
                                     <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
@@ -137,7 +140,43 @@
                   </Pane>
                </content>
             </Tab>
-          <Tab text="Find Tenant" />
+          <Tab text="Find Tenant">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox prefHeight="71.0" prefWidth="635.0" spacing="6.0">
+                           <children>
+                              <VBox prefHeight="76.0" prefWidth="171.0">
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="174.0" text="Search By Name" />
+                                    <TextField prefHeight="33.0" prefWidth="171.0" />
+                                 </children>
+                              </VBox>
+                              <Region prefHeight="53.0" prefWidth="67.0" />
+                              <VBox prefHeight="53.0" prefWidth="150.0">
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="174.0" text="Block " />
+                                    <ComboBox prefHeight="35.0" prefWidth="150.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
+                           </padding>
+                        </HBox>
+                        <Region prefHeight="31.0" prefWidth="635.0" />
+                        <TableView prefHeight="203.0" prefWidth="644.0">
+                          <columns>
+                            <TableColumn prefWidth="137.0" text="Tenants Name" />
+                            <TableColumn prefWidth="106.0" text="Room No." />
+                              <TableColumn prefWidth="143.0" text="Total Amount Paid" />
+                              <TableColumn prefWidth="143.0" text="Date of Joning" />
+                              <TableColumn prefWidth="143.0" text="Edit Info" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content></Tab>
         </tabs>
       </TabPane>
    </items>
