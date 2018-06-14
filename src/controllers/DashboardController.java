@@ -41,8 +41,13 @@ public class DashboardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         
-               // AnchorPane.setLeftAnchor(mainPane, 0.0);
-               // AnchorPane.setRightAnchor(mainPane, 0.0);
+               try {
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerTenant.fxml")));
+        } catch (IOException ex) {
+            
+            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("FAILED to load block report");
+        }
     }    
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;

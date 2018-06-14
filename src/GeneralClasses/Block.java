@@ -17,6 +17,15 @@ public class Block {
     private String name;
     private String location;
     private int numberOfRentals;
+    private int numberOfAvailableRentals=0;
+
+    public int getNumberOfAvailableRentals() {
+        return numberOfAvailableRentals;
+    }
+
+    public void setNumberOfAvailableRentals(int numberOfAvailableRentals) {
+        this.numberOfAvailableRentals = numberOfAvailableRentals;
+    }
     private ArrayList<House> housesList;
     private String databaseId;
 
@@ -86,7 +95,9 @@ public class Block {
     }
     
     @Override
-   public String toString(){
+    public String toString(){
      return String.format("%s - %s", this.name,this.location);
-   }
+    }
+    
+    
 }

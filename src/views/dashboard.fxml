@@ -13,7 +13,7 @@
         <items>
           <AnchorPane maxWidth="230.0" prefHeight="648.0" prefWidth="230.0" style="-fx-background-color: #40739e;">
                <children>
-                  <Label id="system_name" layoutX="28.0" layoutY="31.0" text="Daati Rental System" textFill="#fffafa">
+                  <Label id="system_name" layoutX="28.0" layoutY="31.0" text="Daaki Investments" textFill="#fffafa">
                      <font>
                         <Font name="Tahoma Bold" size="15.0" />
                      </font>

@@ -12,10 +12,19 @@ package GeneralClasses;
  * @author robert
  */
 public class House{
-       private String rentalName;
-       private int rentalNumOfUnits;
-       private String unitNo;
-       private Double monthlyAmount;
+    private String rentalName;
+    private int rentalNumOfUnits;
+    private String unitNo;
+    private Double monthlyAmount;
+    private String houseId;
+
+    public String getHouseId() {
+        return houseId;
+    }
+
+    public void setHouseId(String houseId) {
+        this.houseId = houseId;
+    }
 
     public Double getMonthlyAmount() {
         return monthlyAmount;
@@ -52,6 +61,11 @@ public class House{
             this.setRentalName(rentalName);
             this.setRentalNumOfUnits(rentalNumOfUnits);
             this.setMonthlyAmount(monthlyAmount);
+       }
+       
+       public House(String id,String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount){
+            this(unitNo,rentalName,rentalNumOfUnits,monthlyAmount);
+            this.houseId =id;
        }
        
        @Override
