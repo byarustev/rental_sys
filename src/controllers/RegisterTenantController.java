@@ -18,18 +18,27 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Callback;
 import javax.swing.text.DateFormatter;
 
 /**
@@ -41,6 +50,8 @@ public class RegisterTenantController implements Initializable {
 
     
     ObservableList blocksList,rentalsList,countriesList,idTypeList,modesOfPaymentList; 
+    ObservableList tenantsFilteredList=FXCollections.observableArrayList();
+    ObservableList tenantsList = FXCollections.observableArrayList();
      @FXML // fx:id="blockCombo"
     private ComboBox<Block> blockCombo; // Value injected by FXMLLoader
     
@@ -91,13 +102,21 @@ public class RegisterTenantController implements Initializable {
     @FXML // fx:id="referenceNumberTxt"
     private TextField referenceNumberTxt; // Value injected by FXMLLoader
 
+        @FXML // fx:id="tenantsTable"
+    private TableView<Tenant> tenantsTable; // Value injected by FXMLLoader
     
+    @FXML // fx:id="tenantsSearhTxt"
+    private TextField tenantsSearhTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="blocksCombo"
+    private ComboBox<Block> blocksFilterCombo; // Value injected by FXMLLoader
     /**
      * Initializes the controller class.
      */
     private final ToggleGroup statusGroup = new ToggleGroup();
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+      lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
       blocksList= FXCollections.observableArrayList(DatabaseHandler.getInstance().getBlocks());
       blockCombo.setItems(blocksList);
       rentalsList = FXCollections.observableArrayList();
@@ -137,11 +156,133 @@ public class RegisterTenantController implements Initializable {
           }
       });
      
-      String []paymentOtions ={"Cash","Airtel Moneny","MTN Money","Bank"};
+      String []paymentOtions ={"Cash","Airtel Monny","MTN Money","Bank"};
       modesOfPaymentList = FXCollections.observableArrayList(paymentOtions);
       paymentModeCombo.setItems(modesOfPaymentList);
       paymentModeCombo.setValue(paymentOtions[0]);
+      
+      setUpTenantsTable();
     }    
+    
+    public void setUpTenantsTable(){ 
+    TableColumn name = new TableColumn("Name");
+    TableColumn phoneNumber= new TableColumn("Phone Number");
+    TableColumn blockName = new TableColumn("Block");
+    TableColumn houseRented = new TableColumn("Rental Occupied");
+    TableColumn balance = new TableColumn("Amount Owed");
+    TableColumn blockLocation = new TableColumn("Location");
+    name.setCellValueFactory(new Callback<CellDataFeatures<Tenant, String>, ObservableValue<String>>() {
+        @Override
+        public ObservableValue<String> call(CellDataFeatures<Tenant, String> param) {
+            try{
+            return new ReadOnlyObjectWrapper(param.getValue().getLastName()+" "+param.getValue().getFirstName()) ;//()
+                    }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+                           }
+    });
+    phoneNumber.setCellValueFactory(new Callback<CellDataFeatures<Tenant, String>, ObservableValue<String>>() {
+        @Override
+        public ObservableValue<String> call(CellDataFeatures<Tenant, String> param) {
+            return new ReadOnlyObjectWrapper(param.getValue().getPhoneNumber());
+        }
+    });
+    balance.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) {
+            try{
+                return new ReadOnlyObjectWrapper(param.getValue().getCurrentContract().computeBalance());
+            }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+        }
+    });
+    blockName.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) { 
+            try {
+                    return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getBlock().getName());
+            }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+        }
+   }); 
+    blockLocation.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) {
+          try{  
+            return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getBlock().getLocation());
+           }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+           }
+   });
+    houseRented.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) { 
+            try{
+           return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getRentalName());
+           }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }         
+        }
+   });
+    tenantsTable.getColumns().clear();
+    tenantsTable.getColumns().addAll(name,phoneNumber,blockName,houseRented,blockLocation,balance);
+    tenantsList.clear();
+    tenantsList.addAll(DatabaseHandler.getInstance().getTenants());
+    tenantsFilteredList.addAll(DatabaseHandler.getInstance().getTenants());
+    tenantsTable.setItems(tenantsFilteredList);
+    blocksFilterCombo.setItems(blocksList);
+    tenantsSearhTxt.textProperty().addListener(new ChangeListener(){
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+               ObservableList list =tenantsList.filtered(new Predicate<Tenant>(){
+                    @Override
+                    public boolean test(Tenant t) {
+                        return t.getFullName().toLowerCase().contains(newValue.toString().toLowerCase());       
+                    }
+                });
+                try{
+                    tenantsFilteredList.clear();
+                    tenantsFilteredList.addAll(list);
+               }catch(Exception e){
+                    e.printStackTrace();                    
+                }
+            }
+            
+        });
+    blocksFilterCombo.valueProperty().addListener(new ChangeListener(){
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            String blockId =blocksFilterCombo.getValue().getDatabaseId();
+           
+                try{
+                    tenantsFilteredList.clear();
+                    tenantsFilteredList.addAll(tenantsList.filtered(new Predicate<Tenant>(){
+                    @Override
+                    public boolean test(Tenant t) {
+                         try{
+                             //System.out.println(((HouseRentalContract)t.getCurrentContract()).getCurrentHouse().getBlock().getName()+" "+((HouseRentalContract)t.getCurrentContract()).getCurrentHouse().getBlock().getDatabaseId()+" and "+blockId);
+                            return ((HouseRentalContract)t.getCurrentContract()).getCurrentHouse().getBlockId().matches(blockId);  
+                        }catch(Exception e){
+                            
+                            return false;                            
+                        }
+                    }
+                }));
+               }catch(Exception e){
+                    e.printStackTrace();                    
+                }
+        }
+    });
+    
+    }
     
     @FXML
     void changeRentals(MouseEvent event) {
@@ -152,7 +293,7 @@ public class RegisterTenantController implements Initializable {
         try{
             Block e = blockCombo.getValue();
             rentalsList.clear();
-            rentalsList.setAll(e.getHousesList());
+            rentalsList.setAll(e.getHousesList(true));
             if(rentalsList.isEmpty()){
                rentalsCombo.setDisable(true); 
             }
@@ -168,7 +309,7 @@ public class RegisterTenantController implements Initializable {
 
    @FXML
     void saveTenant(MouseEvent event) {
-        lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
+        
         if(fNameTxt.getText().isEmpty()){
             fNameTxt.requestFocus();
         }else if(lastNameTxt.getText().isEmpty()){
@@ -224,7 +365,8 @@ public class RegisterTenantController implements Initializable {
                 Payment payment = new Payment(startDate, Double.parseDouble(depositTxt.getText()), contractId, receivedByTxt.getText(), tenantId, paymentModeCombo.getValue(),referenceNumberTxt.getText());
                 payment.savePayment();
             }
-            
+            tenantsList.clear();
+            tenantsList.addAll(DatabaseHandler.getInstance().getTenants());
             
             
         }
@@ -233,6 +375,9 @@ public class RegisterTenantController implements Initializable {
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
+        assert tenantsSearhTxt != null : "fx:id=\"tenantsSearhTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
+        assert blocksFilterCombo != null : "fx:id=\"blocksCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
+        assert tenantsTable != null : "fx:id=\"tenantsTable\" was not injected: check your FXML file 'registerTenant.fxml'.";
         assert fNameTxt != null : "fx:id=\"fNameTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
         assert lastNameTxt != null : "fx:id=\"lastNameTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
         assert countriesCombo != null : "fx:id=\"countriesCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
@@ -252,7 +397,6 @@ public class RegisterTenantController implements Initializable {
         assert paymentModeCombo != null : "fx:id=\"paymentModeCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
         assert referenceNumberTxt != null : "fx:id=\"referenceNumberTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
         assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'registerTenant.fxml'.";
-
     }
     
 }

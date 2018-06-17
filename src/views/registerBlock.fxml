@@ -21,7 +21,46 @@
       
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Register Block">
+          <Tab text="Blocks">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox layoutX="97.0" layoutY="14.0" prefHeight="455.0" prefWidth="701.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <HBox prefHeight="69.0" prefWidth="701.0" spacing="10.0">
+                                 <children>
+                                    <VBox prefHeight="48.0" prefWidth="145.0" spacing="6.0">
+                                       <children>
+                                          <Label text="Filter By Name" />
+                                          <TextField fx:id="idSearchTxt" onInputMethodTextChanged="#filterBlocks" prefHeight="28.0" prefWidth="169.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
+                                 </padding>
+                              </HBox>
+                              <Region prefHeight="26.0" prefWidth="701.0" />
+                              <TableView fx:id="blocksDisplayTable" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn prefWidth="86.0" text="Block Name" />
+                                  <TableColumn prefWidth="125.0" text="Location" />
+                                    <TableColumn prefWidth="136.0" text="No. Rental Uints" />
+                                    <TableColumn prefWidth="118.0" text="Rental Units Used" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children>
+                           <padding>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </padding>
+                        </VBox>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Add New Block">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -130,45 +169,6 @@
       </AnchorPane>
                      </children>
                   </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Find Block">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <VBox layoutX="97.0" layoutY="14.0" prefHeight="455.0" prefWidth="701.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <HBox prefHeight="69.0" prefWidth="701.0" spacing="10.0">
-                                 <children>
-                                    <VBox prefHeight="48.0" prefWidth="145.0" spacing="6.0">
-                                       <children>
-                                          <Label text="Search By Name" />
-                                          <TextField fx:id="idSearchTxt" onInputMethodTextChanged="#filterBlocks" prefHeight="28.0" prefWidth="169.0" />
-                                       </children>
-                                    </VBox>
-                                 </children>
-                                 <padding>
-                                    <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
-                                 </padding>
-                              </HBox>
-                              <Region prefHeight="26.0" prefWidth="701.0" />
-                              <TableView fx:id="blocksDisplayTable" prefHeight="200.0" prefWidth="200.0">
-                                <columns>
-                                  <TableColumn prefWidth="86.0" text="Block Name" />
-                                  <TableColumn prefWidth="125.0" text="Location" />
-                                    <TableColumn prefWidth="136.0" text="No. Rental Uints" />
-                                    <TableColumn prefWidth="118.0" text="Rental Units Used" />
-                                </columns>
-                                 <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                 </columnResizePolicy>
-                              </TableView>
-                           </children>
-                           <padding>
-                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-                           </padding>
-                        </VBox>
-                     </children></AnchorPane>
             </content>
           </Tab>
         </tabs>

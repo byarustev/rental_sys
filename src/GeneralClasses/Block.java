@@ -20,11 +20,17 @@ public class Block {
     private int numberOfAvailableRentals=0;
 
     public int getNumberOfAvailableRentals() {
+        if(numberOfAvailableRentals==0){
+            setNumberOfAvailableRentals();
+        }
         return numberOfAvailableRentals;
     }
 
     public void setNumberOfAvailableRentals(int numberOfAvailableRentals) {
-        this.numberOfAvailableRentals = numberOfAvailableRentals;
+        this.numberOfAvailableRentals = this.getHousesList(true).size();
+    }
+    public void setNumberOfAvailableRentals() {
+        this.numberOfAvailableRentals = this.getHousesList(true).size();
     }
     private ArrayList<House> housesList;
     private String databaseId;
@@ -35,6 +41,12 @@ public class Block {
 
     public void setDatabaseId(String databaseId) {
         this.databaseId = databaseId;
+        try{
+            housesList.forEach(x->x.setBlockId(databaseId));
+            setNumberOfAvailableRentals();
+        }catch(NullPointerException e){
+            
+        }
     }
     
     public Block(String name, String location, int number_of_retals, ArrayList<House> housesList){
@@ -80,14 +92,20 @@ public class Block {
             return housesList;
         }
         else{
-            ArrayList <House> list = DatabaseHandler.getInstance().getHousesList(this.databaseId);
+            ArrayList <House> list = DatabaseHandler.getInstance().getHousesList(this.databaseId,false);
             setHousesList(list);
             return list;
         }
     }
+    
+    public ArrayList<House> getHousesList(boolean availableOnly) {
+            ArrayList <House> list = DatabaseHandler.getInstance().getHousesList(this.databaseId,availableOnly);
+            return list;
+    }
 
     public void setHousesList(ArrayList<House> housesList) {
         this.housesList = housesList;
+        housesList.forEach(x->x.setBlockId(databaseId));
     }
     
     public void save(){

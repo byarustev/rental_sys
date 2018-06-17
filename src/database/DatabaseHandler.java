@@ -7,6 +7,8 @@ package database;
 
 import GeneralClasses.Block;
 import GeneralClasses.House;
+import GeneralClasses.HouseRentalContract;
+import GeneralClasses.Tenant;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -115,7 +117,7 @@ public class DatabaseHandler {
                         "modeOfPayment varchar(30) NOT NULL,"+
                          " tenantID int NOT NULL,"+""
                         + "contractID int NOT NULL,"+
-                        "receivedBy int NOT NULL )";
+                        "receivedBy varchar(30) DEFAULT NULL )";
                 statement = connection.createStatement();
                 statement.execute(sql);
             }
@@ -279,15 +281,22 @@ public class DatabaseHandler {
         return true;
     }
 
-    public ArrayList<House> getHousesList(String databaseId) {
-        String housesQuery ="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE blockID = ?";
+    public ArrayList<House> getHousesList(String databaseId,boolean availableOnly) {
+        String housesQuery;
+        if(availableOnly){
+              housesQuery="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE blockID = ? AND avaibility =1";
+        }
+        else{
+            housesQuery ="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE blockID = ?";
+        }
+       
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(housesQuery);
             preparedStatement.setString(1,databaseId);
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<House> list = new ArrayList();
             while(rs.next()){
-                list.add(new House(rs.getString("id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice")));
+                list.add(new House(rs.getString("id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("avaibility")));
             }   
             return list;
             
@@ -297,6 +306,24 @@ public class DatabaseHandler {
          
          return null;
     }
+    public House getHouse(String databaseId) {
+        String housesQuery ="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE id = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(housesQuery);
+            preparedStatement.setString(1,databaseId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                return new House(rs.getString("id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("avaibility"));
+            }   
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+         return null;
+    }
+    
     
     public ArrayList<Block> getBlocks(){
         String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
@@ -318,6 +345,25 @@ public class DatabaseHandler {
         return null;     
     }
 
+     public Block getBlock(String blockId) {
+          String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(blockQuery);
+            ResultSet rs = preparedStatement.executeQuery();
+            Block block=null;
+            if(rs.next()){
+                block =new Block(rs.getString("id"),rs.getString("block_name"),rs.getString("location"),rs.getInt("number_of_rentals"));
+            }
+            if(block != null){
+                block.getHousesList();
+                return block;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;   
+    }
     public String insertTenant(String firstName, String lastName, String maritalStatus, String nationality, String idType, String idNumber, int numOfFamMembers, String dateOfBirth, String phoneNumber, String nokName, String nokContack) {
         String sql ="INSERT INTO "+TENANTS_TABLE_NAME+" (firstName,lastName,maritalStatus,dateOfBirth,nationality,"
                 + "IdType,IdNumber,photoPath,phoneNumber1,phoneNumber2,"
@@ -366,15 +412,22 @@ public class DatabaseHandler {
      * @return contractId
      */
     public String insertHouseContract(String associatedTenant, String associatedHouse, String startDate, Double agreedMonthlyAmount) {
-        String sql ="INSERT INTO " +HOUSE_RENTAL_CONTRACT_TABLE_NAME+" (startDate,agreedMonthlyAmount,houseID,tenantID) VALUES(?,?,?,?)";
+        String insertSql ="INSERT INTO " +HOUSE_RENTAL_CONTRACT_TABLE_NAME+" (startDate,agreedMonthlyAmount,houseID,tenantID) VALUES(?,?,?,?)";
+         String updateSql=        "UPDATE "+HOUSES_TABLE_NAME+" SET avaibility =0 WHERE id = ?";
         
         try {
-            PreparedStatement prepartedStatement = connection.prepareStatement(sql);
+            PreparedStatement prepartedStatement = connection.prepareStatement(insertSql);
             prepartedStatement.setString(1, startDate);
             prepartedStatement.setDouble(2, agreedMonthlyAmount);
             prepartedStatement.setString(3, associatedHouse);
             prepartedStatement.setString(4, associatedTenant);
             prepartedStatement.execute();
+            
+            
+            prepartedStatement = connection.prepareStatement(updateSql);
+            prepartedStatement.setInt(1, Integer.parseInt(associatedHouse));
+            prepartedStatement.execute();
+            
             String idQuery = "SELECT id FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE startDate = ? AND houseID = ? AND tenantID = ? AND agreedMonthlyAmount = ?";
             prepartedStatement = connection.prepareStatement(idQuery);
             prepartedStatement.setString(1, startDate);
@@ -399,15 +452,86 @@ public class DatabaseHandler {
             prepartedStatement.setDouble(1, paymentAmount);
             prepartedStatement.setString(2, paymentDate);
             prepartedStatement.setString(3, referenceNumber);
-            prepartedStatement.setString(4, tenantId);
-            prepartedStatement.setString(5, rentalContractId );
-            prepartedStatement.setString(6, receivedBy);
+            prepartedStatement.setString(4, modeOfPayment);
+            prepartedStatement.setString(5, tenantId);
+            prepartedStatement.setInt(6, Integer.parseInt(rentalContractId));
+            prepartedStatement.setString(7, receivedBy);
             
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
+
+    
+
+    public HouseRentalContract getCurrentContract(String tenantId, String houseId) {
+        String contractQuery;
+           try {
+            PreparedStatement prepartedStatement=null;
+            if(tenantId != null && houseId==null){
+                contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE tenantID = ? ORDER BY id DESC";
+                prepartedStatement= connection.prepareStatement(contractQuery);
+                prepartedStatement.setString(1, tenantId);
+            }
+            else if(tenantId == null && houseId!=null){
+                contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE houseID = ? ORDER BY id DESC";
+                prepartedStatement= connection.prepareStatement(contractQuery);
+                prepartedStatement.setString(1, houseId);
+            }
+            ResultSet rs =prepartedStatement.executeQuery();
+            if(rs.next()){
+                HouseRentalContract contract = new HouseRentalContract(rs.getString("startDate"),
+                        rs.getString("tenantID") , rs.getString("id") , 
+                        rs.getString("houseID") , rs.getDouble("agreedMonthlyAmount"));
+                System.out.println(contract);
+                return contract;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+
     
     
+    public ArrayList<Tenant> getTenants(){
+         String idQuery = "SELECT * FROM "+TENANTS_TABLE_NAME;
+            PreparedStatement preparedStatement;
+        try {
+            ArrayList<Tenant> tenants = new ArrayList();
+            preparedStatement = connection.prepareStatement(idQuery);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                tenants.add(new Tenant(rs.getString("id"), rs.getString("lastName") , rs.getString("firstName"), 
+                        rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
+                        rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") ,  rs.getString("nextOfKinContact")));
+            }
+            return tenants;
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return null;      
+    }
+
+    public Tenant getTenant(String tenantId){
+        String idQuery = "SELECT * FROM "+TENANTS_TABLE_NAME+" WHERE id =?";
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = connection.prepareStatement(idQuery);
+            preparedStatement.setString(1, tenantId);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+              return new Tenant(rs.getString("id"), rs.getString("lastName") , rs.getString("firstName"), 
+                        rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
+                        rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") ,  rs.getString("nextOfKinContact"));
+            }
+            return null;
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return null;      
+    }
+   
   }

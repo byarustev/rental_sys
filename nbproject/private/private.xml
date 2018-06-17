@@ -6,12 +6,9 @@
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/Tenant.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/RegisterBlockController.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/RegisterTenantController.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/RentalContract.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/House.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/Payment.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/Block.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/database/DatabaseHandler.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/HouseRentalContract.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/views/registerTenant.fxml</file>
         </group>
     </open-files>
 </project-private>

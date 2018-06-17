@@ -1,5 +1,7 @@
 package GeneralClasses;
 
+import database.DatabaseHandler;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -17,6 +19,24 @@ public class House{
     private String unitNo;
     private Double monthlyAmount;
     private String houseId;
+    private String blockId;
+    private Block block;
+    private int availability=1;
+
+    public int getAvailability() {
+        return availability;
+    }
+    public boolean isAvailable(){
+        return availability==1;
+    }
+    public void setAvailability(int availability) {
+        this.availability = availability;
+        
+    }
+
+    public String getBlockId() {
+        return blockId;
+    }
 
     public String getHouseId() {
         return houseId;
@@ -56,20 +76,37 @@ public class House{
         public void setRentalNumOfUnits(int rentalNumOfUnits) {
             this.rentalNumOfUnits = rentalNumOfUnits;
         }
-       public House(String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount){
+       public House(String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId){
             this.setUnitNo(unitNo);
             this.setRentalName(rentalName);
             this.setRentalNumOfUnits(rentalNumOfUnits);
             this.setMonthlyAmount(monthlyAmount);
+            setBlockId(blockId);
        }
        
-       public House(String id,String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount){
-            this(unitNo,rentalName,rentalNumOfUnits,monthlyAmount);
+       public House(String id,String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId, int availability){
+            this(unitNo,rentalName,rentalNumOfUnits,monthlyAmount,blockId);
             this.houseId =id;
+            this.setAvailability(availability);
        }
        
        @Override
         public String toString(){
           return String.format("%s(%s)-%s",this.rentalName,this.rentalNumOfUnits,this.monthlyAmount);
+        }
+
+        public void setBlockId(String databaseId) {
+            this.blockId=databaseId;
+        }
+        
+        public Block getBlock(){
+            if(this.block==null){
+                this.block = DatabaseHandler.getInstance().getBlock(this.blockId);
+                System.out.println(block +" -> "+block.getDatabaseId());
+                return this.block;
+            }
+            else{
+                return this.block;
+            }
         }
     }
