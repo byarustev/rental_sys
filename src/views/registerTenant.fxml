@@ -32,8 +32,8 @@
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="106.0" text="First Name" />
                                     <TextField fx:id="fNameTxt" prefHeight="35.0" prefWidth="211.0" />
-                                    <Label prefHeight="30.0" prefWidth="73.0" text="Last Name" />
-                                    <TextField fx:id="lastNameTxt" prefHeight="32.0" prefWidth="214.0" />
+                                    <Label prefHeight="30.0" prefWidth="87.0" text="Last Name" />
+                                    <TextField fx:id="lastNameTxt" prefHeight="32.0" prefWidth="203.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -42,9 +42,9 @@
                               <HBox prefHeight="53.0" prefWidth="630.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="99.0" text="Nationality" />
-                                    <ComboBox fx:id="countriesCombo" prefHeight="33.0" prefWidth="220.0" />
-                                    <Label prefHeight="28.0" prefWidth="117.0" text="Phone Number" />
-                                    <TextField fx:id="phoneNumberTxt" prefHeight="30.0" prefWidth="191.0" />
+                                    <ComboBox fx:id="countriesCombo" prefHeight="33.0" prefWidth="210.0" />
+                                    <Label prefHeight="28.0" prefWidth="82.0" text="Phone Number" />
+                                    <TextField fx:id="phoneNumberTxt" prefHeight="30.0" prefWidth="202.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -54,8 +54,8 @@
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="100.0" text="ID Type" />
                                     <ComboBox fx:id="idTypeCombo" prefHeight="27.0" prefWidth="202.0" />
-                                    <Label prefHeight="28.0" prefWidth="110.0" text="ID number" />
-                                    <TextField fx:id="idNumberTxt" prefHeight="30.0" prefWidth="170.0" />
+                                    <Label prefHeight="28.0" prefWidth="89.0" text="ID number" />
+                                    <TextField fx:id="idNumberTxt" prefHeight="30.0" prefWidth="198.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -66,12 +66,12 @@
                                     <Label prefHeight="28.0" prefWidth="110.0" text="Marital Status" />
                                     <Group>
                                        <children>
-                                          <RadioButton fx:id="statusSingleRadio" mnemonicParsing="false" prefHeight="29.0" prefWidth="76.0" text="Single" />
-                                          <RadioButton fx:id="statusMarriedRadio" layoutX="113.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="84.0" text="Maried" />
+                                          <RadioButton fx:id="statusSingleRadio" mnemonicParsing="false" prefHeight="29.0" prefWidth="61.0" text="Single" />
+                                          <RadioButton fx:id="statusMarriedRadio" layoutX="113.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="74.0" text="Maried" />
                                        </children>
                                     </Group>
-                                    <Label prefHeight="28.0" prefWidth="154.0" text="No. Family Members" />
-                                    <TextField fx:id="noFamMembersTxt" prefHeight="30.0" prefWidth="202.0" />
+                                    <Label prefHeight="28.0" prefWidth="125.0" text="No. Family Members" />
+                                    <TextField fx:id="noFamMembersTxt" prefHeight="30.0" prefWidth="185.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -84,9 +84,9 @@
                               <HBox prefHeight="53.0" prefWidth="619.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="65.0" text="Name" />
-                                    <TextField fx:id="nokNameTxt" prefHeight="29.0" prefWidth="259.0" />
+                                    <TextField fx:id="nokNameTxt" prefHeight="29.0" prefWidth="242.0" />
                                     <Label prefHeight="28.0" prefWidth="67.0" text="Contact" />
-                                    <TextField fx:id="nokContactTxt" prefHeight="29.0" prefWidth="257.0" />
+                                    <TextField fx:id="nokContactTxt" prefHeight="29.0" prefWidth="224.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -96,7 +96,7 @@
                               <HBox prefHeight="40.0" prefWidth="651.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="28.0" prefWidth="60.0" text="Block" />
-                                    <ComboBox fx:id="blockCombo" onMouseExited="#changeRentals" prefHeight="28.0" prefWidth="263.0" />
+                                    <ComboBox fx:id="blockCombo" onMouseExited="#changeRentals" prefHeight="25.0" prefWidth="247.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -105,9 +105,9 @@
                               <HBox prefHeight="37.0" prefWidth="651.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="25.0" prefWidth="60.0" text="Room" />
-                                    <ComboBox fx:id="rentalsCombo" prefHeight="28.0" prefWidth="262.0" />
-                                    <Label prefHeight="22.0" prefWidth="95.0" text="Monthly Fee" />
-                                    <TextField fx:id="monthlyFeeTxt" prefHeight="28.0" prefWidth="168.0" />
+                                    <ComboBox fx:id="rentalsCombo" prefHeight="25.0" prefWidth="248.0" />
+                                    <Label prefHeight="22.0" prefWidth="87.0" text="Monthly Fee" />
+                                    <TextField fx:id="monthlyFeeTxt" prefHeight="25.0" prefWidth="186.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -116,9 +116,9 @@
                               <HBox prefHeight="39.0" prefWidth="651.0" spacing="8.0">
                                  <children>
                                     <Label prefHeight="25.0" prefWidth="61.0" text="Deposit" />
-                                    <TextField fx:id="depositTxt" prefHeight="30.0" prefWidth="260.0" />
-                                    <Label prefHeight="26.0" prefWidth="96.0" text="Received By" />
-                                    <TextField fx:id="receivedByTxt" prefHeight="26.0" prefWidth="169.0" />
+                                    <TextField fx:id="depositTxt" prefHeight="25.0" prefWidth="246.0" />
+                                    <Label prefHeight="25.0" prefWidth="89.0" text="Received By" />
+                                    <TextField fx:id="receivedByTxt" prefHeight="25.0" prefWidth="187.0" />
                                  </children>
                                  <padding>
                                     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -128,12 +128,12 @@
                                  <children>
                                     <Label prefHeight="25.0" prefWidth="144.0" text="Mode of Payment" />
                                     <ComboBox fx:id="paymentModeCombo" prefHeight="28.0" prefWidth="180.0" />
-                                    <Label prefHeight="25.0" prefWidth="116.0" text="Payment Ref #">
+                                    <Label prefHeight="25.0" prefWidth="96.0" text="Payment Ref #">
                                        <HBox.margin>
                                           <Insets left="10.0" />
                                        </HBox.margin>
                                     </Label>
-                                    <TextField fx:id="referenceNumberTxt" prefHeight="26.0" prefWidth="162.0">
+                                    <TextField fx:id="referenceNumberTxt" prefHeight="25.0" prefWidth="186.0">
                                        <HBox.margin>
                                           <Insets right="5.0" />
                                        </HBox.margin>
