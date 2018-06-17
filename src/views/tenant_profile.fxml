@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="774.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="442.0">
+         <children>
+            <HBox alignment="CENTER" layoutX="1.0" prefHeight="138.0" prefWidth="219.0" AnchorPane.bottomAnchor="423.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ImageView fitHeight="157.0" fitWidth="227.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/avator.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <VBox layoutX="-2.0" layoutY="160.0" prefHeight="417.0" prefWidth="227.0" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="160.0">
+               <children>
+                  <HBox prefHeight="47.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="116.0" text="Block No. &amp; Room">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <VBox prefHeight="39.0" prefWidth="110.0">
+                           <children>
+                              <Label prefHeight="19.0" prefWidth="112.0" text="Block C" />
+                              <Label prefHeight="19.0" prefWidth="112.0" text="Room 9" />
+                           </children>
+                        </VBox>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="89.0" text="Name:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="19.0" prefWidth="110.0" text="Kato Mike" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="94.0" text="Nationality:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="19.0" prefWidth="120.0" text="Ugandan" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="147.0" text="Phone Number:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="29.0" prefWidth="171.0" text="070689593" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="147.0" text="ID Type:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="29.0" prefWidth="171.0" text="National Id" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="147.0" text="ID No. ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="29.0" prefWidth="171.0" text="29299303" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="147.0" text="DOB:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="29.0" prefWidth="171.0" text="3/06/1980" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="147.0" text="Marital Status:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="29.0" prefWidth="171.0" text="Married" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="160.0" text="Family Members:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="29.0" prefWidth="171.0" text="2" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="147.0" text="Next of kin:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="29.0" prefWidth="171.0" text="Male Musa" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="127.0" text="Next of kin Contact">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="19.0" prefWidth="95.0" text="070689593" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+         <children>
+            <VBox layoutX="31.0" layoutY="14.0" prefHeight="577.0" prefWidth="539.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label prefHeight="38.0" prefWidth="539.0" text="Payment Records">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+                  <Region prefHeight="42.0" prefWidth="539.0" />
+                  <TableView prefHeight="428.0" prefWidth="539.0">
+                    <columns>
+                      <TableColumn prefWidth="115.0" text="Payment Date" />
+                      <TableColumn prefWidth="104.0" text="Amount Paid" />
+                        <TableColumn prefWidth="104.0" text="Payment Ref#" />
+                    </columns>
+                  </TableView>
+                  <HBox prefHeight="31.0" prefWidth="539.0" spacing="10.0">
+                     <children>
+                        <Label alignment="CENTER_RIGHT" prefHeight="38.0" prefWidth="539.0" text="Balance: ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="38.0" prefWidth="539.0" text="400,000">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </children></AnchorPane>
+  </items>
+</SplitPane>
