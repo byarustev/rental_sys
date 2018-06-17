@@ -42,7 +42,7 @@ public class DashboardController implements Initializable {
         // TODO
         
                try {
-            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerTenant.fxml")));
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerpayment.fxml")));
         } catch (IOException ex) {
             
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);

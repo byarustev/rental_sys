@@ -22,7 +22,44 @@
    <items>
       <TabPane prefHeight="632.0" prefWidth="660.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Register Tenants">
+          <Tab text="Tenants">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <HBox prefHeight="71.0" prefWidth="635.0" spacing="6.0">
+                           <children>
+                              <VBox prefHeight="76.0" prefWidth="171.0">
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="174.0" text="Search By Name" />
+                                    <TextField fx:id="tenantsSearhTxt" prefHeight="33.0" prefWidth="171.0" />
+                                 </children>
+                              </VBox>
+                              <Region prefHeight="53.0" prefWidth="67.0" />
+                              <VBox prefHeight="53.0" prefWidth="150.0">
+                                 <children>
+                                    <Label prefHeight="17.0" prefWidth="174.0" text="Block " />
+                                    <ComboBox fx:id="blocksFilterCombo" prefHeight="35.0" prefWidth="150.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
+                           </padding>
+                        </HBox>
+                        <Region prefHeight="31.0" prefWidth="635.0" />
+                        <TableView fx:id="tenantsTable" prefHeight="203.0" prefWidth="644.0">
+                          <columns>
+                            <TableColumn prefWidth="137.0" text="Tenants Name" />
+                            <TableColumn prefWidth="106.0" text="Room No." />
+                              <TableColumn prefWidth="143.0" text="Total Amount Paid" />
+                              <TableColumn prefWidth="143.0" text="Date of Joning" />
+                              <TableColumn prefWidth="143.0" text="Edit Info" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content></Tab>
+          <Tab text="Add Tenant">
                <content>
                   <Pane>
                      <children>
@@ -169,43 +206,6 @@
                   </Pane>
                </content>
             </Tab>
-          <Tab text="Find Tenant">
-               <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <HBox prefHeight="71.0" prefWidth="635.0" spacing="6.0">
-                           <children>
-                              <VBox prefHeight="76.0" prefWidth="171.0">
-                                 <children>
-                                    <Label prefHeight="17.0" prefWidth="174.0" text="Search By Name" />
-                                    <TextField prefHeight="33.0" prefWidth="171.0" />
-                                 </children>
-                              </VBox>
-                              <Region prefHeight="53.0" prefWidth="67.0" />
-                              <VBox prefHeight="53.0" prefWidth="150.0">
-                                 <children>
-                                    <Label prefHeight="17.0" prefWidth="174.0" text="Block " />
-                                    <ComboBox prefHeight="35.0" prefWidth="150.0" />
-                                 </children>
-                              </VBox>
-                           </children>
-                           <padding>
-                              <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
-                           </padding>
-                        </HBox>
-                        <Region prefHeight="31.0" prefWidth="635.0" />
-                        <TableView prefHeight="203.0" prefWidth="644.0">
-                          <columns>
-                            <TableColumn prefWidth="137.0" text="Tenants Name" />
-                            <TableColumn prefWidth="106.0" text="Room No." />
-                              <TableColumn prefWidth="143.0" text="Total Amount Paid" />
-                              <TableColumn prefWidth="143.0" text="Date of Joning" />
-                              <TableColumn prefWidth="143.0" text="Edit Info" />
-                          </columns>
-                        </TableView>
-                     </children>
-                  </VBox>
-               </content></Tab>
         </tabs>
       </TabPane>
    </items>

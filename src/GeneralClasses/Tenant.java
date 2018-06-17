@@ -26,6 +26,7 @@ public class Tenant {
     private String nokName;
     private String nokContack;
     private String idNumber;
+    private HouseRentalContract houseContract;
 
    
     public String getIdNumber() {
@@ -44,6 +45,7 @@ public class Tenant {
         this.nationality = nationality;
         this.phoneNumber = phoneNumber;
         this.idType = idType;
+        this.idNumber = idNumber;
         this.maritalStatus = maritalStatus;
         this.numOfFamMembers = numOfFamMembers;
         this.nokName = nokName;
@@ -183,11 +185,24 @@ public class Tenant {
         else{
              return this.tenantId;
         }
-        
     }
     
     public String toString(){
         return String.format("%s: %s: %s: %s: %s: %s: %s: %s :%s :%s :%s", this.firstName,this.lastName,this.maritalStatus,
                 this.nationality,this.idType,this.idNumber,this.numOfFamMembers,this.dateOfBirth,this.phoneNumber,this.nokName,this.nokContack);
+    }
+    
+    public RentalContract getCurrentContract(){
+         if(this.houseContract == null){
+             this.houseContract = DatabaseHandler.getInstance().getCurrentContract(this.tenantId,null);
+             return this.houseContract;   
+         }
+         else{
+         return this.houseContract;
+                 }
+    }
+    
+    public String getFullName(){
+         return String.format("%s %s", this.firstName,this.lastName);
     }
 }

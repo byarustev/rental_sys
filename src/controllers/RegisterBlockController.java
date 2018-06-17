@@ -11,6 +11,7 @@ import database.DatabaseHandler;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -92,7 +93,12 @@ public class RegisterBlockController implements Initializable {
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 
-                filteredBlocksList.setAll(blocksList.filtered(p->p.toString().contains(newValue.toString())));
+                filteredBlocksList.setAll(blocksList.filtered(new Predicate<Block>() {
+                    @Override
+                    public boolean test(Block p) {
+                        return p.toString().contains(newValue.toString());
+                    }
+                }));
             }
         });
 
@@ -164,6 +170,11 @@ public class RegisterBlockController implements Initializable {
          
          Block enteredBlock = new Block(blockNameTxt.getCharacters().toString(), blockLocationTxt.getCharacters().toString(), Integer.parseInt(numUnitsTxt.getCharacters().toString()),housesList);
          enteredBlock.save();
+         
+         
+         //update the blocks table
+          filteredBlocksList.clear();
+          filteredBlocksList.addAll(DatabaseHandler.getInstance().getBlocks());
          
         
     }
@@ -260,7 +271,7 @@ public class RegisterBlockController implements Initializable {
                  this.getRentalNumOfUnits().requestFocus();
                   return null;
              }
-            return new House(this.getUnitNo(),this.getRentalName().getText(),Integer.parseInt(this.getRentalNumOfUnits().getText()),Double.parseDouble(monthlyAmount.getText()));
+            return new House(this.getUnitNo(),this.getRentalName().getText(),Integer.parseInt(this.getRentalNumOfUnits().getText()),Double.parseDouble(monthlyAmount.getText()),null);
         }
     }
     
