@@ -16,6 +16,7 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -27,10 +28,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -75,7 +80,10 @@ public class RegisterpaymentController implements Initializable {
     private TextField referenceNumberTxt; // Value injected by FXMLLoader
     
     private String selectedContractId,selectedTenantId;
+    @FXML // fx:id="paymentsTable"
+    private TableView<Payment> paymentsTable; // Value injected by FXMLLoader
 
+    ObservableList payments;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         blocksList= FXCollections.observableArrayList(DatabaseHandler.getInstance().getBlocks());
@@ -119,8 +127,67 @@ public class RegisterpaymentController implements Initializable {
                 }
           }
       });
+      
+      setupPaymentsTable();
     }    
 
+    void setupPaymentsTable(){
+        TableColumn  paymentDateCol = new TableColumn("Payment Date");
+        TableColumn  amountPaidCol= new TableColumn("Amount Paid");
+        TableColumn  tenantCol= new TableColumn("Tenant ");
+        TableColumn  houseCol= new TableColumn("Room");
+        TableColumn  blockCol= new TableColumn("Block");
+        PropertyValueFactory <Payment, String> paymentDateFactory = new PropertyValueFactory("paymentDate");
+        PropertyValueFactory <Payment, Double> amountPaidFactory = new PropertyValueFactory("paymentAmount");
+      /*PropertyValueFactory <Payment, String> paymentMethodFactory = new PropertyValueFactory("modeOfPayment");
+        PropertyValueFactory <Payment, String> referenceNumFactory = new PropertyValueFactory("referenceNumber");
+        PropertyValueFactory <Payment, String> receivedByColFactory = new PropertyValueFactory("receivedBy");*/
+        paymentDateCol.setCellValueFactory(paymentDateFactory);
+        amountPaidCol.setCellValueFactory(amountPaidFactory);
+        tenantCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Payment, String>, ObservableValue<Double>>(){
+            @Override
+            public ObservableValue<Double> call(TableColumn.CellDataFeatures<Payment, String> param) {
+               try{
+           return new ReadOnlyObjectWrapper(((Payment)param.getValue()).getAssociatedContract().getAssociatedTenant().getFullName());
+           }
+            catch(NullPointerException ex){
+                ex.printStackTrace();
+               return new ReadOnlyObjectWrapper("");
+           }  
+            }
+        });
+        
+        houseCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Payment, String>, ObservableValue<Double>>(){
+            @Override
+            public ObservableValue<Double> call(TableColumn.CellDataFeatures<Payment, String> param) {
+               try{
+                return new ReadOnlyObjectWrapper(((Payment)param.getValue()).getAssociatedContract().getCurrentHouse().getRentalName());
+                }
+                catch(NullPointerException ex){
+                   ex.printStackTrace();
+                   return new ReadOnlyObjectWrapper("");
+               }  
+            }
+        });
+        blockCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Payment, String>, ObservableValue<Double>>(){
+            @Override
+            public ObservableValue<Double> call(TableColumn.CellDataFeatures<Payment, String> param) {
+               try{
+                return new ReadOnlyObjectWrapper(((Payment)param.getValue()).getAssociatedContract().getCurrentHouse().getBlock().getName());
+                }
+                catch(NullPointerException ex){
+                     ex.printStackTrace();
+                   return new ReadOnlyObjectWrapper("");
+               }  
+            }
+        });
+        
+        paymentsTable.getColumns().clear();
+        paymentsTable.getColumns().addAll(paymentDateCol,tenantCol,houseCol,blockCol,amountPaidCol);
+        payments = FXCollections.observableArrayList(DatabaseHandler.getInstance().getAllPayments());
+        paymentsTable.setItems(payments);
+        
+    }
     void changeRentals(){
         try{
             Block e = blockCombo.getValue();
@@ -208,7 +275,7 @@ public class RegisterpaymentController implements Initializable {
     }
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert paymentDatePicker != null : "fx:id=\"paymentDateTxt\" was not injected: check your FXML file 'registerpayment.fxml'.";
+        assert paymentDatePicker != null : "fx:id=\"paymentDatePicker\" was not injected: check your FXML file 'registerpayment.fxml'.";
         assert amountPaidTxt != null : "fx:id=\"amountPaidTxt\" was not injected: check your FXML file 'registerpayment.fxml'.";
         assert blockCombo != null : "fx:id=\"blockCombo\" was not injected: check your FXML file 'registerpayment.fxml'.";
         assert rentalCombo != null : "fx:id=\"rentalCombo\" was not injected: check your FXML file 'registerpayment.fxml'.";
@@ -216,6 +283,7 @@ public class RegisterpaymentController implements Initializable {
         assert paymentMethodCombo != null : "fx:id=\"paymentMethodCombo\" was not injected: check your FXML file 'registerpayment.fxml'.";
         assert receivedByTxt != null : "fx:id=\"receivedByTxt\" was not injected: check your FXML file 'registerpayment.fxml'.";
         assert referenceNumberTxt != null : "fx:id=\"referenceNumberTxt\" was not injected: check your FXML file 'registerpayment.fxml'.";
+        assert paymentsTable != null : "fx:id=\"paymentsTable\" was not injected: check your FXML file 'registerpayment.fxml'.";
     }
    
 }

@@ -8,7 +8,6 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -165,13 +164,10 @@
                                  </padding>
                               </HBox>
                               <Region prefHeight="21.0" prefWidth="672.0" />
-                              <TableView prefHeight="200.0" prefWidth="200.0">
-                                <columns>
-                                  <TableColumn prefWidth="75.0" text="Rental Unit" />
-                                  <TableColumn prefWidth="75.0" text="Tenant" />
-                                    <TableColumn prefWidth="108.0" text="Payment Date" />
-                                    <TableColumn prefWidth="108.0" text="Amount Paid" />
-                                </columns>
+                              <TableView fx:id="paymentsTable" prefHeight="200.0" prefWidth="200.0">
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
                               </TableView>
                            </children>
                            <padding>

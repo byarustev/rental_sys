@@ -6,6 +6,10 @@
 package GeneralClasses;
 
 import database.DatabaseHandler;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,6 +25,7 @@ public class HouseRentalContract implements RentalContract {
      Double agreedMonthlyAmount; 
      House house;
      Tenant tenant;
+     ArrayList<Payment> contractPayments;
 
     /**
      * This is used to create a Contract from the database since it requires a contractId
@@ -95,7 +100,11 @@ public class HouseRentalContract implements RentalContract {
 
     @Override
     public Double computeBalance() {
-        return 20000.00;
+        int fullMonths = this.computeFullMonths();
+        double totalPayment=this.computeTotalPayments();
+        double expectedAmount = fullMonths*this.agreedMonthlyAmount;
+        System.out.println(this.startDate+" payed "+totalPayment+" instead of "+expectedAmount+" for "+fullMonths +" months");
+        return expectedAmount-totalPayment;
     }
 
     @Override
@@ -105,7 +114,10 @@ public class HouseRentalContract implements RentalContract {
 
     @Override
     public ArrayList<Payment> getPayments() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(this.contractPayments ==null){
+            this.contractPayments = DatabaseHandler.getInstance().getContractPayments(this.contractId);
+        }
+        return contractPayments;
     }
 
     @Override
@@ -143,6 +155,27 @@ public class HouseRentalContract implements RentalContract {
     @Override
     public String toString() {
         return "HouseRentalContract{" + "startDate=" + startDate + ", associatedTenantId=" + associatedTenantId + ", contractId=" + contractId + ", associatedHouseId=" + associatedHouseId + ", agreedMonthlyAmount=" + agreedMonthlyAmount + ", house=" + house + ", tenant=" + tenant + '}';
+    }
+
+    public int computeFullMonths() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String start = this.startDate;
+        
+        LocalDateTime now  = LocalDateTime.now();
+        String end = now.format(formatter);
+        //end ="2018-10-07";
+        LocalDate from = LocalDate.parse(start, formatter);
+        LocalDate to = LocalDate.parse(end, formatter);
+        int fullMonths =  (int)from.until(to, ChronoUnit.MONTHS);
+        return fullMonths;
+    }
+
+    public double computeTotalPayments() {
+        double totalPayment=0;
+        for(Payment y :this.getPayments()){
+            totalPayment+=y.getPaymentAmount();
+        }
+        return totalPayment;
     }
     
     

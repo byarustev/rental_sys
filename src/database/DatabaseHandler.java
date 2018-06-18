@@ -8,6 +8,7 @@ package database;
 import GeneralClasses.Block;
 import GeneralClasses.House;
 import GeneralClasses.HouseRentalContract;
+import GeneralClasses.Payment;
 import GeneralClasses.Tenant;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -323,8 +324,6 @@ public class DatabaseHandler {
          
          return null;
     }
-    
-    
     public ArrayList<Block> getBlocks(){
         String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
         try {
@@ -344,7 +343,6 @@ public class DatabaseHandler {
         }
         return null;     
     }
-
      public Block getBlock(String blockId) {
           String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+" WHERE id =?";
         try {
@@ -507,7 +505,25 @@ public class DatabaseHandler {
         return null;
     }
 
-    
+    public ArrayList<Payment> getTenantPayments(String tenantId){
+        String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" WHERE tenantID =?";
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = connection.prepareStatement(idQuery);
+            preparedStatement.setString(1, tenantId);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<Payment> tenantPayments = new ArrayList();
+            while(rs.next()){
+             tenantPayments.add(new Payment(rs.getString("datePaid"), rs.getDouble("amountPaid"), 
+                      rs.getString("contractID"),rs.getString("receivedBy"), 
+                      rs.getString("tenantID"), rs.getString("modeOfPayment"), rs.getString("receiptNumber")));
+            }
+            return tenantPayments;
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return null; 
+    }
     
     public ArrayList<Tenant> getTenants(){
          String idQuery = "SELECT * FROM "+TENANTS_TABLE_NAME;
@@ -546,5 +562,43 @@ public class DatabaseHandler {
         }
       return null;      
     }
+
+    public ArrayList<Payment> getContractPayments(String contractId) {
+        String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" WHERE contractID =?";
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = connection.prepareStatement(idQuery);
+            preparedStatement.setString(1, contractId);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<Payment> tenantPayments = new ArrayList();
+            while(rs.next()){
+             tenantPayments.add(new Payment(rs.getString("datePaid"), rs.getDouble("amountPaid"), 
+                      rs.getString("contractID"),rs.getString("receivedBy"), 
+                      rs.getString("tenantID"), rs.getString("modeOfPayment"), rs.getString("receiptNumber")));
+            }
+            return tenantPayments;
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return null; 
+    }
    
+    public ArrayList<Payment> getAllPayments(){
+        String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" ORDER BY datePaid DESC";
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = connection.prepareStatement(idQuery);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<Payment> tenantPayments = new ArrayList();
+            while(rs.next()){
+             tenantPayments.add(new Payment(rs.getString("datePaid"), rs.getDouble("amountPaid"), 
+                      rs.getString("contractID"),rs.getString("receivedBy"), 
+                      rs.getString("tenantID"), rs.getString("modeOfPayment"), rs.getString("receiptNumber")));
+            }
+            return tenantPayments;
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return null; 
+    }
   }

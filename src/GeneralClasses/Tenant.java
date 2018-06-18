@@ -6,6 +6,7 @@
 package GeneralClasses;
 
 import database.DatabaseHandler;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -26,8 +27,25 @@ public class Tenant {
     private String nokName;
     private String nokContack;
     private String idNumber;
-    private HouseRentalContract houseContract;
+    private HouseRentalContract currentHouseContract;
+    private ArrayList <Payment> myPayments;
 
+    public HouseRentalContract getHouseContract() {
+        return currentHouseContract;
+    }
+
+    public void setHouseContract(HouseRentalContract houseContract) {
+        this.currentHouseContract = houseContract;
+    }
+
+    public ArrayList<Payment> getMyPayments() {
+        if(myPayments == null){
+            this.myPayments = DatabaseHandler.getInstance().getTenantPayments(this.tenantId);
+        }
+        return myPayments;
+    }
+
+    
    
     public String getIdNumber() {
         return idNumber;
@@ -193,12 +211,12 @@ public class Tenant {
     }
     
     public RentalContract getCurrentContract(){
-         if(this.houseContract == null){
-             this.houseContract = DatabaseHandler.getInstance().getCurrentContract(this.tenantId,null);
-             return this.houseContract;   
+         if(this.currentHouseContract == null){
+             this.currentHouseContract = DatabaseHandler.getInstance().getCurrentContract(this.tenantId,null);
+             return this.currentHouseContract;   
          }
          else{
-         return this.houseContract;
+         return this.currentHouseContract;
                  }
     }
     

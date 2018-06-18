@@ -13,11 +13,11 @@ import java.util.Date;
  * @author robert
  */
 public class Payment {
-    String paymentDate;
-    Double paymentAmount;
-    String rentalContractId;
-    String receivedBy;
-    String tenantId;
+   private String paymentDate;
+   private Double paymentAmount;
+   private String rentalContractId;
+   private String receivedBy;
+   private String tenantId;
 
     /**
      *
@@ -112,4 +112,7 @@ public class Payment {
         return id;
     }
     
+    public HouseRentalContract getAssociatedContract(){
+        return DatabaseHandler.getInstance().getCurrentContract(tenantId, null);
+    }
 }

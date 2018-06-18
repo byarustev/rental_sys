@@ -11,6 +11,7 @@ import GeneralClasses.HouseRentalContract;
 import GeneralClasses.Payment;
 import GeneralClasses.Tenant;
 import database.DatabaseHandler;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -26,8 +27,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -40,6 +47,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javax.swing.text.DateFormatter;
 
@@ -285,7 +294,31 @@ public class RegisterTenantController implements Initializable {
                 }
         }
     });
-    
+    tenantsTable.setOnMouseClicked(new EventHandler(){
+        @Override
+        public void handle(Event event) {
+            Tenant selectedTenant = tenantsTable.getSelectionModel().getSelectedItem();
+            if(selectedTenant != null && ((MouseEvent)event).getClickCount() == 2 ){
+                Parent root;
+        try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/tenantProfile.fxml"));
+                root = (Parent)fxmlLoader.load(); 
+                TenantProfileController controller = fxmlLoader.<TenantProfileController>getController();
+                controller.initTenant(selectedTenant);
+                Stage tenantProfilestage = new Stage();
+                tenantProfilestage.setTitle(selectedTenant.getFullName());
+                tenantProfilestage.setScene(new Scene(root));
+                tenantProfilestage.initModality(Modality.WINDOW_MODAL);
+                tenantProfilestage.initOwner(((Node)(event.getSource())).getScene().getWindow());
+                tenantProfilestage.show();   
+            }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+            }
+        }
+        
+    });
     }
     
     @FXML
