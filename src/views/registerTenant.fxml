@@ -179,7 +179,7 @@
                               </HBox>
                               <HBox prefHeight="59.0" prefWidth="653.0" spacing="15.0">
                                  <children>
-                                    <Button mnemonicParsing="false" prefHeight="34.0" prefWidth="112.0" text="CANCEL" />
+                                    <Button mnemonicParsing="false" onMouseClicked="#clearForm" prefHeight="34.0" prefWidth="112.0" text="CANCEL" />
                                     <Button mnemonicParsing="false" onMouseClicked="#saveTenant" prefHeight="36.0" prefWidth="112.0" text="SAVE" />
                                  </children>
                                  <padding>

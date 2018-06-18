@@ -346,9 +346,10 @@ public class DatabaseHandler {
     }
 
      public Block getBlock(String blockId) {
-          String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
+          String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+" WHERE id =?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(blockQuery);
+            preparedStatement.setString(1, blockId);
             ResultSet rs = preparedStatement.executeQuery();
             Block block=null;
             if(rs.next()){
@@ -448,15 +449,27 @@ public class DatabaseHandler {
     public String savePayment(String paymentDate, Double paymentAmount, String rentalContractId, String receivedBy,String tenantId,String modeOfPayment,String referenceNumber) {
         String sql ="INSERT INTO "+PAYMENTS_TABLE_NAME+" (amountPaid,datePaid,receiptNumber,modeOfPayment,tenantID,contractID,receivedBy) VALUES(?,?,?,?,?,?,?)";
         try {
-            PreparedStatement prepartedStatement = connection.prepareStatement(sql);
-            prepartedStatement.setDouble(1, paymentAmount);
-            prepartedStatement.setString(2, paymentDate);
-            prepartedStatement.setString(3, referenceNumber);
-            prepartedStatement.setString(4, modeOfPayment);
-            prepartedStatement.setString(5, tenantId);
-            prepartedStatement.setInt(6, Integer.parseInt(rentalContractId));
-            prepartedStatement.setString(7, receivedBy);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setDouble(1, paymentAmount);
+            preparedStatement.setString(2, paymentDate);
+            preparedStatement.setString(3, referenceNumber);
+            preparedStatement.setString(4, modeOfPayment);
+            preparedStatement.setString(5, tenantId);
+            preparedStatement.setInt(6, Integer.parseInt(rentalContractId));
+            preparedStatement.setString(7, receivedBy);
+            preparedStatement.execute();
             
+            String paymentQuery = "SELECT id FROM "+PAYMENTS_TABLE_NAME+" WHERE amountPaid =? AND datePaid =? AND receiptNumber =? AND tenantID =? AND contractID =?";
+            preparedStatement = connection.prepareStatement(paymentQuery);
+            preparedStatement.setDouble(1, paymentAmount);
+            preparedStatement.setString(2, paymentDate);
+            preparedStatement.setString(3, referenceNumber);
+            preparedStatement.setString(4, tenantId);
+            preparedStatement.setInt(5, Integer.parseInt(rentalContractId));
+            ResultSet rs =preparedStatement.executeQuery();
+            if(rs.next()){
+                return rs.getString("id");    
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         }

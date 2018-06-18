@@ -12,7 +12,6 @@ import GeneralClasses.Payment;
 import GeneralClasses.Tenant;
 import database.DatabaseHandler;
 import java.net.URL;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +28,8 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
@@ -38,6 +39,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.util.Callback;
 import javax.swing.text.DateFormatter;
 
@@ -110,6 +112,8 @@ public class RegisterTenantController implements Initializable {
 
     @FXML // fx:id="blocksCombo"
     private ComboBox<Block> blocksFilterCombo; // Value injected by FXMLLoader
+    String []paymentOtions ={"Cash","Airtel Monny","MTN Money","Bank"};
+     String [] idTypes = {"National ID", "Driving Permit","Passport"};
     /**
      * Initializes the controller class.
      */
@@ -134,10 +138,11 @@ public class RegisterTenantController implements Initializable {
      
       countriesCombo.setItems(countriesList);
       countriesCombo.setValue("Uganda");
-      String [] idTypes = {"National ID", "Driving Permit","Passport"};
+     
       idTypeList =FXCollections.observableArrayList(idTypes);
       idTypeCombo.setItems(idTypeList);
       idTypeCombo.setEditable(true);
+      idTypeCombo.setValue(idTypes[0]);
       statusSingleRadio.setToggleGroup(statusGroup);
       statusSingleRadio.setSelected(true);
       statusMarriedRadio.setToggleGroup(statusGroup);
@@ -156,7 +161,7 @@ public class RegisterTenantController implements Initializable {
           }
       });
      
-      String []paymentOtions ={"Cash","Airtel Monny","MTN Money","Bank"};
+      
       modesOfPaymentList = FXCollections.observableArrayList(paymentOtions);
       paymentModeCombo.setItems(modesOfPaymentList);
       paymentModeCombo.setValue(paymentOtions[0]);
@@ -261,14 +266,13 @@ public class RegisterTenantController implements Initializable {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             String blockId =blocksFilterCombo.getValue().getDatabaseId();
-           
+           System.out.println("BLOCK "+blocksFilterCombo.getValue()+" and "+blockId);
                 try{
                     tenantsFilteredList.clear();
                     tenantsFilteredList.addAll(tenantsList.filtered(new Predicate<Tenant>(){
                     @Override
                     public boolean test(Tenant t) {
                          try{
-                             //System.out.println(((HouseRentalContract)t.getCurrentContract()).getCurrentHouse().getBlock().getName()+" "+((HouseRentalContract)t.getCurrentContract()).getCurrentHouse().getBlock().getDatabaseId()+" and "+blockId);
                             return ((HouseRentalContract)t.getCurrentContract()).getCurrentHouse().getBlockId().matches(blockId);  
                         }catch(Exception e){
                             
@@ -309,7 +313,6 @@ public class RegisterTenantController implements Initializable {
 
    @FXML
     void saveTenant(MouseEvent event) {
-        
         if(fNameTxt.getText().isEmpty()){
             fNameTxt.requestFocus();
         }else if(lastNameTxt.getText().isEmpty()){
@@ -363,16 +366,43 @@ public class RegisterTenantController implements Initializable {
             String contractId=contract.saveContract();
             if(contractId !=null && !depositTxt.getText().isEmpty()){
                 Payment payment = new Payment(startDate, Double.parseDouble(depositTxt.getText()), contractId, receivedByTxt.getText(), tenantId, paymentModeCombo.getValue(),referenceNumberTxt.getText());
-                payment.savePayment();
+                String id=payment.savePayment();
+                if(id != null){
+                    Alert alert = new Alert(Alert.AlertType.NONE, "Tenant added",ButtonType.OK);
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Success");
+                    alert.show();
+                    resetFields();
+                }
             }
             tenantsList.clear();
-            tenantsList.addAll(DatabaseHandler.getInstance().getTenants());
-            
-            
+            tenantsList.addAll(DatabaseHandler.getInstance().getTenants());   
         }
     }
-  
-
+     @FXML
+    void clearForm(MouseEvent event) {
+        resetFields();
+    }
+    void resetFields(){
+        fNameTxt.setText("");
+        lastNameTxt.setText("");
+        phoneNumberTxt.setText("");
+        countriesCombo.setValue("Uganda");
+        phoneNumberTxt.setText("");
+        idNumberTxt.setText("");
+        idTypeCombo.setValue(idTypes[0]);
+        statusSingleRadio.setSelected(true);
+        noFamMembersTxt.setText("");
+        nokNameTxt.setText("");
+        nokContactTxt.setText("");
+        blockCombo.setValue(null);
+        monthlyFeeTxt.setText("");
+        depositTxt.setText("");
+        receivedByTxt.setText("");
+        paymentModeCombo.setValue(paymentOtions[0]);
+        dobDatePicker.setValue(null);
+    }
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert tenantsSearhTxt != null : "fx:id=\"tenantsSearhTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";

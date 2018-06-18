@@ -97,12 +97,13 @@ public class House{
 
         public void setBlockId(String databaseId) {
             this.blockId=databaseId;
+            
         }
         
         public Block getBlock(){
             if(this.block==null){
                 this.block = DatabaseHandler.getInstance().getBlock(this.blockId);
-                System.out.println(block +" -> "+block.getDatabaseId());
+                System.out.println("KASUMBE "+this.blockId +" and Then "+this.block.getDatabaseId());
                 return this.block;
             }
             else{

@@ -19,6 +19,16 @@ public class Payment {
     String receivedBy;
     String tenantId;
 
+    /**
+     *
+     * @param paymentDate
+     * @param paymentAmount
+     * @param rentalContractId
+     * @param receivedBy
+     * @param tenantId
+     * @param modeOfPayment
+     * @param referenceNumber
+     */
     public Payment(String paymentDate, Double paymentAmount, String rentalContractId, String receivedBy, String tenantId, String modeOfPayment, String referenceNumber) {
         this.paymentDate = paymentDate;
         this.paymentAmount = paymentAmount;
