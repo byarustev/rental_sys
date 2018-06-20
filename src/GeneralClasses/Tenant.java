@@ -216,8 +216,8 @@ public class Tenant {
              return this.currentHouseContract;   
          }
          else{
-         return this.currentHouseContract;
-                 }
+            return this.currentHouseContract;
+         }
     }
     
     public String getFullName(){

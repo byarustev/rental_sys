@@ -601,4 +601,25 @@ public class DatabaseHandler {
         }
       return null; 
     }
+    
+    public ArrayList<Payment> getPayments(String startDate, String endDate){
+        String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" WHERE datePaid BETWEEN ? AND ?  ORDER BY datePaid DESC";
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = connection.prepareStatement(idQuery);
+            preparedStatement.setString(1, startDate);
+            preparedStatement.setString(2, endDate);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<Payment> tenantPayments = new ArrayList();
+            while(rs.next()){
+             tenantPayments.add(new Payment(rs.getString("datePaid"), rs.getDouble("amountPaid"), 
+                      rs.getString("contractID"),rs.getString("receivedBy"), 
+                      rs.getString("tenantID"), rs.getString("modeOfPayment"), rs.getString("receiptNumber")));
+            }
+            return tenantPayments;
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return null; 
+    }
   }

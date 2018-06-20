@@ -40,11 +40,9 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        
-               try {
-            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerpayment.fxml")));
-        } catch (IOException ex) {
-            
+        try {
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/payments.fxml")));
+        } catch (IOException ex) {  
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("FAILED to load block report");
         }
@@ -74,9 +72,8 @@ public class DashboardController implements Initializable {
     void showBlockTab(MouseEvent event) {
         mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerBlock.fxml")));
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/blocks.fxml")));
         } catch (IOException ex) {
-            
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("FAILED to load block report");
         }
@@ -86,11 +83,10 @@ public class DashboardController implements Initializable {
     void showPaymentsTab(MouseEvent event) {
         mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            dynamicSplitPane =(SplitPane)FXMLLoader.load(getClass().getResource("/views/registerpayment.fxml"));
+            dynamicSplitPane =(SplitPane)FXMLLoader.load(getClass().getResource("/views/payments.fxml"));
             dynamicSplitPane.setPrefSize(mainPane.getHeight(),mainPane.getWidth());
             mainPane.getChildren().setAll(dynamicSplitPane);
         } catch (IOException ex) {
-            
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("FAILED to load block report");
         }
@@ -98,11 +94,10 @@ public class DashboardController implements Initializable {
 
       @FXML
     void showRoomsTab(MouseEvent event) {
-         mainPane.getChildren().clear();//remove any contents of the main pane
+            mainPane.getChildren().clear();//remove any contents of the main pane
         try {
             mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/updateRoom.fxml")));
         } catch (IOException ex) {
-            
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("FAILED to load block report");
         }
@@ -112,7 +107,7 @@ public class DashboardController implements Initializable {
     void showTenantsTab(MouseEvent event) {
          mainPane.getChildren().clear();//remove any contents of the main pane
         try {
-            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/registerTenant.fxml")));
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/tenants.fxml")));
         } catch (IOException ex) {
             
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
@@ -127,7 +122,6 @@ public class DashboardController implements Initializable {
         assert roomsTab != null : "fx:id=\"roomsTab\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert blocksTab != null : "fx:id=\"blocksTab\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert mainPane != null : "fx:id=\"mainPane\" was not injected: check your FXML file 'dashboard.fxml'.";
-
     }
     
 }

@@ -34,7 +34,7 @@ import javafx.scene.layout.VBox;
  *
  * @author steve
  */
-public class RegisterBlockController implements Initializable {
+public class BlocksController implements Initializable {
 
     /**
      * Initializes the controller class.

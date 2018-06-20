@@ -57,7 +57,7 @@ import javax.swing.text.DateFormatter;
  *
  * @author steve
  */
-public class RegisterTenantController implements Initializable {
+public class TenantsController implements Initializable {
 
     
     ObservableList blocksList,rentalsList,countriesList,idTypeList,modesOfPaymentList; 
