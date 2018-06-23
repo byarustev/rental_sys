@@ -27,6 +27,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -63,6 +64,17 @@ public class TenantsController implements Initializable {
     ObservableList blocksList,rentalsList,countriesList,idTypeList,modesOfPaymentList; 
     ObservableList tenantsFilteredList=FXCollections.observableArrayList();
     ObservableList tenantsList = FXCollections.observableArrayList();
+    ObservableList tenantsOwedList = FXCollections.observableArrayList();
+    ObservableList tenantsOwedFilteredList=FXCollections.observableArrayList();
+    @FXML // fx:id="tenantsOwedSearhTxt"
+    private TextField tenantsOwedSearhTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="blocksOwedFilterCombo"
+    private ComboBox<Block> blocksOwedFilterCombo; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tenantsOwedTable"
+    private TableView<Tenant> tenantsOwedTable; // Value injected by FXMLLoader
+
      @FXML // fx:id="blockCombo"
     private ComboBox<Block> blockCombo; // Value injected by FXMLLoader
     
@@ -129,7 +141,13 @@ public class TenantsController implements Initializable {
     private final ToggleGroup statusGroup = new ToggleGroup();
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-      lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
+      initializeAddTenantsForm();
+      initializeAllTenantsTable();
+      initializeTenantsOwedTable();
+    }    
+    
+    public void initializeAddTenantsForm(){
+        lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
       blocksList= FXCollections.observableArrayList(DatabaseHandler.getInstance().getBlocks());
       blockCombo.setItems(blocksList);
       rentalsList = FXCollections.observableArrayList();
@@ -175,10 +193,8 @@ public class TenantsController implements Initializable {
       paymentModeCombo.setItems(modesOfPaymentList);
       paymentModeCombo.setValue(paymentOtions[0]);
       
-      setUpTenantsTable();
-    }    
-    
-    public void setUpTenantsTable(){ 
+    }
+    public void initializeAllTenantsTable(){ 
     TableColumn name = new TableColumn("Name");
     TableColumn phoneNumber= new TableColumn("Phone Number");
     TableColumn blockName = new TableColumn("Block");
@@ -206,7 +222,7 @@ public class TenantsController implements Initializable {
         @Override
         public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) {
             try{
-                return new ReadOnlyObjectWrapper(param.getValue().getCurrentContract().computeBalance());
+                return new ReadOnlyObjectWrapper(param.getValue().getCurrentContract().computeAmountOwed());
             }
             catch(NullPointerException ex){
                return new ReadOnlyObjectWrapper("");
@@ -275,7 +291,7 @@ public class TenantsController implements Initializable {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             String blockId =blocksFilterCombo.getValue().getDatabaseId();
-           System.out.println("BLOCK "+blocksFilterCombo.getValue()+" and "+blockId);
+         
                 try{
                     tenantsFilteredList.clear();
                     tenantsFilteredList.addAll(tenantsList.filtered(new Predicate<Tenant>(){
@@ -298,6 +314,165 @@ public class TenantsController implements Initializable {
         @Override
         public void handle(Event event) {
             Tenant selectedTenant = tenantsTable.getSelectionModel().getSelectedItem();
+            if(selectedTenant != null && ((MouseEvent)event).getClickCount() == 2 ){
+                Parent root;
+        try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/tenantProfile.fxml"));
+                root = (Parent)fxmlLoader.load(); 
+                TenantProfileController controller = fxmlLoader.<TenantProfileController>getController();
+                controller.initTenant(selectedTenant);
+                Stage tenantProfilestage = new Stage();
+                tenantProfilestage.setTitle(selectedTenant.getFullName());
+                tenantProfilestage.setScene(new Scene(root));
+                tenantProfilestage.initModality(Modality.WINDOW_MODAL);
+                tenantProfilestage.initOwner(((Node)(event.getSource())).getScene().getWindow());
+                tenantProfilestage.show();   
+            }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+            }
+        }
+        
+    });
+    }
+    public void initializeTenantsOwedTable(){ 
+    TableColumn name = new TableColumn("Name");
+    TableColumn phoneNumber= new TableColumn("Phone Number");
+    TableColumn blockName = new TableColumn("Block");
+    TableColumn houseRented = new TableColumn("Rental Occupied");
+    TableColumn balance = new TableColumn("Amount Owed");
+    TableColumn blockLocation = new TableColumn("Location");
+    name.setCellValueFactory(new Callback<CellDataFeatures<Tenant, String>, ObservableValue<String>>() {
+        @Override
+        public ObservableValue<String> call(CellDataFeatures<Tenant, String> param) {
+            try{
+            return new ReadOnlyObjectWrapper(param.getValue().getLastName()+" "+param.getValue().getFirstName()) ;//()
+                    }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+                           }
+    });
+    phoneNumber.setCellValueFactory(new Callback<CellDataFeatures<Tenant, String>, ObservableValue<String>>() {
+        @Override
+        public ObservableValue<String> call(CellDataFeatures<Tenant, String> param) {
+            return new ReadOnlyObjectWrapper(param.getValue().getPhoneNumber());
+        }
+    });
+    balance.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) {
+            try{
+                return new ReadOnlyObjectWrapper(param.getValue().getCurrentContract().computeAmountOwed());
+            }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+        }
+    });
+    blockName.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) { 
+            try {
+                    return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getBlock().getName());
+            }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+        }
+   }); 
+    blockLocation.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) {
+          try{  
+            return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getBlock().getLocation());
+           }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }
+           }
+   });
+    houseRented.setCellValueFactory(new Callback<CellDataFeatures<Tenant, Double>, ObservableValue<Double>>() {
+        @Override
+        public ObservableValue<Double> call(CellDataFeatures<Tenant, Double> param) { 
+            try{
+           return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getRentalName());
+           }
+            catch(NullPointerException ex){
+               return new ReadOnlyObjectWrapper("");
+           }         
+        }
+   });
+    tenantsOwedTable.getColumns().clear();
+    tenantsOwedTable.getColumns().addAll(name,phoneNumber,blockName,houseRented,blockLocation,balance);
+    tenantsOwedList.clear();
+    
+   ObservableList temp = FXCollections.observableArrayList(DatabaseHandler.getInstance().getTenants());
+    
+    ObservableList list =temp.filtered(new Predicate<Tenant>(){
+        @Override
+        public boolean test(Tenant t) {
+            try{
+                return t.getCurrentContract().computeAmountOwed()>0.0;
+            }catch(Exception ex){
+                ex.printStackTrace();
+                return false;
+            }
+        }
+     });   
+    tenantsOwedList.clear();
+    System.out.println("SIZE "+list.size());
+    tenantsOwedList.addAll(list);
+    tenantsOwedFilteredList.addAll(list);
+     
+    tenantsOwedTable.setItems(tenantsOwedFilteredList);
+    blocksFilterCombo.setItems(blocksList);
+    tenantsOwedSearhTxt.textProperty().addListener(new ChangeListener(){
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+               ObservableList list =tenantsOwedList.filtered(new Predicate<Tenant>(){
+                    @Override
+                    public boolean test(Tenant t) {
+                        return t.getFullName().toLowerCase().contains(newValue.toString().toLowerCase());       
+                    }
+                });
+                try{
+                    tenantsOwedFilteredList.clear();
+                    tenantsOwedFilteredList.addAll(list);
+               }catch(Exception e){
+                    e.printStackTrace();                    
+                }
+            }
+            
+        });
+    blocksOwedFilterCombo.valueProperty().addListener(new ChangeListener(){
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            String blockId =blocksOwedFilterCombo.getValue().getDatabaseId();
+           System.out.println("BLOCK "+blocksFilterCombo.getValue()+" and "+blockId);
+                try{
+                    tenantsOwedFilteredList.clear();
+                    tenantsOwedFilteredList.addAll(tenantsOwedList.filtered(new Predicate<Tenant>(){
+                    @Override
+                    public boolean test(Tenant t) {
+                         try{
+                            return ((HouseRentalContract)t.getCurrentContract()).getCurrentHouse().getBlockId().matches(blockId);  
+                        }catch(Exception e){
+                            
+                            return false;                            
+                        }
+                    }
+                }));
+               }catch(Exception e){
+                    e.printStackTrace();                    
+                }
+        }
+    });
+    tenantsOwedTable.setOnMouseClicked(new EventHandler(){
+        @Override
+        public void handle(Event event) {
+            Tenant selectedTenant = tenantsOwedTable.getSelectionModel().getSelectedItem();
             if(selectedTenant != null && ((MouseEvent)event).getClickCount() == 2 ){
                 Parent root;
         try {
@@ -436,30 +611,34 @@ public class TenantsController implements Initializable {
         paymentModeCombo.setValue(paymentOtions[0]);
         dobDatePicker.setValue(null);
     }
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert tenantsSearhTxt != null : "fx:id=\"tenantsSearhTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert blocksFilterCombo != null : "fx:id=\"blocksCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert tenantsTable != null : "fx:id=\"tenantsTable\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert fNameTxt != null : "fx:id=\"fNameTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert lastNameTxt != null : "fx:id=\"lastNameTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert countriesCombo != null : "fx:id=\"countriesCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert phoneNumberTxt != null : "fx:id=\"phoneNumberTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert idTypeCombo != null : "fx:id=\"idTypeCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert idNumberTxt != null : "fx:id=\"idNumberTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert statusSingleRadio != null : "fx:id=\"statusSingleRadio\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert statusMarriedRadio != null : "fx:id=\"statusMarriedRadio\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert noFamMembersTxt != null : "fx:id=\"noFamMembersTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert nokNameTxt != null : "fx:id=\"nokNameTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert nokContactTxt != null : "fx:id=\"nokContactTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert blockCombo != null : "fx:id=\"blockCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert rentalsCombo != null : "fx:id=\"rentalsCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert monthlyFeeTxt != null : "fx:id=\"monthlyFeeTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert depositTxt != null : "fx:id=\"depositTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert receivedByTxt != null : "fx:id=\"receivedByTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert paymentModeCombo != null : "fx:id=\"paymentModeCombo\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert referenceNumberTxt != null : "fx:id=\"referenceNumberTxt\" was not injected: check your FXML file 'registerTenant.fxml'.";
-        assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'registerTenant.fxml'.";
+        assert tenantsOwedSearhTxt != null : "fx:id=\"tenantsOwedSearhTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert blocksOwedFilterCombo != null : "fx:id=\"blocksOwedFilterCombo\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert tenantsOwedTable != null : "fx:id=\"tenantsOwedTable\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert tenantsSearhTxt != null : "fx:id=\"tenantsSearhTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert blocksFilterCombo != null : "fx:id=\"blocksFilterCombo\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert tenantsTable != null : "fx:id=\"tenantsTable\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert fNameTxt != null : "fx:id=\"fNameTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert lastNameTxt != null : "fx:id=\"lastNameTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert countriesCombo != null : "fx:id=\"countriesCombo\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert phoneNumberTxt != null : "fx:id=\"phoneNumberTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert idTypeCombo != null : "fx:id=\"idTypeCombo\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert idNumberTxt != null : "fx:id=\"idNumberTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert statusSingleRadio != null : "fx:id=\"statusSingleRadio\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert statusMarriedRadio != null : "fx:id=\"statusMarriedRadio\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert noFamMembersTxt != null : "fx:id=\"noFamMembersTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokNameTxt != null : "fx:id=\"nokNameTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokContactTxt != null : "fx:id=\"nokContactTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert blockCombo != null : "fx:id=\"blockCombo\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert rentalsCombo != null : "fx:id=\"rentalsCombo\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert monthlyFeeTxt != null : "fx:id=\"monthlyFeeTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert depositTxt != null : "fx:id=\"depositTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert receivedByTxt != null : "fx:id=\"receivedByTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert paymentModeCombo != null : "fx:id=\"paymentModeCombo\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert referenceNumberTxt != null : "fx:id=\"referenceNumberTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'tenants.fxml'.";
+
     }
     
 }

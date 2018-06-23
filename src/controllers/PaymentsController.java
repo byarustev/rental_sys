@@ -9,21 +9,32 @@ import GeneralClasses.Block;
 import GeneralClasses.House;
 import GeneralClasses.HouseRentalContract;
 import GeneralClasses.Payment;
+import GeneralClasses.ReloadableController;
 import GeneralClasses.RentalContract;
 import GeneralClasses.Tenant;
 import database.DatabaseHandler;
+import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -37,6 +48,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
@@ -44,7 +57,7 @@ import javafx.util.Callback;
  *
  * @author steve
  */
-public class PaymentsController implements Initializable {
+public class PaymentsController implements Initializable, ReloadableController{
 
     /**
      * Initializes the controller class.
@@ -143,7 +156,6 @@ public class PaymentsController implements Initializable {
     }    
 
     void setupPaymentsTable(){
-        
         TableColumn  paymentDateCol = new TableColumn("Payment Date");
         TableColumn  amountPaidCol= new TableColumn("Amount Paid");
         TableColumn  tenantCol= new TableColumn("Tenant ");
@@ -246,6 +258,40 @@ public class PaymentsController implements Initializable {
                }));
             }
         });
+      paymentsTable.setOnMouseClicked(new EventHandler(){
+            @Override
+            public void handle(Event event) {
+                System.out.println("I HAVE BEEN CLICKED");
+               if(((MouseEvent)event).getClickCount()==2){
+                   Payment p = paymentsTable.getSelectionModel().getSelectedItem();
+                   System.out.println(p);
+                   if(p != null){
+                       Parent root;
+                       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/editPayment.fxml"));
+                       try {
+                           root = (Parent)fxmlLoader.load();
+                           EditPaymentController editorController =fxmlLoader.<EditPaymentController>getController();
+                           editorController.initPayment(p,PaymentsController.this);
+                           Stage editPaymentStage = new Stage();
+                           editPaymentStage.setTitle("Edit Payment");
+                           editPaymentStage.setScene(new Scene(root));
+                           editPaymentStage.initModality(Modality.WINDOW_MODAL);
+                           editPaymentStage.initOwner(((Node)event.getSource()).getScene().getWindow());
+                           editPaymentStage.show();
+                       } catch (IOException ex) {
+                           Logger.getLogger(PaymentsController.class.getName()).log(Level.SEVERE, null, ex);
+                       }
+                   }
+               }
+            }
+        });
+    }
+    
+    public void reloadPaymentsTable(){
+        payments.clear();
+        allPaymentsList.clear();
+        payments.addAll(DatabaseHandler.getInstance().getAllPayments());
+        allPaymentsList = FXCollections.observableArrayList();
     }
     void actionDatesChanged(){
         DateTimeFormatter formatter=DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -324,7 +370,7 @@ public class PaymentsController implements Initializable {
             alert.show();
             resetFields();
         }
-            
+        
     }
     
      @FXML
@@ -359,5 +405,10 @@ public class PaymentsController implements Initializable {
         assert paymentsTable != null : "fx:id=\"paymentsTable\" was not injected: check your FXML file 'payments.fxml'.";
         assert totalAmountLabel != null : "fx:id=\"totalAmountLabel\" was not injected: check your FXML file 'payments.fxml'.";
 
+    }
+
+    @Override
+    public void reload() {
+      this.reloadPaymentsTable();
     }
 }

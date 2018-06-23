@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="controllers.EditPaymentController">
+   <children>
+      <VBox layoutX="6.0" prefHeight="422.0" prefWidth="607.0">
+         <children>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Payment Date" />
+                  <DatePicker fx:id="paymentDatePicker" prefHeight="27.0" prefWidth="334.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Amount Paid" />
+                  <TextField fx:id="amountPaidTxt" prefHeight="27.0" prefWidth="335.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Choose Block" />
+                  <ComboBox fx:id="blockCombo" prefHeight="27.0" prefWidth="336.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Choose Rental" />
+                  <ComboBox fx:id="rentalCombo" prefHeight="27.0" prefWidth="339.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Tenant Name" />
+                  <TextField fx:id="tenantNameTxt" disable="true" prefHeight="34.0" prefWidth="339.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Payment  Method" />
+                  <ComboBox fx:id="paymentMethodCombo" prefHeight="27.0" prefWidth="337.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Recieved By" />
+                  <TextField fx:id="receivedByTxt" prefHeight="34.0" prefWidth="339.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="8.0">
+               <children>
+                  <Label prefHeight="31.0" prefWidth="123.0" text="Reference Number" />
+                  <TextField fx:id="referenceNumberTxt" prefHeight="34.0" prefWidth="339.0" />
+               </children>
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="482.0" spacing="8.0">
+               <padding>
+                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+               </padding>
+               <children>
+                  <Region prefHeight="36.0" prefWidth="123.0" />
+                  <Button mnemonicParsing="false" onMouseClicked="#clearForm" prefHeight="36.0" prefWidth="90.0" text="CANCEL">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onMouseClicked="#savePayment" prefHeight="56.0" prefWidth="88.0" text="SAVE" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

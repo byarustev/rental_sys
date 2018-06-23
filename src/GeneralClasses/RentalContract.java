@@ -13,9 +13,10 @@ import java.util.Date;
  * @author robert
  */
 public interface RentalContract {
-    public Double computeBalance(); //-ve balance implies an extra amount
+    public Double computeAmountOwed(); //-ve balance implies an extra amount
     public ArrayList<Payment> getPayments(Date startDate, Date endDate);
     public ArrayList<Payment> getPayments();//returns payments from the start of the contract
     public String saveContract();
     public Tenant getAssociatedTenant();
+    public ArrayList<MonthReport> generateMonthlyReports();
 }

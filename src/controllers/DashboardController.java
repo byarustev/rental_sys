@@ -56,8 +56,6 @@ public class DashboardController implements Initializable {
     @FXML // fx:id="paymentsTab"
     private Label paymentsTab; // Value injected by FXMLLoader
 
-    @FXML // fx:id="roomsTab"
-    private Label roomsTab; // Value injected by FXMLLoader
     
     @FXML // fx:id="tenantsTab"
     private Label tenantsTab; // Value injected by FXMLLoader
@@ -92,17 +90,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-      @FXML
-    void showRoomsTab(MouseEvent event) {
-            mainPane.getChildren().clear();//remove any contents of the main pane
-        try {
-            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/updateRoom.fxml")));
-        } catch (IOException ex) {
-            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("FAILED to load block report");
-        }
-    }
-    
    @FXML
     void showTenantsTab(MouseEvent event) {
          mainPane.getChildren().clear();//remove any contents of the main pane
@@ -114,12 +101,23 @@ public class DashboardController implements Initializable {
             System.out.println("FAILED to load block report");
         }
     }
+    
+    @FXML
+    void showStatementsTab(MouseEvent event) {
+        mainPane.getChildren().clear();//remove any contents of the main pane
+        try {
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/statements.fxml")));
+        } catch (IOException ex) {
+            
+            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("FAILED to load block report");
+        }
+    }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert paymentsTab != null : "fx:id=\"paymentsTab\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert tenantsTab != null : "fx:id=\"tenantsTab\" was not injected: check your FXML file 'dashboard.fxml'.";
-        assert roomsTab != null : "fx:id=\"roomsTab\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert blocksTab != null : "fx:id=\"blocksTab\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert mainPane != null : "fx:id=\"mainPane\" was not injected: check your FXML file 'dashboard.fxml'.";
     }

@@ -19,14 +19,6 @@
                      </font>
                   </Label>
                   <VBox layoutY="62.0">
-                      <Label fx:id="paymentsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showPaymentsTab" prefHeight="42.0" prefWidth="183.0" style="-fx-padding:10;" text="Payments">
-                        <graphic>
-                           <FontAwesomeIconView glyphName="CREDIT_CARD" size="16" />
-                        </graphic>
-                        <font>
-                           <Font size="15.0" />
-                        </font>
-                     </Label>
                      <Label fx:id="tenantsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showTenantsTab" prefHeight="41.0" prefWidth="185.0" style="-fx-padding:10;" text="Tenants    ">
                         <graphic>
                            <FontAwesomeIconView glyphName="DIAMOND" size="16" />
@@ -35,17 +27,9 @@
                            <Font size="15.0" />
                         </font>
                      </Label>
-                     <Label fx:id="roomsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showRoomsTab" prefHeight="42.0" prefWidth="182.0" style="-fx-padding:10;" text="Rooms     ">
+                      <Label fx:id="paymentsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showPaymentsTab" prefHeight="42.0" prefWidth="183.0" style="-fx-padding:10;" text="Payments">
                         <graphic>
-                           <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
-                        </graphic>
-                        <font>
-                           <Font size="15.0" />
-                        </font>
-                     </Label>
-                     <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="41.0" prefWidth="183.0" style="-fx-padding:10;" text="Users        ">
-                        <graphic>
-                           <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
+                           <FontAwesomeIconView glyphName="CREDIT_CARD" size="16" />
                         </graphic>
                         <font>
                            <Font size="15.0" />
@@ -54,6 +38,14 @@
                      <Label fx:id="blocksTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showBlockTab" prefHeight="41.0" prefWidth="189.0" style="-fx-padding:10;" text="Blocks        ">
                         <graphic>
                            <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
+                        </graphic>
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Label>
+                     <Label alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showStatementsTab" prefHeight="41.0" prefWidth="221.0" style="-fx-padding:10;" text="Statements        ">
+                        <graphic>
+                           <FontAwesomeIconView glyphName="BUILDING" size="16.0" wrappingWidth="12.714285850524902" />
                         </graphic>
                         <font>
                            <Font size="15.0" />

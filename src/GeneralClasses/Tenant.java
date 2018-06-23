@@ -31,6 +31,7 @@ public class Tenant {
     private ArrayList <Payment> myPayments;
 
     public HouseRentalContract getHouseContract() {
+        this.getCurrentContract();
         return currentHouseContract;
     }
 
@@ -222,5 +223,22 @@ public class Tenant {
     
     public String getFullName(){
          return String.format("%s %s", this.firstName,this.lastName);
+    }
+
+    public boolean update() {
+        return DatabaseHandler.getInstance().updateTenant(this);
+    }
+
+    /**
+     * This method is used to force refreshing on a contract as something might have changed about it. 
+     * @param reload
+     * @return RentalContract
+     */
+    public RentalContract getCurrentContract(boolean reload) {
+        if(reload){
+           this.currentHouseContract = null ;
+           
+        }
+       return this.getCurrentContract();
     }
 }

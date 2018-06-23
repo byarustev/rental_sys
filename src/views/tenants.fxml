@@ -13,6 +13,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
@@ -22,6 +23,48 @@
    <items>
       <TabPane prefHeight="632.0" prefWidth="660.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
+            <Tab text="Tenants Owed">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefHeight="587.0" prefWidth="660.0">
+                           <children>
+                              <HBox prefHeight="71.0" prefWidth="635.0" spacing="6.0">
+                                 <children>
+                                    <VBox prefHeight="76.0" prefWidth="171.0">
+                                       <children>
+                                          <Label prefHeight="17.0" prefWidth="174.0" text="Search By Name" />
+                                          <TextField fx:id="tenantsOwedSearhTxt" prefHeight="33.0" prefWidth="171.0" />
+                                       </children>
+                                    </VBox>
+                                    <Region prefHeight="53.0" prefWidth="67.0" />
+                                    <VBox prefHeight="53.0" prefWidth="150.0">
+                                       <children>
+                                          <Label prefHeight="17.0" prefWidth="174.0" text="Block " />
+                                          <ComboBox fx:id="blocksOwedFilterCombo" prefHeight="35.0" prefWidth="150.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="9.0" left="9.0" right="9.0" top="9.0" />
+                                 </padding>
+                              </HBox>
+                              <Region prefHeight="31.0" prefWidth="635.0" />
+                              <TableView fx:id="tenantsOwedTable" prefHeight="203.0" prefWidth="644.0">
+                                 <columns>
+                                    <TableColumn prefWidth="137.0" text="Tenants Name" />
+                                    <TableColumn prefWidth="106.0" text="Room No." />
+                                    <TableColumn prefWidth="143.0" text="Total Amount Paid" />
+                                    <TableColumn prefWidth="143.0" text="Date of Joning" />
+                                    <TableColumn prefWidth="143.0" text="Edit Info" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
           <Tab text="Tenants">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0">

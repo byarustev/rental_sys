@@ -6,12 +6,18 @@
 package GeneralClasses;
 
 import database.DatabaseHandler;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -99,7 +105,7 @@ public class HouseRentalContract implements RentalContract {
     }
 
     @Override
-    public Double computeBalance() {
+    public Double computeAmountOwed() {
         int fullMonths = this.computeFullMonths();
         double totalPayment=this.computeTotalPayments();
         double expectedAmount = fullMonths*this.agreedMonthlyAmount;
@@ -163,7 +169,7 @@ public class HouseRentalContract implements RentalContract {
         
         LocalDateTime now  = LocalDateTime.now();
         String end = now.format(formatter);
-        //end ="2018-10-07";
+        end ="2018-10-07";
         LocalDate from = LocalDate.parse(start, formatter);
         LocalDate to = LocalDate.parse(end, formatter);
         int fullMonths =  (int)from.until(to, ChronoUnit.MONTHS);
@@ -176,6 +182,52 @@ public class HouseRentalContract implements RentalContract {
             totalPayment+=y.getPaymentAmount();
         }
         return totalPayment;
+    }
+
+    @Override
+    public ArrayList<MonthReport> generateMonthlyReports() {
+        int full_months = computeFullMonths();
+        Double totalPayments = computeTotalPayments();
+        Double amountLeft =totalPayments;
+        Double amountPaid=0.0;
+        Double balanceForMonth=0.0, cumulativeBalance=0.0;
+        System.out.println(full_months +" Months");
+        ArrayList<MonthReport> monthReports = new ArrayList();
+         try {
+             Date baseDate = new SimpleDateFormat("yyyy-MM-dd").parse(this.startDate);
+             SimpleDateFormat formatter = new SimpleDateFormat("MMM, yyyy");
+             Calendar calendar = new GregorianCalendar();   
+             calendar.setTime(baseDate);
+             int count =0;
+             while(count<full_months){
+                 calendar.add(Calendar.MONTH, 1);
+                 if(amountLeft==0.0){
+                     amountPaid = 0.0;
+                     balanceForMonth= this.agreedMonthlyAmount;
+                     cumulativeBalance +=balanceForMonth;
+                    // System.out.println("HERE 1 "+amountLeft+" ? "+balanceForMonth+" ?"+cumulativeBalance);
+                 }
+                 else if(amountLeft>this.agreedMonthlyAmount){
+                     amountPaid = this.agreedMonthlyAmount;
+                     amountLeft =amountLeft-amountPaid;
+                     balanceForMonth =0-amountLeft;
+                    
+                 }
+                 else if(amountLeft<this.agreedMonthlyAmount){
+                     amountPaid =amountLeft;
+                     amountLeft=0.0;
+                     balanceForMonth =this.agreedMonthlyAmount-amountPaid;
+                     cumulativeBalance +=balanceForMonth;
+                 }
+                  //System.out.println("HERE "+amountLeft+" ? "+balanceForMonth+" ?"+cumulativeBalance);
+                 monthReports.add(new MonthReport(formatter.format(calendar.getTime()),this.agreedMonthlyAmount,amountPaid,balanceForMonth,cumulativeBalance));
+                 count++;
+             }
+             return monthReports;
+         } catch (ParseException ex) {
+             Logger.getLogger(HouseRentalContract.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        return null;
     }
     
     

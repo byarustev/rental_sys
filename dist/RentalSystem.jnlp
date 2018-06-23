@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="RentalSystem.jar" size="221995" download="eager" />
+    <jar href="RentalSystem.jar" size="241558" download="eager" />
     <jar href="lib/derby.jar" size="2838580" download="eager" />
     <jar href="lib/derbyclient.jar" size="586237" download="eager" />
     <jar href="lib/derbynet.jar" size="248898" download="eager" />
