@@ -6,6 +6,7 @@
 package controllers;
 
 import GeneralClasses.BankStatement;
+import GeneralClasses.CurrentUser;
 import GeneralClasses.HouseRentalContract;
 import GeneralClasses.MonthReport;
 import GeneralClasses.Payment;
@@ -31,11 +32,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -107,6 +112,10 @@ public class TenantProfileController implements Initializable,ReloadableControll
     private TableView<MonthReport> monthlyReportTableView; // Value injected by FXMLLoader
     ObservableList allStatementsList,monthReportList;
     ObservableList dynamicStatementsList= FXCollections.observableArrayList();
+    @FXML
+    private Button editContractBtn;
+     @FXML // fx:id="editProfileBtn"
+    private Button editProfileBtn; // Value injected by FXMLLoader
     
     @FXML // This method is called by the FXMLLoader when initialization is complete
       /**
@@ -140,14 +149,41 @@ public class TenantProfileController implements Initializable,ReloadableControll
         this.phoneNumberLabel.setText(this.tenant.getPhoneNumber());
         this.numFamMemLabel.setText(this.tenant.getNumOfFamMembers()+"");
         try{
+            if(!this.tenant.getAddedByUserId().equals(CurrentUser.getInstance().getUserId())){
+                 editProfileBtn.setDisable(true);
+            }
+        }catch(NullPointerException ex){
+             editProfileBtn.setDisable(true);
+        }
+        try{
             HouseRentalContract contract = (HouseRentalContract)this.tenant.getCurrentContract();
-            this.balanceLbl.setText(contract.computeAmountOwed()+"");
-            this.dateJoinedLabel.setText(contract.getStartDate());
-            this.houseLabel.setText(contract.getCurrentHouse().getRentalName());
-            this.blockLabel.setText(contract.getCurrentHouse().getBlock().getName());
-            this.monthsSpentLabel.setText(contract.computeFullMonths()+"");
-            this.totalAmountPaidLabel.setText(contract.computeTotalPayments()+"");
-            monthlyAmountLabel.setText(contract.getAgreedMonthlyAmount()+"");
+            if(contract !=null){
+                this.balanceLbl.setText(contract.computeAmountOwed()+"");
+                this.dateJoinedLabel.setText(contract.getStartDate());
+                this.houseLabel.setText(contract.getCurrentHouse().getRentalName());
+                this.blockLabel.setText(contract.getCurrentHouse().getBlock().getName());
+                this.monthsSpentLabel.setText(contract.computeFullMonths()+"");
+                this.totalAmountPaidLabel.setText(contract.computeTotalPayments()+"");
+                monthlyAmountLabel.setText(contract.getAgreedMonthlyAmount()+"");
+                try{
+                    if(!contract.getAddedByUserId().equals(CurrentUser.getInstance().getUserId())){
+                        editContractBtn.setDisable(true);
+                    }
+                 }catch(NullPointerException ex){
+                      editContractBtn.setDisable(true);
+                }
+            }
+            else{
+                this.balanceLbl.setText("");
+                this.dateJoinedLabel.setText("N/A");
+                this.houseLabel.setText("Unassigned");
+                this.blockLabel.setText("Unassigned");
+                this.monthsSpentLabel.setText("N/A");
+                this.totalAmountPaidLabel.setText("N/A");
+                monthlyAmountLabel.setText("N/A");
+                editContractBtn.setText("Assign");
+            }
+            
         }catch(NullPointerException ex){
             ex.printStackTrace();
         }
@@ -162,6 +198,7 @@ public class TenantProfileController implements Initializable,ReloadableControll
         TableColumn  paymentMethodCol= new TableColumn("Payment Method");
         TableColumn  referenceNumCol= new TableColumn("Reference");
         TableColumn  receivedByCol= new TableColumn("Received By");
+        TableColumn  paidForColByCol= new TableColumn("Room Paid");
         PropertyValueFactory <Payment, String> paymentDateFactory = new PropertyValueFactory("paymentDate");
         PropertyValueFactory <Payment, Double> amountPaidFactory = new PropertyValueFactory("paymentAmount");
         PropertyValueFactory <Payment, String> paymentMethodFactory = new PropertyValueFactory("modeOfPayment");
@@ -172,31 +209,51 @@ public class TenantProfileController implements Initializable,ReloadableControll
         paymentMethodCol.setCellValueFactory(paymentMethodFactory);
         referenceNumCol.setCellValueFactory(referenceNumFactory);
         receivedByCol.setCellValueFactory(receivedByColFactory);
+        paidForColByCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Payment, String>,ObservableValue>(){
+            @Override
+            public ObservableValue call(TableColumn.CellDataFeatures<Payment, String> param) {
+                try{
+                    return new ReadOnlyObjectWrapper(((Payment)param.getValue()).getAssociatedContract().getCurrentHouse().getRentalName());
+               }
+                catch(NullPointerException ex){
+                    ex.printStackTrace();
+                   return new ReadOnlyObjectWrapper("");
+               }  
+            }
+        });
         paymentsTable.getColumns().clear();
-        paymentsTable.getColumns().addAll(paymentDateCol,amountPaidCol,paymentMethodCol,referenceNumCol,receivedByCol);
+        paymentsTable.getColumns().addAll(paymentDateCol,amountPaidCol,paymentMethodCol,referenceNumCol,receivedByCol,paidForColByCol);
         paymentsList = FXCollections.observableArrayList(this.tenant.getMyPayments());
         paymentsTable.setItems(paymentsList);   
         paymentsTable.setOnMouseClicked(new EventHandler(){
             @Override
             public void handle(Event event) {
-                System.out.println("I HAVE BEEN CLICKED");
-               if(((MouseEvent)event).getClickCount()==2){
+               
+               if(((MouseEvent)event).getClickCount()==2 && tenant.getCurrentContract() != null){
                    Payment p = paymentsTable.getSelectionModel().getSelectedItem();
-                   System.out.println(p);
                    if(p != null){
                        Parent root;
                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/editPayment.fxml"));
                        try {
-                           root = (Parent)fxmlLoader.load();
-                           EditPaymentController editorController =fxmlLoader.<EditPaymentController>getController();
-                           editorController.initPayment(p,TenantProfileController.this);
-                           Stage editPaymentStage = new Stage();
-                           editPaymentStage.setTitle("Edit Payment");
-                           editPaymentStage.setScene(new Scene(root));
-                           editPaymentStage.initModality(Modality.WINDOW_MODAL);
-                           editPaymentStage.initOwner(((Node)event.getSource()).getScene().getWindow());
-                           editPaymentStage.show();
-                       } catch (IOException ex) {
+                           if(p.getAddedByUserId().equals(CurrentUser.getInstance().getUserId())){
+                                root = (Parent)fxmlLoader.load();
+                                EditPaymentController editorController =fxmlLoader.<EditPaymentController>getController();
+                                editorController.initPayment(p,TenantProfileController.this);
+                                Stage editPaymentStage = new Stage();
+                                editPaymentStage.setTitle("Edit Payment");
+                                editPaymentStage.setScene(new Scene(root));
+                                editPaymentStage.initModality(Modality.WINDOW_MODAL);
+                                editPaymentStage.initOwner(((Node)event.getSource()).getScene().getWindow());
+                                editPaymentStage.show();
+                           }
+                           else{
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You cant edit this record",ButtonType.OK);
+                                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                                alert.setHeaderText(null);
+                                alert.setTitle("Edit Denied");
+                                alert.show();
+                           }
+                       } catch (Exception ex) {
                            Logger.getLogger(PaymentsController.class.getName()).log(Level.SEVERE, null, ex);
                        }
                    }
@@ -233,6 +290,7 @@ public class TenantProfileController implements Initializable,ReloadableControll
         });
         statementsTableView.getColumns().clear();
         statementsTableView.getColumns().addAll(transactionDateCol,tenantCol,transactionDescCol,creditAmountCol,valueDateCol);
+        statementsTableView.setPlaceholder(new Label("No Statements found"));
         dynamicStatementsList.addAll(DatabaseHandler.getInstance().getStatements(this.tenant.getTenantId()));
         statementsTableView.setItems(dynamicStatementsList);
         allStatementsList = FXCollections.observableArrayList();
@@ -261,7 +319,12 @@ public class TenantProfileController implements Initializable,ReloadableControll
         cumulativeBalanceCol.getStyleClass().add("column-center-align");
         monthlyReportTableView.getColumns().clear();
         monthlyReportTableView.getColumns().addAll(monthDateCol,expectedAmountDateCol,amountPaidCol,balanceCol,cumulativeBalanceCol);
-        monthReportList = FXCollections.observableArrayList(this.tenant.getCurrentContract().generateMonthlyReports());
+        if(this.tenant.getCurrentContract() !=null){
+            monthReportList = FXCollections.observableArrayList(this.tenant.getCurrentContract().generateMonthlyReports());
+        }
+        else{
+            monthReportList = FXCollections.observableArrayList();
+        }
         monthlyReportTableView.setItems(monthReportList);
     }
     @FXML
@@ -287,7 +350,45 @@ public class TenantProfileController implements Initializable,ReloadableControll
 
     
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    
+    @Override
+    public void reload() {
+       initTenant(DatabaseHandler.getInstance().getTenant(this.tenant.getTenantId()));
+       this.reloadPaymentsTable();
+       initializeTanantBio();
+    }
+    
+    public void reloadPaymentsTable(){
+        paymentsList.clear();
+        monthReportList.clear();
+        paymentsList.addAll(this.tenant.getMyPayments());
+        try{
+        monthReportList.addAll(this.tenant.getCurrentContract(true).generateMonthlyReports());
+        }catch(Exception e){
+             monthReportList.clear();
+        }
+    }
+    
+    @FXML
+    void showContractEditPopUp(MouseEvent event) {
+        Parent root;
+        try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/editContract.fxml"));
+                root = (Parent)fxmlLoader.load(); 
+                EditContractController controller = fxmlLoader.<EditContractController>getController();
+                controller.initContract(this.tenant,this);
+                Stage tenantProfilestage = new Stage();
+                tenantProfilestage.setTitle(this.tenant.getFullName());
+                tenantProfilestage.setScene(new Scene(root));
+                tenantProfilestage.initModality(Modality.WINDOW_MODAL);
+                tenantProfilestage.initOwner(((Node)(event.getSource())).getScene().getWindow());
+                tenantProfilestage.show();   
+            }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+  @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert nameLabel != null : "fx:id=\"nameLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nationalityLabel != null : "fx:id=\"nationalityLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
@@ -299,8 +400,10 @@ public class TenantProfileController implements Initializable,ReloadableControll
         assert numFamMemLabel != null : "fx:id=\"numFamMemLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokNameLabel != null : "fx:id=\"nokNameLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokContactLabel != null : "fx:id=\"nokContactLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert editProfileBtn != null : "fx:id=\"editProfileBtn\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert houseLabel != null : "fx:id=\"houseLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert blockLabel != null : "fx:id=\"blockLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert editContractBtn != null : "fx:id=\"editContractBtn\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert dateJoinedLabel != null : "fx:id=\"dateJoinedLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert monthsSpentLabel != null : "fx:id=\"monthsSpentLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert monthlyAmountLabel != null : "fx:id=\"monthlyAmountLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
@@ -309,21 +412,6 @@ public class TenantProfileController implements Initializable,ReloadableControll
         assert totalAmountPaidLabel != null : "fx:id=\"totalAmountPaidLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert statementsTableView != null : "fx:id=\"statementsTableView\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert monthlyReportTableView != null : "fx:id=\"monthlyReportTableView\" was not injected: check your FXML file 'tenantProfile.fxml'.";
-    }
 
-    @Override
-    public void reload() {
-       this.reloadPaymentsTable();
-       initializeTanantBio();
     }
-    
-    public void reloadPaymentsTable(){
-        paymentsList.clear();
-        monthReportList.clear();
-        paymentsList.addAll(this.tenant.getMyPayments());
-        
-        monthReportList.addAll(this.tenant.getCurrentContract(true).generateMonthlyReports());
-    }
-    
-    
 }

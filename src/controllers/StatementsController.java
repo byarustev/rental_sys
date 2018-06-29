@@ -129,7 +129,7 @@ public class StatementsController implements Initializable {
               }
               catch(Exception e){
                   tenantNameTxt.setText("");
-                   
+                  selectedTenantId=null;
                 }
           }
       });
@@ -168,6 +168,8 @@ public class StatementsController implements Initializable {
       
         paymentsTable.getColumns().clear();
         paymentsTable.getColumns().addAll(transactionDateCol,tenantCol,transactionDescCol,creditAmountCol,valueDateCol);
+        paymentsTable.setPlaceholder(new Label("No Statements found"));
+       // paymentsTable.setPlaceholder();
         dynamicStatementsList.addListener(new ListChangeListener(){
             @Override
             public void onChanged(ListChangeListener.Change c) {
@@ -263,8 +265,13 @@ public class StatementsController implements Initializable {
             blockCombo.requestFocus();
         }else if(rentalCombo.getValue()==null){
             rentalCombo.requestFocus();
-        }else if(tenantNameTxt.getText().isEmpty()){
+        }else if(tenantNameTxt.getText().isEmpty() || selectedTenantId==null){
             tenantNameTxt.requestFocus();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "No Tenant Selected. Choose a room that has a tenant",ButtonType.OK);
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            alert.setHeaderText(null);
+            alert.setTitle("");
+            alert.show();
         }
         String referenceNumber="", receivedBy ="";
         if(!transactionDescTxt.getText().isEmpty()){

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane prefHeight="447.0" prefWidth="712.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StatementsController">
+<SplitPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="662.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StatementsController">
    <items>
       <TabPane tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -29,7 +29,7 @@
                                  <children>
                                     <VBox prefHeight="53.0" prefWidth="170.0">
                                        <children>
-                                          <Label text="Search By  Tenant Name">
+                                          <Label text="Search By  Tenant">
                                              <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                              </padding>
@@ -61,7 +61,7 @@
                                  </padding>
                               </HBox>
                               <Region prefHeight="21.0" prefWidth="672.0" />
-                              <TableView fx:id="paymentsTable" prefHeight="200.0" prefWidth="200.0">
+                              <TableView fx:id="paymentsTable" prefHeight="455.0" prefWidth="622.0">
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                  </columnResizePolicy>
@@ -69,7 +69,7 @@
                               <HBox prefHeight="42.0" prefWidth="672.0">
                                  <children>
                                     <Label prefHeight="36.0" prefWidth="106.0" text="Total Amount" />
-                                    <Label fx:id="totalAmountLabel" prefHeight="35.0" prefWidth="79.0" text="35637840" />
+                                    <Label fx:id="totalAmountLabel" prefHeight="35.0" prefWidth="79.0" text="0.0" />
                                  </children>
                               </HBox>
                            </children>

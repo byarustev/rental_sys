@@ -210,7 +210,7 @@
                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                      </padding>
                      <children>
-                        <Button mnemonicParsing="false" onMouseClicked="#showEditWindow" prefHeight="34.0" prefWidth="171.0" text="Edit Profile" />
+                        <Button fx:id="editProfileBtn" mnemonicParsing="false" onMouseClicked="#showEditWindow" prefHeight="34.0" prefWidth="171.0" text="Edit Profile" />
                      </children>
                   </HBox>
                </children>
@@ -245,7 +245,7 @@
                                     </Label>
                                     <Label fx:id="blockLabel" prefHeight="19.0" prefWidth="126.0" text="Block C" textFill="#095bd7" />
                                     <Region prefHeight="41.0" prefWidth="140.0" />
-                                    <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="96.0" text="Free Room" />
+                                    <Button fx:id="editContractBtn" mnemonicParsing="false" onMouseClicked="#showContractEditPopUp" prefHeight="32.0" prefWidth="96.0" text="Edit" />
                                  </children>
                               </HBox>
                               <HBox prefHeight="38.0" prefWidth="538.0">

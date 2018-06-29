@@ -22,6 +22,15 @@ public class House{
     private String blockId;
     private Block block;
     private int availability=1;
+    private String addedByUserId;
+
+    public String getAddedByUserId() {
+        return addedByUserId;
+    }
+
+    public void setAddedByUserId(String addedByUserId) {
+        this.addedByUserId = addedByUserId;
+    }
 
     public int getAvailability() {
         return availability;
@@ -84,8 +93,9 @@ public class House{
             setBlockId(blockId);
        }
        
-       public House(String id,String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId, int availability){
+       public House(String id,String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId, int availability,String addedById) {
             this(unitNo,rentalName,rentalNumOfUnits,monthlyAmount,blockId);
+            this.addedByUserId = addedById;
             this.houseId =id;
             this.setAvailability(availability);
        }
@@ -103,11 +113,18 @@ public class House{
         public Block getBlock(){
             if(this.block==null){
                 this.block = DatabaseHandler.getInstance().getBlock(this.blockId);
-                System.out.println("KASUMBE "+this.blockId +" and Then "+this.block.getDatabaseId());
                 return this.block;
             }
             else{
                 return this.block;
             }
+        }
+        
+        public HouseRentalContract getAssociatedContract(){
+            return DatabaseHandler.getInstance().getCurrentContract(null, houseId);
+        }
+        
+        public boolean isOccupied(){
+            return DatabaseHandler.getInstance().getCurrentContract(null, houseId) != null;
         }
     }

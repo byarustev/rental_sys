@@ -29,6 +29,15 @@ public class Tenant {
     private String idNumber;
     private HouseRentalContract currentHouseContract;
     private ArrayList <Payment> myPayments;
+    private String addedByUserId;
+
+    public String getAddedByUserId() {
+        return addedByUserId;
+    }
+
+    public void setAddedByUserId(String addedByUserId) {
+        this.addedByUserId = addedByUserId;
+    }
 
     public HouseRentalContract getHouseContract() {
         this.getCurrentContract();
@@ -56,7 +65,8 @@ public class Tenant {
         this.idNumber = idNumber;
     }
 
-    public Tenant(String tenantId, String lastName, String firstName, String dateOfBirth, String nationality, String phoneNumber, String idType,String idNumber,String maritalStatus, int numOfFamMembers, String nokName, String nokContack) {
+    public Tenant(String tenantId, String lastName, String firstName, String dateOfBirth, String nationality, String phoneNumber, String idType,String idNumber,String maritalStatus, int numOfFamMembers, String nokName, String nokContack, String addedById) {
+        this.addedByUserId = addedById;
         this.tenantId = tenantId;
         this.lastName = lastName;
         this.firstName = firstName;

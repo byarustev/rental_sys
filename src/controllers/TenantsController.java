@@ -13,21 +13,16 @@ import GeneralClasses.Tenant;
 import database.DatabaseHandler;
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -40,6 +35,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -51,7 +47,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javax.swing.text.DateFormatter;
 
 /**
  * FXML Controller class
@@ -133,7 +128,7 @@ public class TenantsController implements Initializable {
 
     @FXML // fx:id="blocksCombo"
     private ComboBox<Block> blocksFilterCombo; // Value injected by FXMLLoader
-    String []paymentOtions ={"Cash","Airtel Monny","MTN Money","Bank"};
+    String []paymentOtions ={"Cash","Airtel Money","MTN Money","Bank"};
      String [] idTypes = {"National ID", "Driving Permit","Passport"};
     /**
      * Initializes the controller class.
@@ -144,8 +139,8 @@ public class TenantsController implements Initializable {
       initializeAddTenantsForm();
       initializeAllTenantsTable();
       initializeTenantsOwedTable();
+      this.reload();
     }    
-    
     public void initializeAddTenantsForm(){
         lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
       blocksList= FXCollections.observableArrayList(DatabaseHandler.getInstance().getBlocks());
@@ -225,7 +220,7 @@ public class TenantsController implements Initializable {
                 return new ReadOnlyObjectWrapper(param.getValue().getCurrentContract().computeAmountOwed());
             }
             catch(NullPointerException ex){
-               return new ReadOnlyObjectWrapper("");
+               return new ReadOnlyObjectWrapper("N/A");
            }
         }
     });
@@ -236,7 +231,7 @@ public class TenantsController implements Initializable {
                     return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getBlock().getName());
             }
             catch(NullPointerException ex){
-               return new ReadOnlyObjectWrapper("");
+               return new ReadOnlyObjectWrapper("Unassigned");
            }
         }
    }); 
@@ -247,7 +242,7 @@ public class TenantsController implements Initializable {
             return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getBlock().getLocation());
            }
             catch(NullPointerException ex){
-               return new ReadOnlyObjectWrapper("");
+               return new ReadOnlyObjectWrapper("N/A");
            }
            }
    });
@@ -258,16 +253,14 @@ public class TenantsController implements Initializable {
            return new ReadOnlyObjectWrapper(((HouseRentalContract)param.getValue().getCurrentContract()).getCurrentHouse().getRentalName());
            }
             catch(NullPointerException ex){
-               return new ReadOnlyObjectWrapper("");
+               return new ReadOnlyObjectWrapper("Unassigned");
            }         
         }
    });
     tenantsTable.getColumns().clear();
     tenantsTable.getColumns().addAll(name,phoneNumber,blockName,houseRented,blockLocation,balance);
-    tenantsList.clear();
-    tenantsList.addAll(DatabaseHandler.getInstance().getTenants());
-    tenantsFilteredList.addAll(DatabaseHandler.getInstance().getTenants());
     tenantsTable.setItems(tenantsFilteredList);
+    tenantsTable.setPlaceholder(new Label("No Tenants found"));
     blocksFilterCombo.setItems(blocksList);
     tenantsSearhTxt.textProperty().addListener(new ChangeListener(){
             @Override
@@ -406,26 +399,7 @@ public class TenantsController implements Initializable {
    });
     tenantsOwedTable.getColumns().clear();
     tenantsOwedTable.getColumns().addAll(name,phoneNumber,blockName,houseRented,blockLocation,balance);
-    tenantsOwedList.clear();
-    
-   ObservableList temp = FXCollections.observableArrayList(DatabaseHandler.getInstance().getTenants());
-    
-    ObservableList list =temp.filtered(new Predicate<Tenant>(){
-        @Override
-        public boolean test(Tenant t) {
-            try{
-                return t.getCurrentContract().computeAmountOwed()>0.0;
-            }catch(Exception ex){
-                ex.printStackTrace();
-                return false;
-            }
-        }
-     });   
-    tenantsOwedList.clear();
-    System.out.println("SIZE "+list.size());
-    tenantsOwedList.addAll(list);
-    tenantsOwedFilteredList.addAll(list);
-     
+    tenantsOwedTable.setPlaceholder(new Label("No Tenants Owed"));
     tenantsOwedTable.setItems(tenantsOwedFilteredList);
     blocksFilterCombo.setItems(blocksList);
     tenantsOwedSearhTxt.textProperty().addListener(new ChangeListener(){
@@ -496,6 +470,27 @@ public class TenantsController implements Initializable {
     });
     }
     
+    public void reload(){
+        tenantsOwedList.clear();
+        tenantsList.clear();
+        tenantsList.addAll(DatabaseHandler.getInstance().getTenants());
+        tenantsFilteredList.addAll(DatabaseHandler.getInstance().getTenants());
+        ObservableList temp = FXCollections.observableArrayList(DatabaseHandler.getInstance().getTenants());
+        ObservableList list =temp.filtered(new Predicate<Tenant>(){
+            @Override
+            public boolean test(Tenant t) {
+                try{
+                    return t.getCurrentContract().computeAmountOwed()>0.0;
+                }catch(Exception ex){
+
+                    return false;
+                }
+            }
+         });   
+        tenantsOwedList.addAll(list);
+        tenantsOwedFilteredList.addAll(list);
+    }
+    
     @FXML
     void changeRentals(MouseEvent event) {
        //changeRentals();
@@ -517,8 +512,6 @@ public class TenantsController implements Initializable {
            System.out.print(e.getMessage());
        }
     }
-    
-
    @FXML
     void saveTenant(MouseEvent event) {
         if(fNameTxt.getText().isEmpty()){
@@ -584,8 +577,17 @@ public class TenantsController implements Initializable {
                     resetFields();
                 }
             }
-            tenantsList.clear();
-            tenantsList.addAll(DatabaseHandler.getInstance().getTenants());   
+            else if(contractId != null){
+                 Alert alert = new Alert(Alert.AlertType.NONE, "Tenant added",ButtonType.OK);
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Success");
+                    alert.show();
+                    resetFields();
+                   
+            }
+             this.reload();
+           
         }
     }
      @FXML

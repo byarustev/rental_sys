@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #ecf0f1;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #ecf0f1;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardController">
    <children>
       <SplitPane dividerPositions="0.29797979797979796" prefHeight="650.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
           <AnchorPane maxWidth="230.0" prefHeight="648.0" prefWidth="230.0" style="-fx-background-color: #40739e;">
                <children>
-                  <Label id="system_name" layoutX="28.0" layoutY="31.0" text="Daaki Investments" textFill="#fffafa">
-                     <font>
-                        <Font name="Tahoma Bold" size="15.0" />
-                     </font>
-                  </Label>
-                  <VBox layoutY="62.0">
+                  <VBox layoutY="62.0" AnchorPane.topAnchor="0.0">
+                     <ImageView fitHeight="150.0" fitWidth="214.0" pickOnBounds="true" smooth="false">
+                        <VBox.margin>
+                           <Insets left="5.0" top="5.0" />
+                        </VBox.margin>
+                        <image>
+                           <Image url="@../images/daaki%20icon.jpg" />
+                        </image>
+                     </ImageView>
+                     <Label id="system_name" alignment="CENTER" prefHeight="19.0" prefWidth="223.0" text="Menu" textFill="#fffafa">
+                        <font>
+                           <Font name="Tahoma Bold" size="15.0" />
+                        </font>
+                     </Label>
                      <Label fx:id="tenantsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showTenantsTab" prefHeight="41.0" prefWidth="185.0" style="-fx-padding:10;" text="Tenants    ">
                         <graphic>
                            <FontAwesomeIconView glyphName="DIAMOND" size="16" />
@@ -51,18 +62,31 @@
                            <Font size="15.0" />
                         </font>
                      </Label>
-                     <Label alignment="CENTER" graphicTextGap="6.0" prefHeight="42.0" prefWidth="189.0" style="-fx-padding:10;" text="Logout        ">
-                        <graphic>
-                           <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
-                        </graphic>
-                        <font>
-                           <Font size="14.0" />
-                        </font>
-                     </Label>
+                  </VBox>
+                  <VBox layoutX="43.0" layoutY="524.0" prefHeight="124.0" prefWidth="230.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="524.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="50.0" prefWidth="230.0" text="Logged in as " textAlignment="CENTER">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="usernameLabel" alignment="CENTER" prefHeight="17.0" prefWidth="230.0" />
+                        <Label alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#logout" prefHeight="42.0" prefWidth="233.0" style="-fx-padding:10;" text="Logout        " textFill="#bf4141">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="BUILDING" size="16.0" text="" />
+                           </graphic>
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </Label>
+                     </children>
                   </VBox>
                </children>
             </AnchorPane>
-          <AnchorPane fx:id="mainPane">
+          <AnchorPane fx:id="mainPane" SplitPane.resizableWithParent="false">
                
          </AnchorPane>
         </items>

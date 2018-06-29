@@ -6,6 +6,7 @@
 package controllers;
 
 import GeneralClasses.Block;
+import GeneralClasses.CurrentUser;
 import GeneralClasses.House;
 import GeneralClasses.HouseRentalContract;
 import GeneralClasses.Payment;
@@ -208,6 +209,7 @@ public class PaymentsController implements Initializable, ReloadableController{
         
         paymentsTable.getColumns().clear();
         paymentsTable.getColumns().addAll(paymentDateCol,tenantCol,houseCol,blockCol,amountPaidCol);
+        paymentsTable.setPlaceholder(new Label("No Payments recorded"));
         payments.addListener(new ListChangeListener(){
             @Override
             public void onChanged(ListChangeListener.Change c) {
@@ -269,16 +271,25 @@ public class PaymentsController implements Initializable, ReloadableController{
                        Parent root;
                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/editPayment.fxml"));
                        try {
-                           root = (Parent)fxmlLoader.load();
-                           EditPaymentController editorController =fxmlLoader.<EditPaymentController>getController();
-                           editorController.initPayment(p,PaymentsController.this);
-                           Stage editPaymentStage = new Stage();
-                           editPaymentStage.setTitle("Edit Payment");
-                           editPaymentStage.setScene(new Scene(root));
-                           editPaymentStage.initModality(Modality.WINDOW_MODAL);
-                           editPaymentStage.initOwner(((Node)event.getSource()).getScene().getWindow());
-                           editPaymentStage.show();
-                       } catch (IOException ex) {
+                           if(p.getAddedByUserId().equals(CurrentUser.getInstance().getUserId())){
+                                root = (Parent)fxmlLoader.load();
+                                EditPaymentController editorController =fxmlLoader.<EditPaymentController>getController();
+                                editorController.initPayment(p,PaymentsController.this);
+                                Stage editPaymentStage = new Stage();
+                                editPaymentStage.setTitle("Edit Payment");
+                                editPaymentStage.setScene(new Scene(root));
+                                editPaymentStage.initModality(Modality.WINDOW_MODAL);
+                                editPaymentStage.initOwner(((Node)event.getSource()).getScene().getWindow());
+                                editPaymentStage.show();
+                           }
+                           else{
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION, "You cant edit this record",ButtonType.OK);
+                                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                                alert.setHeaderText(null);
+                                alert.setTitle("Edit Denied");
+                                alert.show();
+                           }
+                       } catch (Exception ex) {
                            Logger.getLogger(PaymentsController.class.getName()).log(Level.SEVERE, null, ex);
                        }
                    }
@@ -344,33 +355,33 @@ public class PaymentsController implements Initializable, ReloadableController{
         }
         else if(paymentMethodCombo.getValue() ==null){
             paymentMethodCombo.requestFocus();
+        }else{
+            String referenceNumber="", receivedBy ="";
+            if(!receivedByTxt.getText().isEmpty()){
+                receivedBy=receivedByTxt.getText();
+            }
+
+            if(!referenceNumberTxt.getText().isEmpty()){
+                referenceNumber=referenceNumberTxt.getText();
+            }
+            String date="";
+            try{
+                date= paymentDatePicker.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            }catch(Exception ex){
+                paymentDatePicker.requestFocus();
+            }
+            Payment payment = new Payment(date, Double.parseDouble(amountPaidTxt.getText()),selectedContractId, receivedBy, selectedTenantId,paymentMethodCombo.getValue(), referenceNumber);
+            String id=payment.savePayment();
+            if(id != null){
+                Alert alert = new Alert(AlertType.NONE, "Payment Saved",ButtonType.OK);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.setHeaderText(null);
+                alert.setTitle("Success");
+                alert.show();
+                resetFields();
+            }
+            this.reload();
         }
-        
-        String referenceNumber="", receivedBy ="";
-        if(!receivedByTxt.getText().isEmpty()){
-            receivedBy=receivedByTxt.getText();
-        }
-        
-        if(!referenceNumberTxt.getText().isEmpty()){
-            referenceNumber=referenceNumberTxt.getText();
-        }
-        String date="";
-        try{
-            date= paymentDatePicker.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        }catch(Exception ex){
-            paymentDatePicker.requestFocus();
-        }
-        Payment payment = new Payment(date, Double.parseDouble(amountPaidTxt.getText()),selectedContractId, receivedBy, selectedTenantId,paymentMethodCombo.getValue(), referenceNumber);
-        String id=payment.savePayment();
-        if(id != null){
-            Alert alert = new Alert(AlertType.NONE, "Payment Saved",ButtonType.OK);
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-            alert.setHeaderText(null);
-            alert.setTitle("Success");
-            alert.show();
-            resetFields();
-        }
-        
     }
     
      @FXML

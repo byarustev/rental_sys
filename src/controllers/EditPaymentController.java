@@ -129,7 +129,7 @@ public class EditPaymentController implements Initializable {
             parentController.reload();
         }
         else{
-               Alert alert = new Alert(Alert.AlertType.WARNING, "Payment Not Updated",ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Payment Not Updated",ButtonType.OK);
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setHeaderText(null);
             alert.setTitle("Failed");

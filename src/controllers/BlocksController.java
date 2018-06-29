@@ -5,20 +5,26 @@
  */
 package controllers;
 
+import GeneralClasses.BankStatement;
 import GeneralClasses.Block;
 import GeneralClasses.House;
+import GeneralClasses.HouseRentalContract;
 import database.DatabaseHandler;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -27,7 +33,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 /**
  * FXML Controller class
@@ -42,6 +50,13 @@ public class BlocksController implements Initializable {
     DatabaseHandler handler;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+       initNewBlockForm();
+       initBlocksTableView();
+       initRoomsTableView();
+        //blocksList
+    }    
+    
+    public void initNewBlockForm(){
         contentBox.maxHeightProperty().bind(contentBox.heightProperty());
         TableColumn column1 = new TableColumn("Rental Unit No");
         TableColumn column2 = new TableColumn("Rental Name");
@@ -62,8 +77,9 @@ public class BlocksController implements Initializable {
         rentalUnitsTable.getColumns().clear();
         rentalUnitsTable.setItems(rentalUnitsList);
         rentalUnitsTable.getColumns().addAll(column1,column2,column3,column4);
-        
-        //initialize Find Blocks Pane
+    } 
+    public void initBlocksTableView(){
+         //initialize Find Blocks Pane
         TableColumn blockName = new TableColumn("Name");
         TableColumn blockLocation = new TableColumn("Location");
         TableColumn blockNumRentals = new TableColumn("Number of Rentals");
@@ -88,6 +104,7 @@ public class BlocksController implements Initializable {
         blocksDisplayTable.getColumns().addAll(blockName,blockLocation,blockNumRentals,blockAvailableRentals);
         filteredBlocksList.addAll(DatabaseHandler.getInstance().getBlocks());
         blocksDisplayTable.setItems(filteredBlocksList);
+        blocksDisplayTable.setPlaceholder(new Label("No Blocks found"));
         blocksList.setAll(DatabaseHandler.getInstance().getBlocks());
         idSearchTxt.textProperty().addListener(new ChangeListener(){
             @Override
@@ -101,10 +118,60 @@ public class BlocksController implements Initializable {
                 }));
             }
         });
-
-        //blocksList
-    }    
+        
+        
+    }
     
+    public void initRoomsTableView(){
+        blocksCombo.setItems(blocksList);
+        TableColumn roomNumberCol = new TableColumn("Room");
+        TableColumn monthlyFeeCol = new TableColumn("Monthly Fee");
+        TableColumn occupationStateCol = new TableColumn("Occupied");
+        TableColumn tenantCol = new TableColumn("Tenant");
+        
+        PropertyValueFactory <House, String> roomNumberFactory = new PropertyValueFactory("rentalName");
+        PropertyValueFactory <House, Double> monthlyFeeFactory = new PropertyValueFactory("monthlyAmount");
+        roomNumberCol.setCellValueFactory(roomNumberFactory);
+        monthlyFeeCol.setCellValueFactory(monthlyFeeFactory);
+        occupationStateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<House, String>, ObservableValue<String>>(){
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<House, String> param) {
+                if(((House)param.getValue()).isOccupied()){
+                    return new ReadOnlyObjectWrapper("YES");
+                }
+                else{
+                    return new ReadOnlyObjectWrapper("NO");
+                }
+            }
+        });
+        tenantCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<House, String>, ObservableValue<String>>(){
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<House, String> param) {
+               HouseRentalContract x = ((House)param.getValue()).getAssociatedContract();
+               if(x==null){
+                   return  new ReadOnlyObjectWrapper("");
+               }
+                else{
+                   return new ReadOnlyObjectWrapper(x.getAssociatedTenant().getFullName());
+               }
+            }
+        });
+       rentalsTableView.getColumns().clear();
+       rentalsTableView.getColumns().addAll(roomNumberCol,monthlyFeeCol,occupationStateCol,tenantCol);
+       rentalsTableView.setItems(housesList);
+       blocksCombo.valueProperty().addListener(new ChangeListener(){
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+               housesList.clear();
+               housesList.addAll(blocksCombo.getValue().getHousesList());
+            }
+        });
+      if(blocksList.size()>0){
+           blocksCombo.setValue(blocksList.get(0));
+      }
+      
+      
+    }
     @FXML // fx:id="blocksDisplayTable"
     private TableView<Block> blocksDisplayTable; // Value injected by FXMLLoader
 
@@ -127,10 +194,11 @@ public class BlocksController implements Initializable {
     private TextField idSearchTxt; // Value injected by FXMLLoader
     @FXML
     private TableView<RentalUnitTableRow> rentalUnitsTable;
-    private ObservableList<RentalUnitTableRow> rentalUnitsList = FXCollections.observableArrayList();
-   
-    private ObservableList<Block> filteredBlocksList = FXCollections.observableArrayList();
-    private ObservableList<Block> blocksList = FXCollections.observableArrayList();
+    private final ObservableList<RentalUnitTableRow> rentalUnitsList = FXCollections.observableArrayList();
+  
+    private final ObservableList<Block> filteredBlocksList = FXCollections.observableArrayList();
+    private final ObservableList<Block> blocksList = FXCollections.observableArrayList();
+     private final ObservableList<House> housesList = FXCollections.observableArrayList();
     @FXML // fx:id="contentBox"
     private VBox contentBox; // Value injected by FXMLLoader
 
@@ -169,16 +237,34 @@ public class BlocksController implements Initializable {
          System.out.println("NAME: "+blockNameTxt.getCharacters()+"\nLocation "+blockLocationTxt.toString()+"\n Rentals"+numUnitsTxt.toString());
          
          Block enteredBlock = new Block(blockNameTxt.getCharacters().toString(), blockLocationTxt.getCharacters().toString(), Integer.parseInt(numUnitsTxt.getCharacters().toString()),housesList);
-         enteredBlock.save();
-         
+         if(enteredBlock.save()){
+             Alert alert = new Alert(Alert.AlertType.NONE, "Block Saved Successfully",ButtonType.OK);
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            alert.setHeaderText(null);
+            alert.setTitle("Success");
+            alert.show();
+            resetForm();
+         }
+         reload();
          
          //update the blocks table
-          filteredBlocksList.clear();
-          filteredBlocksList.addAll(DatabaseHandler.getInstance().getBlocks());
+          
          
         
     }
 
+    public void reload(){
+        filteredBlocksList.clear();
+        filteredBlocksList.addAll(DatabaseHandler.getInstance().getBlocks());
+        blocksList.clear();
+        blocksList.addAll(DatabaseHandler.getInstance().getBlocks());
+    }
+    public void resetForm(){
+        rentalUnitsList.clear();
+        blockNameTxt.setText("");
+        blockLocationTxt.setText("");
+        numUnitsTxt.setText("");
+    }
     @FXML
     void updateRentalUnitsTable(MouseEvent event) {
         try{
@@ -207,17 +293,25 @@ public class BlocksController implements Initializable {
        
     }
     
+    @FXML
+    private TableView<House> rentalsTableView;
+    @FXML
+    private ComboBox<Block> blocksCombo;
 
-     @FXML // This method is called by the FXMLLoader when initialization is complete
+    
+
+    @FXML
     void initialize() {
-        assert contentBox != null : "fx:id=\"contentBox\" was not injected: check your FXML file 'registerBlock.fxml'.";
-        assert blockNameTxt != null : "fx:id=\"blockNameTxt\" was not injected: check your FXML file 'registerBlock.fxml'.";
-        assert blockLocationTxt != null : "fx:id=\"blockLocationTxt\" was not injected: check your FXML file 'registerBlock.fxml'.";
-        assert numUnitsTxt != null : "fx:id=\"numUnitsTxt\" was not injected: check your FXML file 'registerBlock.fxml'.";
-        assert rentalUnitsTable != null : "fx:id=\"rentalUnitsTable\" was not injected: check your FXML file 'registerBlock.fxml'.";
-        assert saveBtn != null : "fx:id=\"saveBtn\" was not injected: check your FXML file 'registerBlock.fxml'.";
-        assert idSearchTxt != null : "fx:id=\"idSearchTxt\" was not injected: check your FXML file 'registerBlock.fxml'.";
-        assert blocksDisplayTable != null : "fx:id=\"blocksDisplayTable\" was not injected: check your FXML file 'registerBlock.fxml'.";
+        assert idSearchTxt != null : "fx:id=\"idSearchTxt\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert blocksDisplayTable != null : "fx:id=\"blocksDisplayTable\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert contentBox != null : "fx:id=\"contentBox\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert blockNameTxt != null : "fx:id=\"blockNameTxt\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert blockLocationTxt != null : "fx:id=\"blockLocationTxt\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert numUnitsTxt != null : "fx:id=\"numUnitsTxt\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert rentalUnitsTable != null : "fx:id=\"rentalUnitsTable\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert saveBtn != null : "fx:id=\"saveBtn\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert rentalsTableView != null : "fx:id=\"rentalsTableView\" was not injected: check your FXML file 'blocks.fxml'.";
+        assert blocksCombo != null : "fx:id=\"blocksCombo\" was not injected: check your FXML file 'blocks.fxml'.";
 
     }
     
@@ -260,6 +354,7 @@ public class BlocksController implements Initializable {
 
         public void setRentalNumOfUnits(TextField rentalNumOfUnits) {
             this.rentalNumOfUnits = rentalNumOfUnits;
+            this.rentalNumOfUnits.setText("1");
         }
         
         public House generateHouse(){

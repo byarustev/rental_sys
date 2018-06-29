@@ -19,6 +19,15 @@ public class Payment {
    private String receivedBy;
    private String tenantId;
    private int paymentId;
+   private String addedByUserId;
+
+    public String getAddedByUserId() {
+        return addedByUserId;
+    }
+
+    public void setAddedByUserId(String addedByUserId) {
+        this.addedByUserId = addedByUserId;
+    }
 
     public int getPaymentId() {
         return paymentId;
@@ -47,7 +56,8 @@ public class Payment {
         this.modeOfPayment = modeOfPayment;
         this.referenceNumber = referenceNumber;
     }
-    public Payment(int paymentId,String paymentDate, Double paymentAmount, String rentalContractId, String receivedBy, String tenantId, String modeOfPayment, String referenceNumber) {
+    public Payment(int paymentId,String paymentDate, Double paymentAmount, String rentalContractId, String receivedBy, String tenantId, String modeOfPayment, String referenceNumber,String addedById) {
+        this.addedByUserId = addedById;
         this.paymentDate = paymentDate;
         this.paymentAmount = paymentAmount;
         this.rentalContractId = rentalContractId;
@@ -132,7 +142,7 @@ public class Payment {
     }
     
     public HouseRentalContract getAssociatedContract(){
-        return DatabaseHandler.getInstance().getCurrentContract(tenantId, null);
+        return DatabaseHandler.getInstance().getContract(this.rentalContractId);
     }
 
     public boolean update() {

@@ -32,6 +32,15 @@ public class HouseRentalContract implements RentalContract {
      House house;
      Tenant tenant;
      ArrayList<Payment> contractPayments;
+     private String addedByUserId;
+
+    public String getAddedByUserId() {
+        return addedByUserId;
+    }
+
+    public void setAddedByUserId(String addedByUserId) {
+        this.addedByUserId = addedByUserId;
+    }
 
     /**
      * This is used to create a Contract from the database since it requires a contractId
@@ -41,8 +50,10 @@ public class HouseRentalContract implements RentalContract {
      * @param houseId
      * @param agreedMonthlyAmount
      */
-    public HouseRentalContract(String startDate, String tenantId, String contractId, String houseId, Double agreedMonthlyAmount) {
+    public HouseRentalContract(String startDate, String tenantId, String contractId, String houseId, Double agreedMonthlyAmount,String addedById) {
+      
         this(startDate,tenantId,houseId,agreedMonthlyAmount);
+        this.addedByUserId = addedById;
         this.contractId = contractId;
     } 
     
@@ -228,6 +239,12 @@ public class HouseRentalContract implements RentalContract {
              Logger.getLogger(HouseRentalContract.class.getName()).log(Level.SEVERE, null, ex);
          }
         return null;
+    }
+
+    public boolean terminate() {
+        DatabaseHandler.getInstance().updateContract(true,this.getContractId(),null,null,
+                           null,null,null);
+        return true;
     }
     
     

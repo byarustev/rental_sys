@@ -15,6 +15,15 @@ public class MonthReport {
     Double actualAmountPaid;
     Double balance;
     Double cumulativeBalance;
+    private String addedByUserId;
+
+    public String getAddedByUserId() {
+        return addedByUserId;
+    }
+
+    public void setAddedByUserId(String addedByUserId) {
+        this.addedByUserId = addedByUserId;
+    }
 
     public MonthReport(String month, Double expectedAmount, Double actualAmountPaid, Double balance, Double cumulativeBalance) {
         this.month = month;

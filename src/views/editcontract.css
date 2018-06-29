@@ -1,0 +1,13 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+
+.btn-danger{
+    -fx-background-color: #ff3300;
+    color: #fff;
+}
+

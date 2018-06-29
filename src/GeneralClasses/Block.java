@@ -19,6 +19,15 @@ public class Block {
     private int numberOfRentals;
     private int numberOfAvailableRentals=0;
 
+     private String addedByUserId;
+
+    public String getAddedByUserId() {
+        return addedByUserId;
+    }
+
+    public void setAddedByUserId(String addedByUserId) {
+        this.addedByUserId = addedByUserId;
+    }
     public int getNumberOfAvailableRentals() {
         if(numberOfAvailableRentals==0){
             setNumberOfAvailableRentals();
@@ -59,8 +68,9 @@ public class Block {
         this.setLocation(location);
         this.setNumberOfRentals(number_of_retals); 
     }
-    public Block(String id,String name, String location, int number_of_retals){
+    public Block(String id,String name, String location, int number_of_retals ,String addedById) {
         this(name,location,number_of_retals);
+        this.addedByUserId = addedById;
         this.setDatabaseId(id); 
     }
     public String getName() {
@@ -108,8 +118,12 @@ public class Block {
         housesList.forEach(x->x.setBlockId(databaseId));
     }
     
-    public void save(){
-        DatabaseHandler.getInstance().insertBlock(this);
+    /**
+     *
+     * @return True/False to indicate success or failure
+     */
+    public Boolean save(){
+        return DatabaseHandler.getInstance().insertBlock(this);
     }
     
     @Override

@@ -19,8 +19,18 @@ public class BankStatement {
     private Double accountBalance;
     private String tenantId;
     private String statementId;
+     private String addedByUserId;
 
-    public BankStatement(String transactionDate, String valueDate, String transactionDescription, Double creditAmount, Double accountBalance, String tenantId, String statementId) {
+    public String getAddedByUserId() {
+        return addedByUserId;
+    }
+
+    public void setAddedByUserId(String addedByUserId) {
+        this.addedByUserId = addedByUserId;
+    }
+
+    public BankStatement(String transactionDate, String valueDate, String transactionDescription, Double creditAmount, Double accountBalance, String tenantId, String statementId,String addedById) {
+        this.addedByUserId = addedById;
         this.transactionDate = transactionDate;
         this.valueDate = valueDate;
         this.transactionDescription = transactionDescription;

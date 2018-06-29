@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import GeneralClasses.CurrentUser;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,8 +20,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import database.DatabaseHandler;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -39,9 +44,14 @@ public class DashboardController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        try {
-            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/payments.fxml")));
+       if(CurrentUser.getInstance()!=null){
+           usernameLabel.setText(CurrentUser.getInstance().getFullName());
+       }
+       else{
+           logout(null);
+       }
+        try {  
+            mainPane.getChildren().setAll((SplitPane)FXMLLoader.load(getClass().getResource("/views/tenants.fxml")));
         } catch (IOException ex) {  
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("FAILED to load block report");
@@ -56,7 +66,8 @@ public class DashboardController implements Initializable {
     @FXML // fx:id="paymentsTab"
     private Label paymentsTab; // Value injected by FXMLLoader
 
-    
+    @FXML
+    private Label usernameLabel;
     @FXML // fx:id="tenantsTab"
     private Label tenantsTab; // Value injected by FXMLLoader
     
@@ -113,12 +124,28 @@ public class DashboardController implements Initializable {
             System.out.println("FAILED to load block report");
         }
     }
-
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+     @FXML
+    void logout(MouseEvent event) {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/login.fxml"));
+                Parent root;
+                try {
+                    root = (Parent)fxmlLoader.load();
+                    Stage dashboardStage = new Stage();
+                        dashboardStage.setTitle("Login");
+                        dashboardStage.setScene(new Scene(root));
+                        ((Node)mainPane).getScene().getWindow().hide();
+                        dashboardStage.show(); 
+                } catch (IOException ex) {
+                    Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+    }
+      @FXML
     void initialize() {
-        assert paymentsTab != null : "fx:id=\"paymentsTab\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert tenantsTab != null : "fx:id=\"tenantsTab\" was not injected: check your FXML file 'dashboard.fxml'.";
+        assert paymentsTab != null : "fx:id=\"paymentsTab\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert blocksTab != null : "fx:id=\"blocksTab\" was not injected: check your FXML file 'dashboard.fxml'.";
+        assert usernameLabel != null : "fx:id=\"usernameLabel\" was not injected: check your FXML file 'dashboard.fxml'.";
         assert mainPane != null : "fx:id=\"mainPane\" was not injected: check your FXML file 'dashboard.fxml'.";
     }
     
