@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -242,6 +240,11 @@ public class DatabaseHandler {
                         + "maritalStatus varchar(15) NOT NULL,"
                         + "numOfFamilyMembers int NOT NULL,"
                         + "nextOfKinName varchar(50) NOT NULL,"
+                        + "nextOfKinDistrict varchar(30) DEFAULT NULL,"
+                        + "nextOfKinCounty varchar(30) DEFAULT NULL,"
+                        + "nextOfKinSubCountry varchar(30) DEFAULT NULL,"
+                        + "nextOfKinParish varchar(30) DEFAULT NULL,"
+                        + "nextOfKinVillage varchar(30) DEFAULT NULL,"
                         + "nextOfKinContact varchar(30) DEFAULT NULL,"
                         + "addedByUserId INT DEFAULT NULL,"
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
@@ -448,10 +451,11 @@ public class DatabaseHandler {
         }
         return null;   
     }
-    public String insertTenant(String firstName, String lastName, String maritalStatus, String nationality, String idType, String idNumber, int numOfFamMembers, String dateOfBirth, String phoneNumber, String nokName, String nokContack) {
+    public String insertTenant(String firstName, String lastName, String maritalStatus, String nationality, String idType, String idNumber, int numOfFamMembers, 
+            String dateOfBirth, String phoneNumber, String nokName, String nokContack, String nokDistrict, String nokCounty,String nokSubCounty,String nokParish,String nokVillage) {
         String sql ="INSERT INTO "+TENANTS_TABLE_NAME+" (firstName,lastName,maritalStatus,dateOfBirth,nationality,"
                 + "IdType,IdNumber,photoPath,phoneNumber1,phoneNumber2,"
-                + "numOfFamilyMembers,nextOfKinName,nextOfKinContact,addedByUserId) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "numOfFamilyMembers,nextOfKinName,nextOfKinContact,addedByUserId,nextOfKinDistrict ,nextOfKinCounty ,nextOfKinSubCountry ,nextOfKinParish,nextOfKinVillage) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,firstName);
@@ -468,6 +472,11 @@ public class DatabaseHandler {
             preparedStatement.setString(12,nokName);
             preparedStatement.setString(13,nokContack);
             preparedStatement.setString(14, CurrentUser.getInstance().getUserId());
+            preparedStatement.setString(15,nokDistrict);
+            preparedStatement.setString(16,nokCounty);
+            preparedStatement.setString(17,nokSubCounty);
+            preparedStatement.setString(18,nokParish);
+            preparedStatement.setString(19,nokVillage);
             preparedStatement.execute();
             String idQuery = "SELECT id FROM "+TENANTS_TABLE_NAME+" WHERE firstName = ? AND lastName = ? AND dateOfBirth = ? AND phoneNumber1 = ?";
             preparedStatement = connection.prepareStatement(idQuery);
@@ -650,10 +659,12 @@ public class DatabaseHandler {
             ArrayList<Tenant> tenants = new ArrayList();
             preparedStatement = connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
+           
             while(rs.next()){
                 tenants.add(new Tenant(rs.getString("id"), rs.getString("lastName") , rs.getString("firstName"), 
                         rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
-                        rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") ,  rs.getString("nextOfKinContact"),
+                        rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") , 
+                        rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCountry"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
                      rs.getString("addedByUserId")));
             }
             return tenants;
@@ -672,7 +683,8 @@ public class DatabaseHandler {
             if(rs.next()){
               return new Tenant(rs.getString("id"), rs.getString("lastName") , rs.getString("firstName"), 
                         rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
-                        rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") ,  rs.getString("nextOfKinContact"),
+                        rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") , 
+                        rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCountry"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
                      rs.getString("addedByUserId"));
             }
             return null;
@@ -746,9 +758,12 @@ public class DatabaseHandler {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now  = LocalDateTime.now();
         String modifiedDate = now.format(dtf);
-        String sql ="UPDATE "+TENANTS_TABLE_NAME+" SET firstName=?,lastName=?,maritalStatus=?,dateOfBirth=?,nationality=?,"
+        String sql ="UPDATE "+TENANTS_TABLE_NAME+" SET firstName=?,lastName=?,maritalStatus=?,"
+                + "dateOfBirth=?,nationality=?,"
                 + "IdType=?,IdNumber=?,photoPath=?,phoneNumber1=?,phoneNumber2=?,"
-                + "numOfFamilyMembers=?,nextOfKinName=?,nextOfKinContact=?,dateLastModified=? WHERE id=?";
+                + "numOfFamilyMembers=?,nextOfKinName=?,nextOfKinContact=?,"
+                + "dateLastModified=?,nextOfKinDistrict=? ,nextOfKinCounty=? ,"
+                + "nextOfKinSubCountry=? ,nextOfKinParish=?,nextOfKinVillage=? WHERE id=?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,tenant.getFirstName());
@@ -764,8 +779,13 @@ public class DatabaseHandler {
             preparedStatement.setInt(11,tenant.getNumOfFamMembers());
             preparedStatement.setString(12,tenant.getNokName());
             preparedStatement.setString(13,tenant.getNokContack());
-            preparedStatement.setString(14,tenant.getTenantId());
-              preparedStatement.setString(15, modifiedDate);
+            preparedStatement.setString(14, modifiedDate);
+            preparedStatement.setString(15, tenant.getNokDistrict());
+            preparedStatement.setString(16, tenant.getNokCounty());
+            preparedStatement.setString(17, tenant.getNokSubCounty());
+            preparedStatement.setString(18, tenant.getNokParish());
+            preparedStatement.setString(19, tenant.getNokVillage());
+            preparedStatement.setString(20,tenant.getTenantId());
             preparedStatement.execute();          
             return true;
             

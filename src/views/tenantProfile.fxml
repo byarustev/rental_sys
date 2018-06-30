@@ -18,38 +18,30 @@
 
 <SplitPane dividerPositions="0.2465156794425087" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="880.0" stylesheets="views/app.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TenantProfileController">
   <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="569.0" prefWidth="405.0">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="577.0" prefWidth="268.0">
          <children>
-            <HBox alignment="CENTER" layoutX="1.0" prefHeight="138.0" prefWidth="297.0" AnchorPane.bottomAnchor="423.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <HBox alignment="CENTER" layoutX="1.0" prefHeight="111.0" prefWidth="212.0" AnchorPane.bottomAnchor="466.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <ImageView fitHeight="157.0" fitWidth="227.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="83.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/avator.png" />
                      </image>
                   </ImageView>
                </children>
             </HBox>
-            <VBox layoutX="-2.0" layoutY="160.0" prefHeight="417.0" prefWidth="279.0" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="160.0">
+            <VBox layoutX="-2.0" layoutY="99.0" prefHeight="478.0" prefWidth="212.0" spacing="4.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="99.0">
                <children>
-                  <HBox prefHeight="47.0" prefWidth="227.0" spacing="5.0">
-                     <children>
-                        <VBox prefHeight="39.0" prefWidth="110.0" />
-                     </children>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-                     </padding>
-                  </HBox>
-                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                  <HBox prefHeight="27.0" prefWidth="202.0" spacing="5.0">
                      <children>
                         <Label prefHeight="19.0" prefWidth="89.0" text="Name:">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="nameLabel" prefHeight="19.0" prefWidth="110.0" text="Kato Mike" />
+                        <Label fx:id="nameLabel" prefHeight="19.0" prefWidth="110.0" text="Kato Mike">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Label>
                      </children>
                      <opaqueInsets>
                         <Insets />
@@ -76,7 +68,7 @@
                   </HBox>
                   <HBox prefHeight="27.0" prefWidth="177.0" spacing="5.0">
                      <children>
-                        <Label prefHeight="19.0" prefWidth="147.0" text="Phone Number:">
+                        <Label prefHeight="17.0" prefWidth="161.0" text="Phone Number:">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -156,12 +148,12 @@
                   </HBox>
                   <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
                      <children>
-                        <Label prefHeight="19.0" prefWidth="160.0" text="Family Members:">
+                        <Label prefHeight="19.0" prefWidth="109.0" text="Family Members:">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label fx:id="numFamMemLabel" prefHeight="29.0" prefWidth="171.0" text="2" />
+                        <Label fx:id="numFamMemLabel" prefHeight="19.0" prefWidth="84.0" text="2" />
                      </children>
                      <opaqueInsets>
                         <Insets />
@@ -172,7 +164,7 @@
                   </HBox>
                   <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
                      <children>
-                        <Label prefHeight="19.0" prefWidth="147.0" text="Next of kin:">
+                        <Label prefHeight="19.0" prefWidth="147.0" text="Next of Kin ">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -188,12 +180,96 @@
                   </HBox>
                   <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
                      <children>
-                        <Label prefHeight="19.0" prefWidth="127.0" text="Next of kin Contact">
+                        <Label prefHeight="19.0" prefWidth="83.0" text="NOK Contact">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
                         <Label fx:id="nokContactLabel" prefHeight="19.0" prefWidth="95.0" text="070689593" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="83.0" text="NOK District">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nokDistrictLbl" prefHeight="19.0" prefWidth="95.0" text="Kyotera" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="75.0" text="NOK County">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nokCountyLbl" prefHeight="19.0" prefWidth="95.0" text="Katakwi">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="19.0" prefWidth="101.0" text="NOK Sub County">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nokSubCountyLbl" prefHeight="19.0" prefWidth="95.0" text="Kyotera" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="84.0" text="NOK Parish">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nokParishLbl" prefHeight="19.0" prefWidth="95.0" text="Parish" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                     </padding>
+                  </HBox>
+                  <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="84.0" text="NOK Village">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nokVillageLbl" prefHeight="19.0" prefWidth="95.0" text="Village" />
                      </children>
                      <opaqueInsets>
                         <Insets />

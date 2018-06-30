@@ -8,6 +8,7 @@ package controllers;
 import GeneralClasses.Block;
 import GeneralClasses.House;
 import GeneralClasses.HouseRentalContract;
+import GeneralClasses.NumberValidator;
 import GeneralClasses.Payment;
 import GeneralClasses.Tenant;
 import database.DatabaseHandler;
@@ -100,6 +101,22 @@ public class TenantsController implements Initializable {
 
     @FXML // fx:id="nokContactTxt"
     private TextField nokContactTxt; // Value injected by FXMLLoader
+   
+
+    @FXML // fx:id="nokDistrictTxt"
+    private TextField nokDistrictTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokCountyTxt"
+    private TextField nokCountyTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokSubCountyTx"
+    private TextField nokSubCountyTx; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokParishTxt"
+    private TextField nokParishTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokVillageTxt"
+    private TextField nokVillageTxt; // Value injected by FXMLLoader
     @FXML // fx:id="depositTxt"
     private TextField depositTxt; // Value injected by FXMLLoader
     @FXML
@@ -157,10 +174,8 @@ public class TenantsController implements Initializable {
             String name = locale.getDisplayCountry();
             countriesList.add(name);
         }
-     
       countriesCombo.setItems(countriesList);
       countriesCombo.setValue("Uganda");
-     
       idTypeList =FXCollections.observableArrayList(idTypes);
       idTypeCombo.setItems(idTypeList);
       idTypeCombo.setEditable(true);
@@ -171,8 +186,8 @@ public class TenantsController implements Initializable {
       rentalsCombo.valueProperty().addListener(new ChangeListener(){
           @Override
           public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-              try{
-                     monthlyFeeTxt.setText(((House)newValue).getMonthlyAmount().toString());
+              try{     
+                  monthlyFeeTxt.setText(((House)newValue).getMonthlyAmount().toString());
               }catch(NullPointerException e){}
           }
       });
@@ -187,7 +202,28 @@ public class TenantsController implements Initializable {
       modesOfPaymentList = FXCollections.observableArrayList(paymentOtions);
       paymentModeCombo.setItems(modesOfPaymentList);
       paymentModeCombo.setValue(paymentOtions[0]);
-      
+      addNumberValidators();
+    }
+    
+    public void addNumberValidators(){
+        monthlyFeeTxt.textProperty().addListener(new ChangeListener(){
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                NumberValidator.validateDouble(monthlyFeeTxt);
+            }
+        });
+        depositTxt.textProperty().addListener(new ChangeListener(){
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                NumberValidator.validateDouble(depositTxt);
+            }
+        });
+        noFamMembersTxt.textProperty().addListener(new ChangeListener(){
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                NumberValidator.validateInteger(noFamMembersTxt);
+            }
+        });
     }
     public void initializeAllTenantsTable(){ 
     TableColumn name = new TableColumn("Name");
@@ -532,6 +568,16 @@ public class TenantsController implements Initializable {
             nokNameTxt.requestFocus();
         }else if(nokContactTxt.getText().isEmpty()){
             nokContactTxt.requestFocus();
+        }else if(nokDistrictTxt.getText().isEmpty()){
+            nokDistrictTxt.requestFocus();
+        }else if(nokCountyTxt.getText().isEmpty()){
+            nokCountyTxt.requestFocus();
+        }else if(nokSubCountyTx.getText().isEmpty()){
+            nokSubCountyTx.requestFocus();
+        }else if(nokParishTxt.getText().isEmpty()){
+            nokParishTxt.requestFocus();
+        }else if(nokVillageTxt.getText().isEmpty()){
+            nokVillageTxt.requestFocus();
         }else if(blockCombo.getValue()== null){
             blockCombo.requestFocus();
         }else if(rentalsCombo.getValue() == null){
@@ -554,10 +600,10 @@ public class TenantsController implements Initializable {
             }
             String maritalStatus=((RadioButton)statusGroup.getSelectedToggle()).getText();
             Tenant tenant = new Tenant(lastNameTxt.getText(), fNameTxt.getText(),date, countriesCombo.getValue()
-                    , phoneNumberTxt.getText(), idTypeCombo.getValue(),idNumberTxt.getText(), maritalStatus, Integer.parseInt(noFamMembersTxt.getText()), nokNameTxt.getText(), nokContactTxt.getText());
+                    , phoneNumberTxt.getText(), idTypeCombo.getValue(),idNumberTxt.getText(), maritalStatus, Integer.parseInt(noFamMembersTxt.getText()), nokNameTxt.getText(), nokContactTxt.getText(),nokDistrictTxt.getText(),nokCountyTxt.getText(),nokSubCountyTx.getText(),nokParishTxt.getText(),nokVillageTxt.getText());
            // lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
-            String tenantId =tenant.save();
-            
+           // nokDistrictTxt.getText(),nokCountyTxt.getText(),nokSubCountyTx.getText(),nokParishTxt.getText(),nokVillageTxt.getText()
+           String tenantId =tenant.save();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDateTime now  = LocalDateTime.now();
             String startDate = now.format(dtf);
@@ -613,7 +659,7 @@ public class TenantsController implements Initializable {
         paymentModeCombo.setValue(paymentOtions[0]);
         dobDatePicker.setValue(null);
     }
-     @FXML // This method is called by the FXMLLoader when initialization is complete
+      @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert tenantsOwedSearhTxt != null : "fx:id=\"tenantsOwedSearhTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert blocksOwedFilterCombo != null : "fx:id=\"blocksOwedFilterCombo\" was not injected: check your FXML file 'tenants.fxml'.";
@@ -630,8 +676,14 @@ public class TenantsController implements Initializable {
         assert statusSingleRadio != null : "fx:id=\"statusSingleRadio\" was not injected: check your FXML file 'tenants.fxml'.";
         assert statusMarriedRadio != null : "fx:id=\"statusMarriedRadio\" was not injected: check your FXML file 'tenants.fxml'.";
         assert noFamMembersTxt != null : "fx:id=\"noFamMembersTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokNameTxt != null : "fx:id=\"nokNameTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokContactTxt != null : "fx:id=\"nokContactTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokDistrictTxt != null : "fx:id=\"nokDistrictTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokCountyTxt != null : "fx:id=\"nokCountyTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokSubCountyTx != null : "fx:id=\"nokSubCountyTx\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokParishTxt != null : "fx:id=\"nokParishTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokVillageTxt != null : "fx:id=\"nokVillageTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert blockCombo != null : "fx:id=\"blockCombo\" was not injected: check your FXML file 'tenants.fxml'.";
         assert rentalsCombo != null : "fx:id=\"rentalsCombo\" was not injected: check your FXML file 'tenants.fxml'.";
         assert monthlyFeeTxt != null : "fx:id=\"monthlyFeeTxt\" was not injected: check your FXML file 'tenants.fxml'.";
@@ -639,8 +691,6 @@ public class TenantsController implements Initializable {
         assert receivedByTxt != null : "fx:id=\"receivedByTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert paymentModeCombo != null : "fx:id=\"paymentModeCombo\" was not injected: check your FXML file 'tenants.fxml'.";
         assert referenceNumberTxt != null : "fx:id=\"referenceNumberTxt\" was not injected: check your FXML file 'tenants.fxml'.";
-        assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'tenants.fxml'.";
-
     }
     
 }

@@ -25,12 +25,12 @@
                            <Image url="@../images/daaki%20icon.jpg" />
                         </image>
                      </ImageView>
-                     <Label id="system_name" alignment="CENTER" prefHeight="19.0" prefWidth="223.0" text="Menu" textFill="#fffafa">
+                     <Label id="system_name" alignment="CENTER" prefHeight="19.0" prefWidth="223.0" text="Menu" textFill="#110000">
                         <font>
                            <Font name="Tahoma Bold" size="15.0" />
                         </font>
                      </Label>
-                     <Label fx:id="tenantsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showTenantsTab" prefHeight="41.0" prefWidth="185.0" style="-fx-padding:10;" text="Tenants    ">
+                     <Label fx:id="tenantsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showTenantsTab" prefHeight="41.0" prefWidth="185.0" style="-fx-padding:10;" text="Tenants    " textFill="#fffefe">
                         <graphic>
                            <FontAwesomeIconView glyphName="DIAMOND" size="16" />
                         </graphic>
@@ -38,7 +38,7 @@
                            <Font size="15.0" />
                         </font>
                      </Label>
-                      <Label fx:id="paymentsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showPaymentsTab" prefHeight="42.0" prefWidth="183.0" style="-fx-padding:10;" text="Payments">
+                      <Label fx:id="paymentsTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showPaymentsTab" prefHeight="42.0" prefWidth="183.0" style="-fx-padding:10;" text="Payments" textFill="#fcfafa">
                         <graphic>
                            <FontAwesomeIconView glyphName="CREDIT_CARD" size="16" />
                         </graphic>
@@ -46,7 +46,7 @@
                            <Font size="15.0" />
                         </font>
                      </Label>
-                     <Label fx:id="blocksTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showBlockTab" prefHeight="41.0" prefWidth="189.0" style="-fx-padding:10;" text="Blocks        ">
+                     <Label fx:id="blocksTab" alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showBlockTab" prefHeight="41.0" prefWidth="189.0" style="-fx-padding:10;" text="Blocks        " textFill="#fffefe">
                         <graphic>
                            <FontAwesomeIconView glyphName="BUILDING" size="16.0" />
                         </graphic>
@@ -54,7 +54,7 @@
                            <Font size="15.0" />
                         </font>
                      </Label>
-                     <Label alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showStatementsTab" prefHeight="41.0" prefWidth="221.0" style="-fx-padding:10;" text="Statements        ">
+                     <Label alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#showStatementsTab" prefHeight="41.0" prefWidth="221.0" style="-fx-padding:10;" text="Statements        " textFill="#f5eeee">
                         <graphic>
                            <FontAwesomeIconView glyphName="BUILDING" size="16.0" wrappingWidth="12.714285850524902" />
                         </graphic>
@@ -72,15 +72,17 @@
                         </Label>
                         <Label fx:id="usernameLabel" alignment="CENTER" prefHeight="17.0" prefWidth="230.0" />
                         <Label alignment="CENTER" graphicTextGap="6.0" onMouseClicked="#logout" prefHeight="42.0" prefWidth="233.0" style="-fx-padding:10;" text="Logout        " textFill="#bf4141">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="BUILDING" size="16.0" text="" />
-                           </graphic>
                            <font>
-                              <Font size="14.0" />
+                              <Font size="16.0" />
                            </font>
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="235.0" text="Developed by KibSys Techs" textFill="#e8dbdb">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
                         </Label>
                      </children>
                   </VBox>

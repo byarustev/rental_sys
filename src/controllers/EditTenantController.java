@@ -69,14 +69,28 @@ public class EditTenantController implements Initializable{
     @FXML // fx:id="dobDatePicker"
     private DatePicker dobDatePicker; // Value injected by FXMLLoader
     //tenant to edit
+    @FXML // fx:id="nokDistrictTxt"
+    private TextField nokDistrictTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokCountyTxt"
+    private TextField nokCountyTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokSubCountyTx"
+    private TextField nokSubCountyTx; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokParishTxt"
+    private TextField nokParishTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokVillageTxt"
+    private TextField nokVillageTxt; // Value injected by FXMLLoader
     Tenant tenant;
-    String []paymentOtions ={"Cash","Airtel Monny","MTN Money","Bank"};
+    String []paymentOtions ={"Cash","Airtel Money","MTN Money","Bank"};
     String [] idTypes = {"National ID", "Driving Permit","Passport"};
     private final ToggleGroup statusGroup = new ToggleGroup();
     TenantProfileController parentController;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String [] countryCodes = Locale.getISOCountries();
+      String [] countryCodes = Locale.getISOCountries();
       countriesList = FXCollections.observableArrayList();
       for (String countryCode : countryCodes){
             //pick the corresponding country names
@@ -84,10 +98,8 @@ public class EditTenantController implements Initializable{
             String name = locale.getDisplayCountry();
             countriesList.add(name);
         }
-     
       countriesCombo.setItems(countriesList);
       countriesCombo.setValue("Uganda");
-   
       idTypeList =FXCollections.observableArrayList(idTypes);
       idTypeCombo.setItems(idTypeList);
       idTypeCombo.setEditable(true);
@@ -105,6 +117,7 @@ public class EditTenantController implements Initializable{
         phoneNumberTxt.setText(t.getPhoneNumber());
         idTypeCombo.setValue(t.getIdType());
         idNumberTxt.setText(t.getIdNumber());
+         dobDatePicker.setValue(LocalDate.parse(t.getDateOfBirth()));
         if(t.getMaritalStatus().equalsIgnoreCase(statusSingleRadio.getText())){
             statusSingleRadio.setSelected(true);
         }else{
@@ -113,8 +126,11 @@ public class EditTenantController implements Initializable{
         noFamMembersTxt.setText(t.getNumOfFamMembers()+"");
         nokNameTxt.setText(t.getNokName());
         nokContactTxt.setText(t.getNokContack());
-        dobDatePicker.setValue(LocalDate.parse(t.getDateOfBirth()));
-       
+        this.nokDistrictTxt.setText(this.tenant.getNokDistrict());
+        this.nokCountyTxt.setText(this.tenant.getNokCounty());
+        this.nokSubCountyTx.setText(this.tenant.getNokSubCounty());
+        this.nokParishTxt.setText(this.tenant.getNokParish());
+        this.nokVillageTxt.setText(this.tenant.getNokVillage());
     }
     
     
@@ -164,6 +180,11 @@ public class EditTenantController implements Initializable{
              tenant.setNumOfFamMembers(Integer.parseInt(noFamMembersTxt.getText()));
              tenant.setNokName(nokNameTxt.getText());
              tenant.setNokContack(nokContactTxt.getText());
+             tenant.setNokDistrict(nokDistrictTxt.getText());
+             tenant.setNokCounty(nokCountyTxt.getText());
+             this.tenant.setNokSubCounty(nokSubCountyTx.getText());
+             this.tenant.setNokParish(nokParishTxt.getText());
+             this.tenant.setNokVillage(nokVillageTxt.getText());
              if(tenant.update()){
                  parentController.initTenant(tenant);
                  closeWindow(event);
@@ -171,21 +192,26 @@ public class EditTenantController implements Initializable{
         }
     }
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert fNameTxt != null : "fx:id=\"fNameTxt\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert lastNameTxt != null : "fx:id=\"lastNameTxt\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert countriesCombo != null : "fx:id=\"countriesCombo\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert phoneNumberTxt != null : "fx:id=\"phoneNumberTxt\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert idTypeCombo != null : "fx:id=\"idTypeCombo\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert idNumberTxt != null : "fx:id=\"idNumberTxt\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert statusSingleRadio != null : "fx:id=\"statusSingleRadio\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert statusMarriedRadio != null : "fx:id=\"statusMarriedRadio\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert noFamMembersTxt != null : "fx:id=\"noFamMembersTxt\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert nokNameTxt != null : "fx:id=\"nokNameTxt\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert nokContactTxt != null : "fx:id=\"nokContactTxt\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-        assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'editTenant.xml.fxml'.";
-    }
+        assert fNameTxt != null : "fx:id=\"fNameTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert lastNameTxt != null : "fx:id=\"lastNameTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert countriesCombo != null : "fx:id=\"countriesCombo\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert phoneNumberTxt != null : "fx:id=\"phoneNumberTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert idTypeCombo != null : "fx:id=\"idTypeCombo\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert idNumberTxt != null : "fx:id=\"idNumberTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert statusSingleRadio != null : "fx:id=\"statusSingleRadio\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert statusMarriedRadio != null : "fx:id=\"statusMarriedRadio\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert noFamMembersTxt != null : "fx:id=\"noFamMembersTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokNameTxt != null : "fx:id=\"nokNameTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokContactTxt != null : "fx:id=\"nokContactTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokDistrictTxt != null : "fx:id=\"nokDistrictTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokCountyTxt != null : "fx:id=\"nokCountyTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokSubCountyTx != null : "fx:id=\"nokSubCountyTx\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokParishTxt != null : "fx:id=\"nokParishTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokVillageTxt != null : "fx:id=\"nokVillageTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'editTenant.fxml'.";
 
+    }
     
 }

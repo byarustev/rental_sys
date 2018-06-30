@@ -57,7 +57,7 @@ public class LoginController implements Initializable {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/dashboard.fxml"));
                 Parent root = (Parent)fxmlLoader.load();
                 Stage dashboardStage = new Stage();
-                dashboardStage.setTitle("Daaki Rental System");
+                dashboardStage.setTitle("Daaki Investiments Rental Management System");
                 dashboardStage.setScene(new Scene(root));
                dashboardStage.setResizable(false);
                 ((Node)(event.getSource())).getScene().getWindow().hide();

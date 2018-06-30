@@ -7,7 +7,6 @@ package controllers;
 
 import GeneralClasses.CurrentUser;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,13 +17,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Priority;
-import database.DatabaseHandler;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
@@ -130,11 +126,12 @@ public class DashboardController implements Initializable {
                 Parent root;
                 try {
                     root = (Parent)fxmlLoader.load();
-                    Stage dashboardStage = new Stage();
-                        dashboardStage.setTitle("Login");
-                        dashboardStage.setScene(new Scene(root));
+                    Stage loginStage = new Stage();
+                        loginStage.setTitle("Login");
+                        loginStage.setScene(new Scene(root));
+                        loginStage.setResizable(false);
                         ((Node)mainPane).getScene().getWindow().hide();
-                        dashboardStage.show(); 
+                        loginStage.show(); 
                 } catch (IOException ex) {
                     Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
                 }

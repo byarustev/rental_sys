@@ -88,7 +88,20 @@ public class TenantProfileController implements Initializable,ReloadableControll
 
     @FXML // fx:id="nokNameLabel"
     private Label nokNameLabel; // Value injected by FXMLLoader
+      @FXML // fx:id="nokDistrictLbl"
+    private Label nokDistrictLbl; // Value injected by FXMLLoader
 
+    @FXML // fx:id="nokCountyLbl"
+    private Label nokCountyLbl; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokSubCountyLbl"
+    private Label nokSubCountyLbl; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokParishLbl"
+    private Label nokParishLbl; // Value injected by FXMLLoader
+
+    @FXML // fx:id="nokVillageLbl"
+    private Label nokVillageLbl; // Value injected by FXMLLoader
     @FXML // fx:id="nokContactLabel"
     private Label nokContactLabel; // Value injected by FXMLLoader
     @FXML // fx:id="paymentsTable"
@@ -148,6 +161,11 @@ public class TenantProfileController implements Initializable,ReloadableControll
         this.nokNameLabel.setText(this.tenant.getNokName());
         this.phoneNumberLabel.setText(this.tenant.getPhoneNumber());
         this.numFamMemLabel.setText(this.tenant.getNumOfFamMembers()+"");
+        this.nokDistrictLbl.setText(this.tenant.getNokDistrict());
+        this.nokCountyLbl.setText(this.tenant.getNokCounty());
+        this.nokSubCountyLbl.setText(this.tenant.getNokSubCounty());
+        this.nokParishLbl.setText(this.tenant.getNokParish());
+        this.nokVillageLbl.setText(this.tenant.getNokVillage());
         try{
             if(!this.tenant.getAddedByUserId().equals(CurrentUser.getInstance().getUserId())){
                  editProfileBtn.setDisable(true);
@@ -388,7 +406,7 @@ public class TenantProfileController implements Initializable,ReloadableControll
             e.printStackTrace();
         }
     }
-  @FXML // This method is called by the FXMLLoader when initialization is complete
+      @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert nameLabel != null : "fx:id=\"nameLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nationalityLabel != null : "fx:id=\"nationalityLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
@@ -400,6 +418,11 @@ public class TenantProfileController implements Initializable,ReloadableControll
         assert numFamMemLabel != null : "fx:id=\"numFamMemLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokNameLabel != null : "fx:id=\"nokNameLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokContactLabel != null : "fx:id=\"nokContactLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert nokDistrictLbl != null : "fx:id=\"nokDistrictLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert nokCountyLbl != null : "fx:id=\"nokCountyLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert nokSubCountyLbl != null : "fx:id=\"nokSubCountyLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert nokParishLbl != null : "fx:id=\"nokParishLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert nokVillageLbl != null : "fx:id=\"nokVillageLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert editProfileBtn != null : "fx:id=\"editProfileBtn\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert houseLabel != null : "fx:id=\"houseLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert blockLabel != null : "fx:id=\"blockLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";

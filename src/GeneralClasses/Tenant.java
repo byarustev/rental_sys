@@ -14,6 +14,7 @@ import java.util.HashMap;
  * @author robert
  */
 public class Tenant {
+    //String nokDistrict, String nokCounty,String nokSubCountyTxt,String nokParish,String nokVillage
     private String tenantId;
     private String lastName;
     private String firstName;
@@ -23,13 +24,18 @@ public class Tenant {
     private String idType;
     private String maritalStatus;
     private int numOfFamMembers;
+    private HouseRentalContract currentHouseContract;
+    private ArrayList <Payment> myPayments;
     //nok is Next Of Kin
     private String nokName;
     private String nokContack;
     private String idNumber;
-    private HouseRentalContract currentHouseContract;
-    private ArrayList <Payment> myPayments;
     private String addedByUserId;
+    private String nokDistrict ;
+    private String nokCounty;
+    private String nokSubCounty ;
+    private String nokParish ;
+    private String nokVillage ;
 
     public String getAddedByUserId() {
         return addedByUserId;
@@ -65,7 +71,8 @@ public class Tenant {
         this.idNumber = idNumber;
     }
 
-    public Tenant(String tenantId, String lastName, String firstName, String dateOfBirth, String nationality, String phoneNumber, String idType,String idNumber,String maritalStatus, int numOfFamMembers, String nokName, String nokContack, String addedById) {
+    public Tenant(String tenantId, String lastName, String firstName, String dateOfBirth, String nationality, String phoneNumber, String idType,
+            String idNumber,String maritalStatus, int numOfFamMembers, String nokName, String nokContack,String nokDistrictTxt, String nokCountyTxt,String nokSubCountyTxt,String nokParishTxt,String nokVillageTxt, String addedById) {
         this.addedByUserId = addedById;
         this.tenantId = tenantId;
         this.lastName = lastName;
@@ -79,8 +86,12 @@ public class Tenant {
         this.numOfFamMembers = numOfFamMembers;
         this.nokName = nokName;
         this.nokContack = nokContack;
-    }
-    
+        this. nokDistrict=nokDistrictTxt;
+        this.nokCounty=nokCountyTxt;
+        this.nokSubCounty=nokSubCountyTxt;
+        this. nokParish=nokParishTxt;
+        this.nokVillage=nokVillageTxt;
+    }  
     /**
      *
      * @param lastName
@@ -94,8 +105,13 @@ public class Tenant {
      * @param numOfFamMembers
      * @param nokName
      * @param nokContack
+     * @param nokDistrictTxt
+     * @param nokCountyTxt
+     * @param nokSubCountyTxt
+     * @param nokParishTxt
+     * @param nokVillageTxt
      */
-    public Tenant(String lastName, String firstName, String dateOfBirth, String nationality, String phoneNumber, String idType,String idNumber ,String maritalStatus, int numOfFamMembers, String nokName, String nokContack) {
+    public Tenant(String lastName, String firstName, String dateOfBirth, String nationality, String phoneNumber, String idType,String idNumber ,String maritalStatus, int numOfFamMembers, String nokName, String nokContack,String nokDistrictTxt, String nokCountyTxt,String nokSubCountyTxt,String nokParishTxt,String nokVillageTxt) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.dateOfBirth = dateOfBirth;
@@ -107,6 +123,11 @@ public class Tenant {
         this.numOfFamMembers = numOfFamMembers;
         this.nokName = nokName;
         this.nokContack = nokContack;
+        this. nokDistrict=nokDistrictTxt;
+        this.nokCounty=nokCountyTxt;
+        this.nokSubCounty=nokSubCountyTxt;
+        this. nokParish=nokParishTxt;
+        this.nokVillage=nokVillageTxt;
     }
 
     public Tenant(HashMap tenant){
@@ -207,7 +228,8 @@ public class Tenant {
     public String save(){
         if(this.tenantId ==null){
             String id = DatabaseHandler.getInstance().insertTenant(this.firstName,this.lastName,this.maritalStatus,
-                this.nationality,this.idType,this.idNumber,this.numOfFamMembers,this.dateOfBirth,this.phoneNumber,this.nokName,this.nokContack);
+                this.nationality,this.idType,this.idNumber,this.numOfFamMembers,this.dateOfBirth,this.phoneNumber,this.nokName,this.nokContack,
+                this.nokDistrict,this.nokCounty,this.nokSubCounty,this.nokParish, this.nokVillage);
             this.setTenantId(id);
             return this.tenantId;
         }
@@ -251,4 +273,44 @@ public class Tenant {
         }
        return this.getCurrentContract();
     }
+       public String getNokDistrict() {
+        return nokDistrict;
+    }
+
+    public void setNokDistrict(String nokDistrictTxt) {
+        this.nokDistrict = nokDistrictTxt;
+    }
+
+    public String getNokCounty() {
+        return nokCounty;
+    }
+
+    public void setNokCounty(String nokCountyTxt) {
+        this.nokCounty = nokCountyTxt;
+    }
+
+    public String getNokSubCounty() {
+        return nokSubCounty;
+    }
+
+    public void setNokSubCounty(String nokSubCountyTx) {
+        this.nokSubCounty = nokSubCountyTx;
+    }
+
+    public String getNokParish() {
+        return nokParish;
+    }
+
+    public void setNokParish(String nokParishTxt) {
+        this.nokParish = nokParishTxt;
+    }
+
+    public String getNokVillage() {
+        return nokVillage;
+    }
+
+    public void setNokVillage(String nokVillageTxt) {
+        this.nokVillage = nokVillageTxt;
+    }
 }
+
