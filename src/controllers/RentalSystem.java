@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import GeneralClasses.SyncManager;
 import database.DatabaseHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +33,7 @@ public class RentalSystem extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        SyncManager.getInstance();
         launch(args);
     }
     

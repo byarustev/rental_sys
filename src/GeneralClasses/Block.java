@@ -2,6 +2,11 @@ package GeneralClasses;
 
 import database.DatabaseHandler;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -129,6 +134,21 @@ public class Block {
     @Override
     public String toString(){
      return String.format("%s - %s", this.name,this.location);
+    }
+    
+    public JSONObject toJSON(){
+        JSONObject payment = new JSONObject();
+       try {
+            payment.put("name", this.name);
+            payment.put("location", this.location);
+            payment.put("numberOfRentals", this.numberOfRentals);
+            payment.put("numberOfAvailableRentals", this.getNumberOfAvailableRentals());
+            payment.put("addedByUserId", this.addedByUserId);  
+            return payment;
+       } catch (JSONException ex) {
+           Logger.getLogger(Payment.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       return null;
     }
     
     

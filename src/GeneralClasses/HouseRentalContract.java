@@ -18,6 +18,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -247,5 +250,26 @@ public class HouseRentalContract implements RentalContract {
         return true;
     }
     
-    
+    public JSONObject toJSON(){
+         JSONObject contract = new JSONObject();
+       try {
+            contract.put("startDate", this.startDate);
+            contract.put("agreedMonthlyAmount", this.agreedMonthlyAmount);
+            contract.put("addedByUserId", this.addedByUserId);
+            contract.put("associatedHouseId", this.associatedHouseId);
+            contract.put("associatedTenantId", this.associatedTenantId);
+            JSONArray paymentsArray = new JSONArray();
+            ArrayList<Payment> payments = this.getPayments();
+            for(Payment x: payments){
+                 paymentsArray.put(x.toJSON());
+            }
+            contract.put("associatedTenant", this.getAssociatedTenant().toJSON());
+            contract.put("payments", paymentsArray);
+            contract.put("addedByUserId", this.addedByUserId);
+            return contract;
+       } catch (JSONException ex) {
+           Logger.getLogger(Payment.class.getName()).log(Level.SEVERE, null, ex);
+       }
+        return null;
+    }
 }

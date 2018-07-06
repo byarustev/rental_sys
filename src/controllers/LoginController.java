@@ -6,6 +6,7 @@
 package controllers;
 
 import GeneralClasses.CurrentUser;
+import database.DatabaseHandler;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -53,6 +54,12 @@ public class LoginController implements Initializable {
             passwordTxt.requestFocus();
         }
         if(CurrentUser.authenticate(usernameTxt.getText(), passwordTxt.getText()) != null){
+            
+            System.out.println(DatabaseHandler.generateId("BL"));
+            System.out.println(DatabaseHandler.generateId("HS"));
+            System.out.println(DatabaseHandler.generateId("TN"));
+            System.out.println(DatabaseHandler.generateId("BS"));
+            System.out.println(DatabaseHandler.generateId("PY"));
              try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/dashboard.fxml"));
                 Parent root = (Parent)fxmlLoader.load();

@@ -8,6 +8,11 @@ package GeneralClasses;
 import database.DatabaseHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -311,6 +316,35 @@ public class Tenant {
 
     public void setNokVillage(String nokVillageTxt) {
         this.nokVillage = nokVillageTxt;
+    }
+    
+    public JSONObject toJSON(){
+       JSONObject tenant = new JSONObject();
+       try {
+            tenant.put("tenantId", this.tenantId);
+            tenant.put("lastName", this.lastName);
+            tenant.put("firstName", this.firstName);
+            tenant.put("dateOfBirth", this.dateOfBirth);
+            tenant.put("nationality", this.nationality);
+            tenant.put("phoneNumber", this.phoneNumber);
+            tenant.put("idType", this.idType);
+            tenant.put("idNumber", this.idNumber);
+            tenant.put("maritalStatus", this.maritalStatus);
+            tenant.put("numOfFamMembers", this.numOfFamMembers);
+            tenant.put("nokName", this.nokName);
+            tenant.put("nokContack", this.nokContack);
+            tenant.put("nokDistrict", this.nokDistrict);
+            tenant.put("nokCounty", this.nokCounty);
+            tenant.put("nokSubCounty", this.nokSubCounty);
+            tenant.put("nokParish", this.nokParish);
+            tenant.put("nokVillage", this.nokVillage);
+            tenant.put("idType", this.idType);
+            tenant.put("addedByUserId", this.addedByUserId);
+            return tenant;
+       } catch (JSONException ex) {
+           Logger.getLogger(Payment.class.getName()).log(Level.SEVERE, null, ex);
+       }
+       return null;
     }
 }
 

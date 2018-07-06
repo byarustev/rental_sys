@@ -3,14 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/EditTenantController.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/Tenant.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/NumberValidator.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/TenantProfileController.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/CurrentUser.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/LoginController.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/SyncManager.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/Payment.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/House.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/Block.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/database/DatabaseHandler.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/BankStatement.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/NumberValidator.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/EditContractController.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/PaymentsController.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/TenantsController.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/RentalSystem.java</file>
-            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/StatementsController.java</file>
         </group>
     </open-files>
 </project-private>

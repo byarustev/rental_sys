@@ -1,6 +1,12 @@
 package GeneralClasses;
 
 import database.DatabaseHandler;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -126,5 +132,26 @@ public class House{
         
         public boolean isOccupied(){
             return DatabaseHandler.getInstance().getCurrentContract(null, houseId) != null;
+        }
+        
+        public JSONObject toJSON(){
+            JSONObject house = new JSONObject();
+            try {
+                 house.put("rentalName", this.rentalName);
+                 house.put("rentalNumOfUnits", this.rentalNumOfUnits);
+                 house.put("unitNo", this.unitNo);
+                 house.put("monthlyAmount", this.monthlyAmount);
+                 house.put("houseId", this.houseId);
+                 house.put("blockId", this.blockId);
+                 house.put("availability", this.availability);
+                 house.put("monthlyAmount", this.monthlyAmount);
+                 house.put("houseId", this.houseId);
+                 house.put("addedByUserId", this.addedByUserId);
+                 return house;
+            } catch (JSONException ex) {
+                Logger.getLogger(Payment.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        return null;
+            
         }
     }
