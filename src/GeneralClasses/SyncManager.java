@@ -28,6 +28,9 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONWriter;
+
 
 
 
@@ -84,6 +87,7 @@ public class SyncManager {
             httpConnection.setRequestMethod("POST");
             httpConnection.setRequestProperty("Content-Type", "application/json");
             httpConnection.setRequestProperty("Accept", "application/json");
+            httpConnection.setReadTimeout(10000);
             // Not required
             // urlConnection.setRequestProperty("Content-Length", String.valueOf(input.getBytes().length));
 
@@ -105,14 +109,36 @@ public class SyncManager {
                 content.append(line).append("\n");
             }
             bufferedReader.close();
-
-            // Prints the response
+            
+            JSONObject responseData = (JSONObject)new JSONTokener(content.toString()).nextValue();
             System.out.println(content.toString());
+            updateLocalDatabase(responseData.getJSONObject("syncedData"));
         } catch (MalformedURLException ex) {
             Logger.getLogger(SyncManager.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(SyncManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(SyncManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
             
+    }
+    
+    public void updateLocalDatabase(JSONObject databaseData){
+        DatabaseHandler.getInstance().truncateDatabase();
+        try {
+            DatabaseHandler.getInstance().syncBlocks(databaseData.getJSONArray("blocks"));
+            DatabaseHandler.getInstance().syncHouses(databaseData.getJSONArray("houses"));
+            DatabaseHandler.getInstance().syncTenants(databaseData.getJSONArray("tenants"));
+            DatabaseHandler.getInstance().syncRentalContracts(databaseData.getJSONArray("contracts"));
+            DatabaseHandler.getInstance().syncPayments(databaseData.getJSONArray("payments"));
+            DatabaseHandler.getInstance().syncStatements(databaseData.getJSONArray("statements"));
+            DatabaseHandler.getInstance().syncUsers(databaseData.getJSONArray("users"));
+        } catch (JSONException ex) {
+            Logger.getLogger(SyncManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 }

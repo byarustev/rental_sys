@@ -95,7 +95,7 @@ public class Block {
     }
 
     public int getNumberOfRentals() {
-        return numberOfRentals;
+        return getHousesList().size();
     }
 
     public void setNumberOfRentals(int number_of_retals) {
@@ -120,7 +120,11 @@ public class Block {
 
     public void setHousesList(ArrayList<House> housesList) {
         this.housesList = housesList;
+        try{
         housesList.forEach(x->x.setBlockId(databaseId));
+        }catch(NullPointerException ex){
+            ex.printStackTrace();
+        }
     }
     
     /**

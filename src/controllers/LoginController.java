@@ -26,6 +26,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -54,12 +55,6 @@ public class LoginController implements Initializable {
             passwordTxt.requestFocus();
         }
         if(CurrentUser.authenticate(usernameTxt.getText(), passwordTxt.getText()) != null){
-            
-            System.out.println(DatabaseHandler.generateId("BL"));
-            System.out.println(DatabaseHandler.generateId("HS"));
-            System.out.println(DatabaseHandler.generateId("TN"));
-            System.out.println(DatabaseHandler.generateId("BS"));
-            System.out.println(DatabaseHandler.generateId("PY"));
              try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/dashboard.fxml"));
                 Parent root = (Parent)fxmlLoader.load();

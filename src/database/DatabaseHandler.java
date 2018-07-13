@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  *
@@ -51,20 +52,22 @@ public class DatabaseHandler {
     private final String BANK_STATEMENTS_TABLE_NAME ="bank_statements";
     private final int HOUSE_NOT_AVAILABLE=0;
     private final int HOUSE_AVAILABLE=1;
+    private Connection connection;
     //eager instatiation of the of the instance
     
     private static final  DatabaseHandler DB_HANDLER =new DatabaseHandler();
     
     private DatabaseHandler(){
-
+         createConnection();
         createTables();
+       
     }
     public static DatabaseHandler getInstance(){
         return DB_HANDLER;
     }
     private void createTables(){
         try {
-            DatabaseMetaData md = this.createConnection().getMetaData();
+            DatabaseMetaData md = this.connection.getMetaData();
             ResultSet rs = md.getTables(null, null, BLOCKS_TABLE_NAME.toUpperCase(), null);
             if(rs.next()){
                 //Blocks table is present
@@ -84,7 +87,7 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
@@ -109,7 +112,7 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
@@ -134,7 +137,7 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
@@ -160,7 +163,7 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
@@ -183,7 +186,7 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
@@ -209,7 +212,7 @@ public class DatabaseHandler {
                         + ")";
                 System.out.println(sql);
                 
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
             }
             
@@ -232,7 +235,7 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
@@ -269,7 +272,7 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
@@ -279,18 +282,18 @@ public class DatabaseHandler {
             if(rs.next()){
                 
                 System.out.println(USERS_TABLE_NAME+" table is already created");
-                // this.createConnection().createStatement().execute("INSERT INTO "+USERS_TABLE_NAME+" (fistName,lastName,email,password) VALUES('Robert','Kasumba','robein@ymail.com','robert123')");
+               
             }
             else{
-                String sql ="CREATE TABLE "+USERS_TABLE_NAME+" (id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY \n," +
+                String sql ="CREATE TABLE "+USERS_TABLE_NAME+" (id int NOT NULL PRIMARY KEY  \n," +
                         
                         "fistName varchar(30) NOT NULL,"
                         + "lastName varchar(30) NOT NULL,"
                         + "email varchar(40) NOT NULL,"
                         + "password varchar(250) NOT NULL)";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
-                this.createConnection().createStatement().execute("INSERT INTO "+USERS_TABLE_NAME+" (fistName,lastName,email,password) VALUES('Yvonne','Nalinnya','yvonne@gmail.com','yvonne123')");
+                this.connection.createStatement().execute("INSERT INTO "+USERS_TABLE_NAME+" (id,fistName,lastName,email,password) VALUES('1',Yvonne','Nalinnya','yvonne@gmail.com','yvonne123')");
                 System.out.println(sql);
             }
             //Creating the BANK_STATEMENTS_TABLE_NAME table
@@ -298,7 +301,7 @@ public class DatabaseHandler {
             if(rs.next()){
                 //Blocks table is present
                 System.out.println(BANK_STATEMENTS_TABLE_NAME+" table is already created");
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                // statement.execute("DROP TABLE "+BANK_STATEMENTS_TABLE_NAME);
             }
             else{
@@ -315,12 +318,12 @@ public class DatabaseHandler {
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
-                statement = this.createConnection().createStatement();
+                statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
         
         
@@ -329,12 +332,12 @@ public class DatabaseHandler {
     
     
     
-    public Connection createConnection(){
+    public void createConnection(){
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
-            Connection connection = DriverManager.getConnection(DB_URL);
+            this. connection = DriverManager.getConnection(DB_URL);
             //System.out.println("SUCCEEDED ");
-            return connection;
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("FAILED CLASS");
@@ -344,7 +347,7 @@ public class DatabaseHandler {
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ex.getMessage());
         }
-        return null;
+      
     }
 
     public boolean insertBlock(Block block) {
@@ -353,7 +356,7 @@ public class DatabaseHandler {
         String houseInsertSql ="INSERT INTO "+HOUSES_TABLE_NAME+" (houseNumber,houseName,monthlyPrice,numberOfRooms,blockID,addedByUserId,record_id) VALUES (?,?,?,?,?,?,?)";
         try {
              //" varchar(40) UNIQUE NOT NULL,"+
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(blockInsertSql);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(blockInsertSql);
             preparedStatement.setString(1, block.getName());
             preparedStatement.setString(2, block.getLocation());
             preparedStatement.setInt(3, block.getNumberOfRentals());
@@ -362,7 +365,7 @@ public class DatabaseHandler {
             preparedStatement.setString(5, DatabaseHandler.generateId("BL"));
             preparedStatement.execute();
             //get the created Id
-            preparedStatement = this.createConnection().prepareStatement(blockIdQuery);
+            preparedStatement = this.connection.prepareStatement(blockIdQuery);
             preparedStatement.setString(1, block.getName());
             preparedStatement.setString(2, block.getLocation());
             preparedStatement.setInt(3, block.getNumberOfRentals());
@@ -373,13 +376,14 @@ public class DatabaseHandler {
                 String blockId=rs.getString("record_id");
                 for(House x: block.getHousesList()){
                     System.out.println(x.getUnitNo()+" : "+x.getRentalName()+" : "+x.getRentalNumOfUnits());
-                    preparedStatement = this.createConnection().prepareStatement(houseInsertSql);
+                    preparedStatement = this.connection.prepareStatement(houseInsertSql);
                     preparedStatement.setString(1, x.getUnitNo());
                     preparedStatement.setString(2, x.getRentalName());
                     preparedStatement.setDouble(3, x.getMonthlyAmount());
                     preparedStatement.setInt(4,x.getRentalNumOfUnits());
                     preparedStatement.setString(5,blockId);
                     preparedStatement.setString(6, CurrentUser.getInstance().getUserId());
+                    
                     preparedStatement.setString(7, DatabaseHandler.generateId("HS"));
                     preparedStatement.execute();
                     try {
@@ -401,19 +405,19 @@ public class DatabaseHandler {
     public ArrayList<House> getHousesList(String databaseId,boolean availableOnly) {
         String housesQuery;
         if(availableOnly){
-              housesQuery="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE blockID = ? AND avaibility =1";
+              housesQuery="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE blockID = ? AND availability =1";
         }
         else{
             housesQuery ="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE blockID = ?";
         }
        
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(housesQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(housesQuery);
             preparedStatement.setString(1,databaseId);
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<House> list = new ArrayList();
             while(rs.next()){
-                list.add(new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("avaibility"),
+                list.add(new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("availability"),
                      rs.getString("addedByUserId")));
             }   
             return list;
@@ -429,12 +433,12 @@ public class DatabaseHandler {
     public ArrayList<House> getHousesList() {
         String housesQuery="SELECT * FROM "+HOUSES_TABLE_NAME;
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(housesQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(housesQuery);
          
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<House> list = new ArrayList();
             while(rs.next()){
-                list.add(new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("avaibility"),
+                list.add(new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("availability"),
                      rs.getString("addedByUserId")));
             }   
             return list;
@@ -449,11 +453,11 @@ public class DatabaseHandler {
     public House getHouse(String databaseId) {
         String housesQuery ="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE record_id = ?";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(housesQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(housesQuery);
             preparedStatement.setString(1,databaseId);
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
-                return new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("avaibility"),
+                return new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("availability"),
                      rs.getString("addedByUserId"));
             }   
             
@@ -468,7 +472,7 @@ public class DatabaseHandler {
     public ArrayList<Block> getBlocks(){
         String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(blockQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(blockQuery);
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<Block> blocksList = new ArrayList();
             while(rs.next()){
@@ -488,7 +492,7 @@ public class DatabaseHandler {
      public Block getBlock(String blockId) {
           String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+" WHERE record_id =?";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(blockQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(blockQuery);
             preparedStatement.setString(1, blockId);
             ResultSet rs = preparedStatement.executeQuery();
             Block block=null;
@@ -512,9 +516,9 @@ public class DatabaseHandler {
         String sql ="INSERT INTO "+TENANTS_TABLE_NAME+" (firstName,lastName,maritalStatus,dateOfBirth,nationality,"
                 + "IdType,IdNumber,photoPath,phoneNumber1,phoneNumber2,"
                 + "numOfFamilyMembers,nextOfKinName,nextOfKinContact,addedByUserId,nextOfKinDistrict ,nextOfKinCounty ,"
-                + "nextOfKinSubCountry ,nextOfKinParish,nextOfKinVillage,record_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "nextOfKinSubCounty ,nextOfKinParish,nextOfKinVillage,record_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(sql);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
             preparedStatement.setString(1,firstName);
             preparedStatement.setString(2,lastName);
             preparedStatement.setString(3,maritalStatus);
@@ -537,7 +541,7 @@ public class DatabaseHandler {
             preparedStatement.setString(20,DatabaseHandler.generateId("TN"));
             preparedStatement.execute();
             String idQuery = "SELECT record_id FROM "+TENANTS_TABLE_NAME+" WHERE firstName = ? AND lastName = ? AND dateOfBirth = ? AND phoneNumber1 = ?";
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, lastName);
             preparedStatement.setString(3, dateOfBirth);
@@ -558,7 +562,7 @@ public class DatabaseHandler {
     public String insertBankStatement(String transactionDate, String valueDate, String transactionDescription, Double creditAmount, Double accountBalance, String tenantId){
         String insertSql ="INSERT INTO "+BANK_STATEMENTS_TABLE_NAME+" (transactionDate,valueDate,transactionDescription,creditAmount,accountBalance,tenantId,addedByUserId,record_id) VALUES(?,?,?,?,?,?,?,?)";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(insertSql);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(insertSql);
             preparedStatement.setString(1, transactionDate);
             preparedStatement.setString(2, valueDate);
             preparedStatement.setString(3, transactionDescription);
@@ -569,7 +573,7 @@ public class DatabaseHandler {
             preparedStatement.setString(8,DatabaseHandler.generateId("BS"));
             preparedStatement.execute();
             String idQuery = "SELECT record_id FROM "+BANK_STATEMENTS_TABLE_NAME+" WHERE transactionDate=? AND valueDate=?  AND creditAmount=? AND tenantId=?";
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             preparedStatement.setString(1, transactionDate);
             preparedStatement.setString(2, valueDate);
             preparedStatement.setDouble(3, creditAmount);
@@ -595,7 +599,7 @@ public class DatabaseHandler {
     public String insertHouseContract(String associatedTenant, String associatedHouse, String startDate, Double agreedMonthlyAmount) {
         String insertSql ="INSERT INTO " +HOUSE_RENTAL_CONTRACT_TABLE_NAME+" (startDate,agreedMonthlyAmount,houseID,tenantID,addedByUserId,record_id) VALUES(?,?,?,?,?,?)";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(insertSql);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(insertSql);
             preparedStatement.setString(1, startDate);
             preparedStatement.setDouble(2, agreedMonthlyAmount);
             preparedStatement.setString(3, associatedHouse);
@@ -607,7 +611,7 @@ public class DatabaseHandler {
             changeHouseAvailability(associatedHouse, this.HOUSE_NOT_AVAILABLE);
             
             String idQuery = "SELECT record_id FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE startDate = ? AND houseID = ? AND tenantID = ? AND agreedMonthlyAmount = ?";
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             preparedStatement.setString(1, startDate);
             preparedStatement.setString(2, associatedHouse);
             preparedStatement.setString(3, associatedTenant);
@@ -628,7 +632,7 @@ public class DatabaseHandler {
     public String savePayment(String paymentDate, Double paymentAmount, String rentalContractId, String receivedBy,String tenantId,String modeOfPayment,String referenceNumber) {
         String sql ="INSERT INTO "+PAYMENTS_TABLE_NAME+" (amountPaid,datePaid,receiptNumber,modeOfPayment,tenantID,contractID,receivedBy,addedByUserId,record_id) VALUES(?,?,?,?,?,?,?,?,?)";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(sql);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
             preparedStatement.setDouble(1, paymentAmount);
             preparedStatement.setString(2, paymentDate);
             preparedStatement.setString(3, referenceNumber);
@@ -641,7 +645,7 @@ public class DatabaseHandler {
             preparedStatement.execute();
             
             String paymentQuery = "SELECT record_id FROM "+PAYMENTS_TABLE_NAME+" WHERE amountPaid =? AND datePaid =? AND receiptNumber =? AND tenantID =? AND contractID =?";
-            preparedStatement = this.createConnection().prepareStatement(paymentQuery);
+            preparedStatement = this.connection.prepareStatement(paymentQuery);
             preparedStatement.setDouble(1, paymentAmount);
             preparedStatement.setString(2, paymentDate);
             preparedStatement.setString(3, referenceNumber);
@@ -670,12 +674,12 @@ public class DatabaseHandler {
             PreparedStatement prepartedStatement=null;
             if(tenantId != null && houseId==null){
                 contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE tenantID = ? AND isTerminated=0 ORDER BY id DESC";
-                prepartedStatement= this.createConnection().prepareStatement(contractQuery);
+                prepartedStatement= this.connection.prepareStatement(contractQuery);
                 prepartedStatement.setString(1, tenantId);
             }
             else if(tenantId == null && houseId!=null){
                 contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE houseID = ? AND isTerminated=0 ORDER BY dateCreated DESC";
-                prepartedStatement= this.createConnection().prepareStatement(contractQuery);
+                prepartedStatement= this.connection.prepareStatement(contractQuery);
                 prepartedStatement.setString(1, houseId);
             }
             ResultSet rs =prepartedStatement.executeQuery();
@@ -696,7 +700,7 @@ public class DatabaseHandler {
         String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" WHERE tenantID =?";
         PreparedStatement preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             preparedStatement.setString(1, tenantId);
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<Payment> tenantPayments = new ArrayList();
@@ -718,14 +722,14 @@ public class DatabaseHandler {
             PreparedStatement preparedStatement;
         try {
             ArrayList<Tenant> tenants = new ArrayList();
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
            
             while(rs.next()){
                 tenants.add(new Tenant(rs.getString("record_id"), rs.getString("lastName") , rs.getString("firstName"), 
                         rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
                         rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") , 
-                        rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCountry"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
+                        rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCounty"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
                      rs.getString("addedByUserId")));
             }
             return tenants;
@@ -738,14 +742,14 @@ public class DatabaseHandler {
         String idQuery = "SELECT * FROM "+TENANTS_TABLE_NAME+" WHERE record_id =?";
         PreparedStatement preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             preparedStatement.setString(1, tenantId);
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
               return new Tenant(rs.getString("record_id"), rs.getString("lastName") , rs.getString("firstName"), 
                         rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
                         rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") , 
-                        rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCountry"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
+                        rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCounty"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
                      rs.getString("addedByUserId"));
             }
             return null;
@@ -758,7 +762,7 @@ public class DatabaseHandler {
         String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" WHERE contractID =?";
         PreparedStatement preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             preparedStatement.setString(1, contractId);
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<Payment> tenantPayments = new ArrayList();
@@ -778,7 +782,7 @@ public class DatabaseHandler {
         String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" ORDER BY datePaid DESC";
         PreparedStatement preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
             ArrayList<Payment> tenantPayments = new ArrayList();
             while(rs.next()){
@@ -797,7 +801,7 @@ public class DatabaseHandler {
         String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" WHERE datePaid BETWEEN ? AND ?  ORDER BY datePaid DESC";
         PreparedStatement preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             preparedStatement.setString(1, startDate);
             preparedStatement.setString(2, endDate);
             ResultSet rs = preparedStatement.executeQuery();
@@ -824,9 +828,9 @@ public class DatabaseHandler {
                 + "IdType=?,IdNumber=?,photoPath=?,phoneNumber1=?,phoneNumber2=?,"
                 + "numOfFamilyMembers=?,nextOfKinName=?,nextOfKinContact=?,"
                 + "dateLastModified=?,nextOfKinDistrict=? ,nextOfKinCounty=? ,"
-                + "nextOfKinSubCountry=? ,nextOfKinParish=?,nextOfKinVillage=? WHERE record_id=?";
+                + "nextOfKinSubCounty=? ,nextOfKinParish=?,nextOfKinVillage=?, hasSynced=0 WHERE record_id=?";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(sql);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
             preparedStatement.setString(1,tenant.getFirstName());
             preparedStatement.setString(2,tenant.getLastName());
             preparedStatement.setString(3,tenant.getMaritalStatus());
@@ -861,7 +865,7 @@ public class DatabaseHandler {
               //  + "(,,,,,)"
             ArrayList<BankStatement> statements = new ArrayList();
             try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(query);
           
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
@@ -881,7 +885,7 @@ public class DatabaseHandler {
               //  + "(,,,,,)"
             ArrayList<BankStatement> statements = new ArrayList();
             try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(query);
             preparedStatement.setString(1, startDate);
             preparedStatement.setString(2, endDate);
             ResultSet rs = preparedStatement.executeQuery();
@@ -897,10 +901,10 @@ public class DatabaseHandler {
             return null;
     }
     public boolean updatePayment(Payment payment) {
-       String sql ="UPDATE "+PAYMENTS_TABLE_NAME+" SET amountPaid=?,datePaid=?,receiptNumber=?,modeOfPayment=?,tenantID=?,contractID=?,receivedBy=? WHERE record_id=?";
+       String sql ="UPDATE "+PAYMENTS_TABLE_NAME+" SET amountPaid=?,datePaid=?,receiptNumber=?,modeOfPayment=?,tenantID=?,contractID=?,receivedBy=?, hasSynced=0 WHERE record_id=?";
        try {
           
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(sql);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
             preparedStatement.setDouble(1,payment.getPaymentAmount() );
             preparedStatement.setString(2, payment.getPaymentDate());
             preparedStatement.setString(3, payment.getReferenceNumber());
@@ -922,7 +926,7 @@ public class DatabaseHandler {
               //  + "(,,,,,)"
             ArrayList<BankStatement> statements = new ArrayList();
             try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(query);
             preparedStatement.setString(1, tenantId);
            
             ResultSet rs = preparedStatement.executeQuery();
@@ -943,12 +947,13 @@ public class DatabaseHandler {
         
         if(shouldTerminate){
            //terminate statements 
-            String updateContractSql = "UPDATE "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" SET isTerminated=1, dateLastModified=?  WHERE record_id=?";
+            String updateContractSql = "UPDATE "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" SET isTerminated=1, dateLastModified=?, hasSynced=0  WHERE record_id=?";
            try {
-               PreparedStatement preparedStatement = this.createConnection().prepareStatement(updateContractSql);
+               PreparedStatement preparedStatement = this.connection.prepareStatement(updateContractSql);
                preparedStatement.setString(2, contractId);
                preparedStatement.setTimestamp(1,new Timestamp(calendar.getTime().getTime()));
                preparedStatement.execute();
+               changeHouseAvailability(prevHouseId, this.HOUSE_AVAILABLE);
                if(houseId==null){
                    //do not create new statements
                    return null;
@@ -968,9 +973,9 @@ public class DatabaseHandler {
        }
        else{
            //update the current statements
-           String updateContractSql = "UPDATE "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" SET startDate =?,agreedMonthlyAmount=? ,houseID=?, tenantID=?,dateLastModified=? WHERE record_id=?";
+           String updateContractSql = "UPDATE "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" SET startDate =?,agreedMonthlyAmount=? ,houseID=?, tenantID=?,dateLastModified=?, hasSynced=0 WHERE record_id=?";
            try {
-               PreparedStatement preparedStatement = this.createConnection().prepareStatement(updateContractSql);
+               PreparedStatement preparedStatement = this.connection.prepareStatement(updateContractSql);
                preparedStatement.setString(1, startDate);
                preparedStatement.setDouble(2, agreedAmount);
                preparedStatement.setString(3, houseId);
@@ -995,29 +1000,36 @@ public class DatabaseHandler {
     }
     private void changeHouseAvailability(String houseId, int availability) throws SQLException{
        Calendar calendar = Calendar.getInstance();
-       String  updateHouseSql="UPDATE "+HOUSES_TABLE_NAME+" SET avaibility =?,dateLastModified=? WHERE record_id = ?";
-       PreparedStatement  preparedStatement = this.createConnection().prepareStatement(updateHouseSql);
+       String  updateHouseSql="UPDATE "+HOUSES_TABLE_NAME+" SET availability =?,dateLastModified=?,hasSynced=0 WHERE record_id = ?";
+       PreparedStatement  preparedStatement = this.connection.prepareStatement(updateHouseSql);
        preparedStatement.setInt(1, availability);
-        preparedStatement.setTimestamp(2,new Timestamp(calendar.getTime().getTime()));
+       preparedStatement.setTimestamp(2,new Timestamp(calendar.getTime().getTime()));
        preparedStatement.setString(3, houseId);
        preparedStatement.execute();
     }
     public HashMap validateUser(String email, String password) {
        HashMap <String, String> userMap = new HashMap();
-       String queryUserSql = "SELECT * FROM "+USERS_TABLE_NAME+" WHERE email=? AND password=?";
+       String queryUserSql = "SELECT * FROM "+USERS_TABLE_NAME+" WHERE email=?";
        PreparedStatement  preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(queryUserSql);
+            preparedStatement = this.connection.prepareStatement(queryUserSql);
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
             ResultSet rs=preparedStatement.executeQuery();
             if(rs.next()){
-                userMap.put(CurrentUser.KEY_USERNAME, rs.getString("email"));
-                userMap.put(CurrentUser.KEY_USER_ID, rs.getString("id"));
-                userMap.put(CurrentUser.KEY_FULL_NAME, rs.getString("fistName")+" "+rs.getString("lastName"));
-                return userMap;
+               // System.out.println("COMPARING "+password+" : "+rs.getString("password").replaceFirst("2y", "2a"));
+                if(BCrypt.checkpw(password, rs.getString("password").replaceFirst("2y", "2a"))){
+                     userMap.put(CurrentUser.KEY_USERNAME, rs.getString("email"));
+                    userMap.put(CurrentUser.KEY_USER_ID, rs.getString("id"));
+                    userMap.put(CurrentUser.KEY_FULL_NAME, rs.getString("fistName")+" "+rs.getString("lastName"));
+                    return userMap;
+                }
+                else{
+                    System.out.println("FAILED SO MUCH");
+                }
+               
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
       return null;
@@ -1026,7 +1038,7 @@ public class DatabaseHandler {
     public HouseRentalContract getContract(String rentalContractId) {
         try {
             String contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE record_id=?";
-            PreparedStatement preparedStatement= this.createConnection().prepareStatement(contractQuery);
+            PreparedStatement preparedStatement= this.connection.prepareStatement(contractQuery);
             preparedStatement.setString(1, rentalContractId);
             ResultSet rs =preparedStatement.executeQuery();
             if(rs.next()){
@@ -1058,7 +1070,7 @@ public class DatabaseHandler {
         JSONArray blocksArray =new  JSONArray();
         String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(blockQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(blockQuery);
             ResultSet rs = preparedStatement.executeQuery();
             JSONObject blocksObject = new JSONObject();
             while(rs.next()){
@@ -1086,16 +1098,17 @@ public class DatabaseHandler {
           
         String housesQuery="SELECT * FROM "+HOUSES_TABLE_NAME;
         try {
-            PreparedStatement preparedStatement = this.createConnection().prepareStatement(housesQuery);
+            PreparedStatement preparedStatement = this.connection.prepareStatement(housesQuery);
             ResultSet rs = preparedStatement.executeQuery();
             JSONObject house = new JSONObject();
             while(rs.next()){
                 house.put("record_id", rs.getString("record_id"));
                 house.put("houseNumber", rs.getString("houseNumber"));
+                 house.put("houseName", rs.getString("houseName"));
                 house.put("numberOfRooms", rs.getString("numberOfRooms"));
                 house.put("monthlyPrice", rs.getString("monthlyPrice"));
                 house.put("blockID", rs.getString("blockID"));
-                house.put("availability", rs.getString("avaibility"));
+                house.put("availability", rs.getString("availability"));
                 house.put("addedByUserId", rs.getString("addedByUserId"));
                 house.put("dateCreated", rs.getString("dateCreated"));
                 house.put("dateLastModified", rs.getString("dateLastModified"));
@@ -1117,7 +1130,7 @@ public class DatabaseHandler {
         String contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+"";
         PreparedStatement preparedStatement;
        try{
-        preparedStatement = this.createConnection().prepareStatement(contractQuery);
+        preparedStatement = this.connection.prepareStatement(contractQuery);
         ResultSet rs =preparedStatement.executeQuery();
 
         JSONObject contract = new JSONObject();
@@ -1128,6 +1141,7 @@ public class DatabaseHandler {
             contract.put("houseID", rs.getString("houseID"));
             contract.put("agreedMonthlyAmount", rs.getString("agreedMonthlyAmount"));
             contract.put("addedByUserId", rs.getString("addedByUserId"));
+            contract.put("isTerminated", rs.getString("isTerminated"));
             contract.put("dateCreated", rs.getString("dateCreated"));
             contract.put("dateLastModified", rs.getString("dateLastModified"));
             contract.put("hasSynced", rs.getString("hasSynced"));
@@ -1148,7 +1162,7 @@ public class DatabaseHandler {
             PreparedStatement preparedStatement;
         try {
             JSONObject tenants = new JSONObject();
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
            
             while(rs.next()){
@@ -1166,7 +1180,7 @@ public class DatabaseHandler {
                 tenants.put("nextOfKinContact", rs.getString("nextOfKinContact"));
                 tenants.put("nextOfKinDistrict", rs.getString("nextOfKinDistrict"));
                 tenants.put("nextOfKinCounty", rs.getString("nextOfKinCounty"));
-                tenants.put("nextOfKinSubCounty", rs.getString("nextOfKinSubCountry"));
+                tenants.put("nextOfKinSubCounty", rs.getString("nextOfKinSubCounty"));
                 tenants.put("nextOfKinParish", rs.getString("nextOfKinParish"));
                 tenants.put("nextOfKinVillage", rs.getString("nextOfKinVillage"));
                 tenants.put("addedByUserId", rs.getString("addedByUserId"));
@@ -1188,7 +1202,7 @@ public class DatabaseHandler {
           String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME;
          PreparedStatement preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
             JSONObject payment = new JSONObject();
             while(rs.next()){
@@ -1221,7 +1235,7 @@ public class DatabaseHandler {
           String idQuery = "SELECT * FROM "+BANK_STATEMENTS_TABLE_NAME;
          PreparedStatement preparedStatement;
         try {
-            preparedStatement = this.createConnection().prepareStatement(idQuery);
+            preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
             JSONObject statements = new JSONObject();
             while(rs.next()){
@@ -1247,5 +1261,283 @@ public class DatabaseHandler {
         return statementsArray;
         
     }
+     
+    public void truncateDatabase(){
+        String usersTable ="TRUNCATE TABLE "+USERS_TABLE_NAME;
+        String truncateBlocksTable = "TRUNCATE TABLE "+BLOCKS_TABLE_NAME;
+        String truncateHousesTable = "TRUNCATE TABLE "+HOUSES_TABLE_NAME;
+        String truncateTenantsTable ="TRUNCATE TABLE "+TENANTS_TABLE_NAME;
+        String truncateContractsTable ="TRUNCATE TABLE "+HOUSE_RENTAL_CONTRACT_TABLE_NAME;
+        String statementsTable ="TRUNCATE TABLE "+BANK_STATEMENTS_TABLE_NAME;
+        String paymentsTable ="TRUNCATE TABLE "+PAYMENTS_TABLE_NAME;
+        
+        try {
+            PreparedStatement preparedStatement = this.connection.prepareStatement(truncateBlocksTable);
+            preparedStatement.execute();
+            preparedStatement = this.connection.prepareStatement(truncateHousesTable);
+            preparedStatement.execute();
+            preparedStatement = this.connection.prepareStatement(truncateTenantsTable);
+            preparedStatement.execute();
+            preparedStatement = this.connection.prepareStatement(truncateContractsTable);
+            preparedStatement.execute();
+            preparedStatement = this.connection.prepareStatement(paymentsTable);
+            preparedStatement.execute();
+            preparedStatement = this.connection.prepareStatement(statementsTable);
+            preparedStatement.execute();
+            preparedStatement = this.connection.prepareStatement(usersTable);
+            preparedStatement.execute();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    /**
+     * This method is used to synchronize blocks received from the web server with what the local database has.
+     * @param blocksArray
+     */
+    public void syncBlocks(JSONArray blocksArray){
+        
+        for(int i=0; i<blocksArray.length();i++){
+            try {
+                insertSyncedBlock(blocksArray.getJSONObject(i));
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    public void syncHouses(JSONArray blocksArray){
+        
+        for(int i=0; i<blocksArray.length();i++){
+            try {
+                this.insertSyncedHouse(blocksArray.getJSONObject(i));
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }  
+    public void syncTenants(JSONArray tenantsArray){
+        
+        for(int i=0; i<tenantsArray.length();i++){
+            try {
+                this.insertSyncedTenant(tenantsArray.getJSONObject(i));
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    public void syncPayments(JSONArray paymentsArray){
+        
+        for(int i=0; i<paymentsArray.length();i++){
+            try {
+                this.insertSyncedPayment(paymentsArray.getJSONObject(i));
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    public void syncRentalContracts(JSONArray contractsArray){
+        
+        for(int i=0; i<contractsArray.length();i++){
+            try {
+                this.insertSyncedContract(contractsArray.getJSONObject(i));
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    public void syncStatements(JSONArray statementsArray){
+        
+        for(int i=0; i<statementsArray.length();i++){
+            try {
+                this.insertSyncedStatement(statementsArray.getJSONObject(i));
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+      public void syncUsers(JSONArray usersArray){
+        for(int i=0; i<usersArray.length();i++){
+            try {
+                this.insertSyncedUser(usersArray.getJSONObject(i));
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    public void insertSyncedBlock(JSONObject block){
+        String blockInsertSql ="INSERT INTO "+BLOCKS_TABLE_NAME+" (block_name,location,number_of_rentals,addedByUserId,record_id,dateCreated,dateLastModified,hasSynced) VALUES(?,?,?,?,?,?,?,?)";
+        try {
+             //" varchar(40) UNIQUE NOT NULL,"+
+            PreparedStatement preparedStatement = this.connection.prepareStatement(blockInsertSql);
+            preparedStatement.setString(1, block.getString("block_name"));
+            preparedStatement.setString(2, block.getString("location"));
+            preparedStatement.setInt(3, block.getInt("number_of_rentals"));
+            preparedStatement.setInt(4, block.getInt("addedByUserId"));
+            preparedStatement.setString(5, block.getString("record_id"));
+            preparedStatement.setString(6, block.getString("dateCreated"));
+            preparedStatement.setString(7, block.getString("dateLastModified"));
+            preparedStatement.setInt(8, 1);
+            preparedStatement.execute();
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void insertSyncedHouse(JSONObject house){
+        String houseInsertSql ="INSERT INTO "+HOUSES_TABLE_NAME+" (houseNumber,houseName,monthlyPrice,numberOfRooms,blockID,addedByUserId,record_id,"
+                + "dateCreated,dateLastModified,hasSynced,availability) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+                PreparedStatement preparedStatement;
+                preparedStatement = this.connection.prepareStatement(houseInsertSql);
+                preparedStatement.setString(1, house.getString("houseNumber"));
+                preparedStatement.setString(2,  house.getString("houseName"));
+                preparedStatement.setDouble(3, house.getDouble("monthlyPrice"));
+                preparedStatement.setInt(4, house.getInt("numberOfRooms"));
+                preparedStatement.setString(5, house.getString("blockID"));
+                preparedStatement.setInt(6, house.getInt("addedByUserId"));
+                preparedStatement.setString(7,  house.getString("record_id"));
+                preparedStatement.setString(8, house.getString("dateCreated"));
+                preparedStatement.setString(9, house.getString("dateLastModified"));
+                preparedStatement.setInt(10,  1);
+                preparedStatement.setInt(11, house.getInt("availability"));
+                preparedStatement.execute();
+                
+            }catch(SQLException | JSONException ex){
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+                          
+    }
+    public void insertSyncedTenant(JSONObject tenant){
+        String houseInsertSql ="INSERT INTO "+TENANTS_TABLE_NAME+" (record_id,lastName,dateOfBirth,firstName,nationality,phoneNumber1,idType,IdNumber,maritalStatus,numOfFamilyMembers,"
+                + "nextOfKinName,nextOfKinContact,nextOfKinDistrict,nextOfKinCounty,nextOfKinSubCounty,nextOfKinParish,nextOfKinVillage,addedByUserId,dateCreated,dateLastModified,hasSynced) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+                PreparedStatement preparedStatement;
+                preparedStatement = this.connection.prepareStatement(houseInsertSql);
+                 preparedStatement.setString(1, tenant.getString("record_id"));
+                 preparedStatement.setString(2, tenant.getString("lastName"));
+                 preparedStatement.setString(3, tenant.getString("dateOfBirth"));
+                 preparedStatement.setString(4, tenant.getString("firstName"));
+                 preparedStatement.setString(5, tenant.getString("nationality"));
+                 preparedStatement.setString(6, tenant.getString("phoneNumber1"));
+                 preparedStatement.setString(7, tenant.getString("IdType"));
+                 preparedStatement.setString(8, tenant.getString("IdNumber"));
+                 preparedStatement.setString(9, tenant.getString("maritalStatus"));
+                 preparedStatement.setInt(10, tenant.getInt("numOfFamilyMembers"));
+                 preparedStatement.setString(11, tenant.getString("nextOfKinName"));
+                 preparedStatement.setString(12, tenant.getString("nextOfKinContact"));
+                 preparedStatement.setString(13, tenant.getString("nextOfKinDistrict"));
+                 preparedStatement.setString(14, tenant.getString("nextOfKinCounty"));
+                 preparedStatement.setString(15, tenant.getString("nextOfKinSubCounty"));
+                 preparedStatement.setString(16, tenant.getString("nextOfKinParish"));
+                 preparedStatement.setString(17, tenant.getString("nextOfKinVillage"));
+                 preparedStatement.setInt(18, tenant.getInt("addedByUserId"));
+                 preparedStatement.setString(19, tenant.getString("dateCreated"));
+                 preparedStatement.setString(20, tenant.getString("dateLastModified"));
+                 preparedStatement.setInt(21, 1);
+                preparedStatement.execute();
+            }catch(SQLException | JSONException ex){
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+    }   
+    public void insertSyncedContract(JSONObject contract){
+        String contractInsertSql ="INSERT INTO "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" (record_id,tenantID,startDate,houseID,agreedMonthlyAmount,addedByUserId,"
+                + "dateCreated,dateLastModified,hasSynced,isTerminated) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        try {
+                PreparedStatement preparedStatement;
+                preparedStatement = this.connection.prepareStatement(contractInsertSql);
+                preparedStatement.setString(1, contract.getString("record_id"));
+                preparedStatement.setString(2, contract.getString("tenantID"));
+                preparedStatement.setString(3, contract.getString("startDate"));
+                preparedStatement.setString(4, contract.getString("houseID"));
+                preparedStatement.setDouble(5, contract.getDouble("agreedMonthlyAmount"));
+                preparedStatement.setInt(6, contract.getInt("addedByUserId"));
+                preparedStatement.setString(7, contract.getString("dateCreated"));
+                preparedStatement.setString(8, contract.getString("dateLastModified"));
+                preparedStatement.setInt(9, 1);
+                preparedStatement.setInt(10, contract.getInt("isTerminated"));         
+                preparedStatement.execute();
+            }catch(SQLException | JSONException ex){
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+                      
+    }   
+    public void insertSyncedPayment(JSONObject payment){
+        String houseInsertSql ="INSERT INTO "+PAYMENTS_TABLE_NAME+" (record_id,datePaid,amountPaid,contractID,receivedBy,tenantID,"
+                + "modeOfPayment,receiptNumber,addedByUserId,dateCreated,dateLastModified,hasSynced) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+                PreparedStatement preparedStatement;
+                preparedStatement = this.connection.prepareStatement(houseInsertSql);
+                 preparedStatement.setString(1, payment.getString("record_id"));
+                 preparedStatement.setString(2, payment.getString("datePaid"));
+                 preparedStatement.setDouble(3, payment.getDouble("amountPaid"));
+                 preparedStatement.setString(4, payment.getString("contractID"));
+                 preparedStatement.setString(5, payment.getString("receivedBy"));
+                 preparedStatement.setString(6, payment.getString("tenantID"));
+                 preparedStatement.setString(7, payment.getString("modeOfPayment"));
+                 preparedStatement.setString(8, payment.getString("receiptNumber"));
+                 preparedStatement.setInt(9, payment.getInt("addedByUserId"));
+                 preparedStatement.setString(10, payment.getString("dateCreated"));
+                 preparedStatement.setString(11, payment.getString("dateLastModified"));
+                 preparedStatement.setInt(12, 1);        
+                preparedStatement.execute();
+            }catch(SQLException | JSONException ex){
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+                      
+    }
+    public void insertSyncedStatement(JSONObject statement){
+        String houseInsertSql ="INSERT INTO "+BANK_STATEMENTS_TABLE_NAME+" (record_id,transactionDate,valueDate,transactionDescription,creditAmount,accountBalance,"
+                + "tenantId,addedByUserId,dateCreated,dateLastModified,hasSynced) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+                PreparedStatement preparedStatement;
+                preparedStatement = this.connection.prepareStatement(houseInsertSql);
+                 preparedStatement.setString(1, statement.getString("record_id"));
+                preparedStatement.setString(2, statement.getString("transactionDate"));
+                preparedStatement.setString(3, statement.getString("valueDate"));
+                preparedStatement.setString(4, statement.getString("transactionDescription"));
+                preparedStatement.setDouble(5, statement.getDouble("creditAmount"));
+                preparedStatement.setDouble(6, statement.getDouble("accountBalance"));
+                preparedStatement.setString(7, statement.getString("tenantId"));
+                preparedStatement.setInt(8, statement.getInt("addedByUserId"));
+                preparedStatement.setString(9, statement.getString("dateCreated"));
+                preparedStatement.setString(10, statement.getString("dateLastModified"));
+                preparedStatement.setInt(11, 1);    
+                preparedStatement.execute();
+            }catch(SQLException | JSONException ex){
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }                  
+    }
     
+    public void insertSyncedUser(JSONObject user){
+        String queryUser = "INSERT INTO "+USERS_TABLE_NAME+" (id,fistName,lastName,email,password) VALUES(?,?,?,?,?)";
+         try {
+                PreparedStatement preparedStatement;
+                preparedStatement = this.connection.prepareStatement(queryUser);
+                preparedStatement.setInt(1, user.getInt("id"));
+                String name[] = user.getString("name").split(" ");
+                try{
+                    preparedStatement.setString(2, name[0]);
+                    preparedStatement.setString(3, name[1]);
+                }
+                catch( ArrayIndexOutOfBoundsException ex){
+                    //in case there is second name
+                    preparedStatement.setString(3, " ");
+                }
+                preparedStatement.setString(4, user.getString("email"));
+                preparedStatement.setString(5, user.getString("password"));
+                preparedStatement.execute();    
+         }catch(SQLException | JSONException | ArrayIndexOutOfBoundsException ex){
+                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+    }
   }

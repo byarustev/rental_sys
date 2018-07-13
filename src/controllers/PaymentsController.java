@@ -114,7 +114,7 @@ public class PaymentsController implements Initializable, ReloadableController{
             @Override
             public boolean test(Block t) {
                 //remove blocks that have no rented rooms
-                return t.getNumberOfAvailableRentals() != t.getNumberOfRentals();
+                return (t.getNumberOfAvailableRentals() != t.getNumberOfRentals());
             }
 
     }));

@@ -569,6 +569,7 @@ controllers.PaymentsController$10
 GeneralClasses.Payment
 ||:database.DatabaseHandler
 java.lang.Class
+org.mindrot.jbcrypt.BCrypt
 java.util.ArrayList
 java.lang.ClassNotFoundException
 java.util.logging.Level
@@ -576,6 +577,7 @@ GeneralClasses.Block
 GeneralClasses.BankStatement
 java.lang.String
 java.sql.ResultSet
+java.lang.ArrayIndexOutOfBoundsException
 java.util.logging.Logger
 java.lang.Exception
 java.lang.invoke.MethodHandles$Lookup
@@ -599,10 +601,11 @@ java.sql.PreparedStatement
 org.json.JSONObject
 java.lang.Object
 java.lang.Long
+[Ljava.lang.String;
 java.time.format.DateTimeFormatter
 java.lang.Thread
-java.util.HashMap
 java.lang.System
+java.util.HashMap
 java.lang.InterruptedException
 java.io.PrintStream
 java.lang.InstantiationException
@@ -838,12 +841,10 @@ javafx.scene.Scene
 java.lang.String
 ||:controllers.LoginController
 javafx.fxml.Initializable
-java.lang.System
 controllers.LoginController
 java.lang.Class
 javafx.scene.control.TextField
 javafx.scene.Node
-java.io.PrintStream
 javafx.stage.Window
 javafx.scene.control.Alert
 javafx.scene.layout.Region
@@ -853,13 +854,12 @@ javafx.scene.input.MouseEvent
 javafx.scene.control.Alert$AlertType
 javafx.scene.control.PasswordField
 javafx.scene.control.ButtonType
-GeneralClasses.CurrentUser
 javafx.scene.Parent
+GeneralClasses.CurrentUser
 java.lang.AssertionError
 javafx.stage.Stage
 java.lang.Object
 javafx.scene.Scene
-database.DatabaseHandler
 java.lang.ClassLoader
 javafx.scene.control.DialogPane
 java.lang.String
@@ -1075,6 +1075,7 @@ java.io.IOException
 java.io.FileNotFoundException
 org.json.JSONException
 java.io.FileOutputStream
+org.json.JSONTokener
 java.lang.Exception
 java.lang.Integer
 java.io.DataOutputStream
@@ -1234,6 +1235,12 @@ java.lang.Object
 controllers.TenantProfileController
 javafx.scene.control.TableColumn
 controllers.TenantProfileController$1
+||:BCryptEncoder
+java.lang.Object
+org.mindrot.jbcrypt.BCrypt
+java.lang.String
+java.lang.IllegalArgumentException
+BCryptEncoder
 ||:controllers.Rental
 java.lang.Object
 controllers.Rental
