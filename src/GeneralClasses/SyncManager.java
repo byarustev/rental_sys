@@ -80,16 +80,15 @@ public class SyncManager {
             // URL and parameters for the connection, This particulary returns the information passed
             URL url;
         try {
-            
-            url = new URL("http://localhost:8000/api/syncdata/post/");
+            String SERVER_URL ="http://daaki.rental.mubali.net/api/syncdata/post/";
+            url = new URL(SERVER_URL);
             HttpURLConnection httpConnection  = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
             httpConnection.setRequestProperty("Content-Type", "application/json");
             httpConnection.setRequestProperty("Accept", "application/json");
-            httpConnection.setReadTimeout(10000);
-            // Not required
-            // urlConnection.setRequestProperty("Content-Length", String.valueOf(input.getBytes().length));
+            httpConnection.setReadTimeout(90000);
+            httpConnection.setRequestProperty("Content-Length", String.valueOf(jsonData.toString().getBytes().length));
 
             // Writes the JSON parsed as string to the connection
             DataOutputStream wr = new DataOutputStream(httpConnection.getOutputStream());
@@ -102,12 +101,19 @@ public class SyncManager {
             } else {
                 bufferedReader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
             }
-            // To receive the response
             StringBuilder content = new StringBuilder();
-            String line;
+            int BUFFER_SIZE=1024;
+            char[] buffer = new char[BUFFER_SIZE]; // or some other size, 
+            int charsRead = 0;
+            while ( (charsRead  = bufferedReader.read(buffer, 0, BUFFER_SIZE)) != -1) {
+              content.append(buffer, 0, charsRead);
+            }
+            // To receive the response
+            
+           /* String line;
             while ((line = bufferedReader.readLine()) != null) {
                 content.append(line).append("\n");
-            }
+            }*/
             bufferedReader.close();
             
             JSONObject responseData = (JSONObject)new JSONTokener(content.toString()).nextValue();

@@ -186,6 +186,19 @@ public class HouseRentalContract implements RentalContract {
         end ="2018-10-07";
         LocalDate from = LocalDate.parse(start, formatter);
         LocalDate to = LocalDate.parse(end, formatter);
+        //if the day is past 1st then consider next month
+        if(from.getDayOfMonth()>1){
+            from=from.plusMonths(1);//shift to the next month
+           from= from.withDayOfMonth(1);//set the date to first
+        }
+        
+        if(to.getDayOfMonth()!=to.lengthOfMonth()){
+           to = to.withDayOfMonth(1);//set to first day of previous month
+        }
+        else{
+            to = to.plusMonths(1);
+             to = to.withDayOfMonth(1);//set to first day of next month
+        }
         int fullMonths =  (int)from.until(to, ChronoUnit.MONTHS);
         return fullMonths;
     }

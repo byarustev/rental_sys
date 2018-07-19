@@ -7,10 +7,12 @@
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/LoginController.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/NumberValidator.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/SyncManager.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/RentalContract.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/Payment.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/BCryptEncoder.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/CurrentUser.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/database/DatabaseHandler.java</file>
+            <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/GeneralClasses/HouseRentalContract.java</file>
             <file>file:/Users/robert/Documents/Desktop%20Application/rental_sys/src/controllers/RentalSystem.java</file>
         </group>
     </open-files>
