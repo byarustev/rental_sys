@@ -36,6 +36,16 @@ public class HouseRentalContract implements RentalContract {
      Tenant tenant;
      ArrayList<Payment> contractPayments;
      private String addedByUserId;
+    private double advanceAmountBeforeSysUpgrade;
+    private double arrearsBeforeSysUpgrade;
+
+    public double getAdvanceAmountBeforeSysUpgrade() {
+        return advanceAmountBeforeSysUpgrade;
+    }
+
+    public double getArrearsBeforeSysUpgrade() {
+        return arrearsBeforeSysUpgrade;
+    }
 
     public String getAddedByUserId() {
         return addedByUserId;
@@ -53,9 +63,10 @@ public class HouseRentalContract implements RentalContract {
      * @param houseId
      * @param agreedMonthlyAmount
      */
-    public HouseRentalContract(String startDate, String tenantId, String contractId, String houseId, Double agreedMonthlyAmount,String addedById) {
+    public HouseRentalContract(String startDate, String tenantId, String contractId, String houseId, Double agreedMonthlyAmount,double advanceAmountBeforeSysUpgrade,
+     double arrearsBeforeSysUpgrade,String addedById) {
       
-        this(startDate,tenantId,houseId,agreedMonthlyAmount);
+        this(startDate,tenantId,houseId,agreedMonthlyAmount, advanceAmountBeforeSysUpgrade,arrearsBeforeSysUpgrade);
         this.addedByUserId = addedById;
         this.contractId = contractId;
     } 
@@ -67,11 +78,14 @@ public class HouseRentalContract implements RentalContract {
      * @param houseId
      * @param agreedMonthlyAmount
      */
-    public HouseRentalContract(String startDate, String tenantId, String houseId, Double agreedMonthlyAmount) {
+    public HouseRentalContract(String startDate, String tenantId, String houseId, Double agreedMonthlyAmount, double advanceAmountBeforeSysUpgrade,
+     double arrearsBeforeSysUpgrade) {
         this.startDate = startDate;
         this.agreedMonthlyAmount = agreedMonthlyAmount;
         this.associatedHouseId = houseId;
         this.associatedTenantId =tenantId;
+        this.advanceAmountBeforeSysUpgrade=advanceAmountBeforeSysUpgrade;
+        this.arrearsBeforeSysUpgrade=arrearsBeforeSysUpgrade;
     }
     public String getStartDate() {
         return startDate;
@@ -122,7 +136,7 @@ public class HouseRentalContract implements RentalContract {
     public Double computeAmountOwed() {
         int fullMonths = this.computeFullMonths();
         double totalPayment=this.computeTotalPayments();
-        double expectedAmount = fullMonths*this.agreedMonthlyAmount;
+        double expectedAmount = fullMonths*this.agreedMonthlyAmount+this.arrearsBeforeSysUpgrade;
         System.out.println(this.startDate+" payed "+totalPayment+" instead of "+expectedAmount+" for "+fullMonths +" months");
         return expectedAmount-totalPayment;
     }
@@ -143,7 +157,7 @@ public class HouseRentalContract implements RentalContract {
     @Override
     public String saveContract() {
         if(this.contractId==null){
-            String id = DatabaseHandler.getInstance().insertHouseContract(this.associatedTenantId,this.associatedHouseId, this.startDate, this.agreedMonthlyAmount);
+            String id = DatabaseHandler.getInstance().insertHouseContract(this.associatedTenantId,this.associatedHouseId, this.startDate, this.agreedMonthlyAmount,this.advanceAmountBeforeSysUpgrade,this.arrearsBeforeSysUpgrade);
             this.setContractId(id);
             return this.contractId;
         }
@@ -183,7 +197,7 @@ public class HouseRentalContract implements RentalContract {
         
         LocalDateTime now  = LocalDateTime.now();
         String end = now.format(formatter);
-        end ="2018-10-07";
+        end ="2018-12-31";
         LocalDate from = LocalDate.parse(start, formatter);
         LocalDate to = LocalDate.parse(end, formatter);
         //if the day is past 1st then consider next month
@@ -208,17 +222,16 @@ public class HouseRentalContract implements RentalContract {
         for(Payment y :this.getPayments()){
             totalPayment+=y.getPaymentAmount();
         }
-        return totalPayment;
+        return (totalPayment+advanceAmountBeforeSysUpgrade);
     }
 
     @Override
     public ArrayList<MonthReport> generateMonthlyReports() {
         int full_months = computeFullMonths();
         Double totalPayments = computeTotalPayments();
-        Double amountLeft =totalPayments;
+        Double amountLeft =totalPayments+this.advanceAmountBeforeSysUpgrade-this.arrearsBeforeSysUpgrade;
         Double amountPaid=0.0;
         Double balanceForMonth=0.0, cumulativeBalance=0.0;
-        System.out.println(full_months +" Months");
         ArrayList<MonthReport> monthReports = new ArrayList();
          try {
              Date baseDate = new SimpleDateFormat("yyyy-MM-dd").parse(this.startDate);
@@ -259,7 +272,7 @@ public class HouseRentalContract implements RentalContract {
 
     public boolean terminate() {
         DatabaseHandler.getInstance().updateContract(true,this.getContractId(),null,null,
-                           null,null,null);
+                           null,null,null,null,null);
         return true;
     }
     
@@ -271,6 +284,8 @@ public class HouseRentalContract implements RentalContract {
             contract.put("addedByUserId", this.addedByUserId);
             contract.put("associatedHouseId", this.associatedHouseId);
             contract.put("associatedTenantId", this.associatedTenantId);
+            contract.put("advanceAmountBeforeStart", this.advanceAmountBeforeSysUpgrade);
+            contract.put("arrearsBeforeStart", this.arrearsBeforeSysUpgrade);
             JSONArray paymentsArray = new JSONArray();
             ArrayList<Payment> payments = this.getPayments();
             for(Payment x: payments){
@@ -284,5 +299,15 @@ public class HouseRentalContract implements RentalContract {
            Logger.getLogger(Payment.class.getName()).log(Level.SEVERE, null, ex);
        }
         return null;
+    }
+
+    public void setAdvanceAmountBeforeUpgrade(double advanceAmount) {
+       //only valid during the initial data entry
+       this.advanceAmountBeforeSysUpgrade = advanceAmount;
+    }
+
+    public void setArrearsAmountBeforeUpgrade(double arrears) {
+         //only valid during the initial data entry
+         this.arrearsBeforeSysUpgrade = arrears;
     }
 }

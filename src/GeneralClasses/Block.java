@@ -132,7 +132,19 @@ public class Block {
      * @return True/False to indicate success or failure
      */
     public Boolean save(){
-        return DatabaseHandler.getInstance().insertBlock(this);
+        if(this.databaseId ==null){
+             return DatabaseHandler.getInstance().insertBlock(this);
+        }
+        else{
+            try {
+                return DatabaseHandler.getInstance().updateBlock(this);
+            } catch (Exception ex) {
+                Logger.getLogger(Block.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        return false;
+       
     }
     
     @Override

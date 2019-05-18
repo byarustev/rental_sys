@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -25,6 +26,9 @@ public class RentalSystem extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/views/login.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+      
+        
+        System.out.println(stage.getIcons());
         stage.setResizable(false);
         stage.show();
     }
@@ -33,7 +37,7 @@ public class RentalSystem extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        SyncManager.getInstance();
+       SyncManager.getInstance();
         launch(args);
     }
     

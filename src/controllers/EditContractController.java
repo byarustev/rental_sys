@@ -8,6 +8,7 @@ package controllers;
 import GeneralClasses.Block;
 import GeneralClasses.House;
 import GeneralClasses.HouseRentalContract;
+import GeneralClasses.NumberValidator;
 import GeneralClasses.ReloadableController;
 import GeneralClasses.Tenant;
 import database.DatabaseHandler;
@@ -72,6 +73,12 @@ public class EditContractController implements Initializable {
 
     @FXML // fx:id="terminateButton"
     private Button terminateButton; // Value injected by FXMLLoader
+    
+    @FXML
+    private TextField advanceBeforeSystemUpgradeTxt;
+
+    @FXML
+    private TextField arrearsBeforeSystemUpgradeTxt;
     private HouseRentalContract contract;
     ToggleGroup actionToggleGroup;
     private ReloadableController parentController;
@@ -116,12 +123,32 @@ public class EditContractController implements Initializable {
             rentalsCombo.setValue(this.contract.getCurrentHouse());
             monthlyFeeTxt.setText(this.contract.getAgreedMonthlyAmount()+"");
             startDatePicker.setValue(LocalDate.parse(this.contract.getStartDate()));
+            advanceBeforeSystemUpgradeTxt.setText(this.contract.getAdvanceAmountBeforeSysUpgrade()+"");
+            arrearsBeforeSystemUpgradeTxt.setText(this.contract.getArrearsBeforeSysUpgrade()+"");
         }
         else{
             actionsOptionBox.setVisible(false);
             terminateContractRadio.setVisible(false);
         }
+        
+        addNumberValidators();
    }
+    
+    public void addNumberValidators(){
+  
+        advanceBeforeSystemUpgradeTxt.textProperty().addListener(new ChangeListener(){
+           @Override
+           public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+               NumberValidator.validateInteger(advanceBeforeSystemUpgradeTxt);
+           }
+        });
+        arrearsBeforeSystemUpgradeTxt.textProperty().addListener(new ChangeListener(){
+           @Override
+           public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+               NumberValidator.validateInteger(arrearsBeforeSystemUpgradeTxt);
+           }
+        });
+    }
     
     
     
@@ -159,13 +186,17 @@ public class EditContractController implements Initializable {
        }else if(startDatePicker.getValue()==null){
            startDatePicker.requestFocus();
        }else{
+           
            Double agreedAmount = Double.parseDouble(this.monthlyFeeTxt.getText());
            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
            String startDate = startDatePicker.getValue().format(dtf);
            House newHouse = rentalsCombo.getValue();
            if(this.contract==null){
-            HouseRentalContract contract = new HouseRentalContract(startDate, tenantId,newHouse.getHouseId(),Double.parseDouble(monthlyFeeTxt.getText()));
+               
+            HouseRentalContract contract = new HouseRentalContract(startDate, tenantId,newHouse.getHouseId(),Double.parseDouble(monthlyFeeTxt.getText()),
+            Double.parseDouble(advanceBeforeSystemUpgradeTxt.getText()),Double.parseDouble(arrearsBeforeSystemUpgradeTxt.getText()));
             String contractId=contract.saveContract();
+            
             if(contractId != null){
                     Alert alert = new Alert(Alert.AlertType.NONE, "New Contract Created",ButtonType.OK);
                     alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
@@ -174,17 +205,21 @@ public class EditContractController implements Initializable {
                     alert.show();
                     clearForm(event);
                     parentController.reload();
-               }
+            }
+            
+                System.out.println("Testing Failed");
+            
            }
-           else if(!newHouse.getHouseId().equals(this.contract.getAssociatedHouse())){
+           else //if(!newHouse.getHouseId().equals(this.contract.getAssociatedHouse()))
+           {
                String contractId=null;
                if(changeRoomRadio.isSelected()){
                    contractId=DatabaseHandler.getInstance().updateContract(false,this.contract.getContractId(),newHouse.getHouseId(),this.contract.getAssociatedHouse(),
-                           this.contract.getAssociatedTenant().getTenantId(),agreedAmount,startDate);
+                           this.contract.getAssociatedTenant().getTenantId(),agreedAmount,startDate, Double.parseDouble(advanceBeforeSystemUpgradeTxt.getText()),Double.parseDouble(arrearsBeforeSystemUpgradeTxt.getText()));
                }
                else if(terminateContractRadio.isSelected()){
                    contractId=DatabaseHandler.getInstance().updateContract(true,this.contract.getContractId(),newHouse.getHouseId(),this.contract.getAssociatedHouse(),
-                           this.contract.getAssociatedTenant().getTenantId(),agreedAmount,startDate);
+                           this.contract.getAssociatedTenant().getTenantId(),agreedAmount,startDate,  Double.parseDouble(advanceBeforeSystemUpgradeTxt.getText()),Double.parseDouble(arrearsBeforeSystemUpgradeTxt.getText()));
                }
                if(contractId != null){
                     Alert alert = new Alert(Alert.AlertType.NONE, "Rental Contract Updated",ButtonType.OK);
@@ -195,8 +230,12 @@ public class EditContractController implements Initializable {
                     clearForm(event);
                     parentController.reload();
                }
+                
+                
+            
                
            }
+         
        }
     }
 
@@ -217,12 +256,14 @@ public class EditContractController implements Initializable {
         }
     }
 
-     @FXML // This method is called by the FXMLLoader when initialization is complete
+      @FXML
     void initialize() {
         assert blockCombo != null : "fx:id=\"blockCombo\" was not injected: check your FXML file 'editContract.fxml'.";
         assert rentalsCombo != null : "fx:id=\"rentalsCombo\" was not injected: check your FXML file 'editContract.fxml'.";
         assert monthlyFeeTxt != null : "fx:id=\"monthlyFeeTxt\" was not injected: check your FXML file 'editContract.fxml'.";
         assert startDatePicker != null : "fx:id=\"startDatePicker\" was not injected: check your FXML file 'editContract.fxml'.";
+        assert advanceBeforeSystemUpgradeTxt != null : "fx:id=\"advanceBeforeSystemUpgradeTxt\" was not injected: check your FXML file 'editContract.fxml'.";
+        assert arrearsBeforeSystemUpgradeTxt != null : "fx:id=\"arrearsBeforeSystemUpgradeTxt\" was not injected: check your FXML file 'editContract.fxml'.";
         assert actionsOptionBox != null : "fx:id=\"actionsOptionBox\" was not injected: check your FXML file 'editContract.fxml'.";
         assert changeRoomRadio != null : "fx:id=\"changeRoomRadio\" was not injected: check your FXML file 'editContract.fxml'.";
         assert terminateContractRadio != null : "fx:id=\"terminateContractRadio\" was not injected: check your FXML file 'editContract.fxml'.";

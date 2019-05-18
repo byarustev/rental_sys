@@ -9,18 +9,29 @@ import GeneralClasses.BankStatement;
 import GeneralClasses.Block;
 import GeneralClasses.House;
 import GeneralClasses.HouseRentalContract;
+import GeneralClasses.ReloadableController;
+import GeneralClasses.Tenant;
 import database.DatabaseHandler;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -35,6 +46,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 /**
@@ -42,7 +55,7 @@ import javafx.util.Callback;
  *
  * @author steve
  */
-public class BlocksController implements Initializable {
+public class BlocksController implements Initializable, ReloadableController {
 
     /**
      * Initializes the controller class.
@@ -58,25 +71,34 @@ public class BlocksController implements Initializable {
     
     public void initNewBlockForm(){
         contentBox.maxHeightProperty().bind(contentBox.heightProperty());
-        TableColumn column1 = new TableColumn("Rental Unit No");
+        TableColumn column1 = new TableColumn("#");
         TableColumn column2 = new TableColumn("Rental Name");
-        TableColumn column3 = new TableColumn("No of Rooms");
-        TableColumn column4 = new TableColumn("Monthly Amount");
+        TableColumn column3 = new TableColumn("# of Rooms");
+        TableColumn column4 = new TableColumn("Monthly Fee");
+        TableColumn column5 = new TableColumn("Umeme Meter Number");
+        TableColumn column6 = new TableColumn("Water Meter Number");
         PropertyValueFactory<RentalUnitTableRow, TextField> rentalNameFactory = new PropertyValueFactory("rentalName");
         PropertyValueFactory<RentalUnitTableRow, TextField> unitNoFactory = new PropertyValueFactory("unitNo");
         PropertyValueFactory<RentalUnitTableRow, TextField> rentalNumOfUnitsFactory = new PropertyValueFactory("rentalNumOfUnits");
         PropertyValueFactory<RentalUnitTableRow, TextField> monthlyAmountFactory = new PropertyValueFactory("monthlyAmount");
+        PropertyValueFactory<RentalUnitTableRow, TextField> umemeMeterNumberFactory = new PropertyValueFactory("umemeMeterNumber");
+        PropertyValueFactory<RentalUnitTableRow, TextField> waterMeterNumberFactory = new PropertyValueFactory("waterMeterNumber");
         column1.setCellValueFactory(unitNoFactory);
         column2.setCellValueFactory(rentalNameFactory);
         column3.setCellValueFactory(rentalNumOfUnitsFactory);
         column4.setCellValueFactory(monthlyAmountFactory);
-        column1.setMinWidth(150);
+        column5.setCellValueFactory(umemeMeterNumberFactory);
+        column6.setCellValueFactory(waterMeterNumberFactory);
+        column1.setMinWidth(50);
         column2.setMinWidth(150);
-        column3.setMinWidth(150);
-        column4.setMinWidth(150);
+        column3.setMinWidth(50);
+        column4.setMinWidth(100);
+        column5.setMinWidth(150);
+        column6.setMinWidth(150);
         rentalUnitsTable.getColumns().clear();
         rentalUnitsTable.setItems(rentalUnitsList);
-        rentalUnitsTable.getColumns().addAll(column1,column2,column3,column4);
+        rentalUnitsTable.getColumns().addAll(column1,column2,column3,column4,column5,column6);
+        
     } 
     public void initBlocksTableView(){
          //initialize Find Blocks Pane
@@ -128,11 +150,17 @@ public class BlocksController implements Initializable {
         TableColumn monthlyFeeCol = new TableColumn("Monthly Fee");
         TableColumn occupationStateCol = new TableColumn("Occupied");
         TableColumn tenantCol = new TableColumn("Tenant");
+        TableColumn umemeMeter = new TableColumn("UMEME");
+        TableColumn waterMeter = new TableColumn("WATER");
         
         PropertyValueFactory <House, String> roomNumberFactory = new PropertyValueFactory("rentalName");
         PropertyValueFactory <House, Double> monthlyFeeFactory = new PropertyValueFactory("monthlyAmount");
+        PropertyValueFactory <House, String> umemeMeterNumberFactory = new PropertyValueFactory("umemeMeterNumber");
+        PropertyValueFactory <House, String> waterMeterNumberFactory = new PropertyValueFactory("waterMeterNumber");
         roomNumberCol.setCellValueFactory(roomNumberFactory);
         monthlyFeeCol.setCellValueFactory(monthlyFeeFactory);
+        umemeMeter.setCellValueFactory(umemeMeterNumberFactory);
+        waterMeter.setCellValueFactory(waterMeterNumberFactory);
         occupationStateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<House, String>, ObservableValue<String>>(){
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<House, String> param) {
@@ -152,12 +180,16 @@ public class BlocksController implements Initializable {
                    return  new ReadOnlyObjectWrapper("");
                }
                 else{
-                   return new ReadOnlyObjectWrapper(x.getAssociatedTenant().getFullName());
+                   try{
+                        return new ReadOnlyObjectWrapper(x.getAssociatedTenant().getFullName());
+                   }catch(Exception e){
+                        return  new ReadOnlyObjectWrapper("");
+                   }
                }
             }
         });
        rentalsTableView.getColumns().clear();
-       rentalsTableView.getColumns().addAll(roomNumberCol,monthlyFeeCol,occupationStateCol,tenantCol);
+       rentalsTableView.getColumns().addAll(roomNumberCol,monthlyFeeCol,umemeMeter,waterMeter,occupationStateCol,tenantCol);
        rentalsTableView.setItems(housesList);
        blocksCombo.valueProperty().addListener(new ChangeListener(){
             @Override
@@ -170,6 +202,57 @@ public class BlocksController implements Initializable {
            blocksCombo.setValue(blocksList.get(0));
       }
       
+      rentalsTableView.setOnMouseClicked(new EventHandler(){
+        @Override
+        public void handle(Event event) {
+            House selectedHouse = rentalsTableView.getSelectionModel().getSelectedItem();
+            if(selectedHouse != null && ((MouseEvent)event).getClickCount() == 2 ){
+                Parent root;
+        try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/editHouse.fxml"));
+                root = (Parent)fxmlLoader.load(); 
+                EditHouseController controller = fxmlLoader.<EditHouseController>getController();
+                controller.initBlock(selectedHouse, BlocksController.this);
+                Stage tenantProfilestage = new Stage();
+                tenantProfilestage.setTitle(selectedHouse.getRentalName());
+                tenantProfilestage.setScene(new Scene(root));
+                tenantProfilestage.initModality(Modality.WINDOW_MODAL);
+                tenantProfilestage.initOwner(((Node)(event.getSource())).getScene().getWindow());
+                tenantProfilestage.show();   
+            }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+            }
+        }
+        
+    });
+      
+      blocksDisplayTable.setOnMouseClicked(new EventHandler(){
+        @Override
+        public void handle(Event event) {
+            Block selectedBlock = blocksDisplayTable.getSelectionModel().getSelectedItem();
+            if(selectedBlock != null && ((MouseEvent)event).getClickCount() == 2 ){
+                Parent root;
+        try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/editBlock.fxml"));
+                root = (Parent)fxmlLoader.load(); 
+                EditBlockController controller = fxmlLoader.<EditBlockController>getController();
+                controller.initBlock(selectedBlock, BlocksController.this);
+                Stage tenantProfilestage = new Stage();
+                tenantProfilestage.setTitle("Updating block "+selectedBlock.getName());
+                tenantProfilestage.setScene(new Scene(root));
+                tenantProfilestage.initModality(Modality.WINDOW_MODAL);
+                tenantProfilestage.initOwner(((Node)(event.getSource())).getScene().getWindow());
+                tenantProfilestage.show();   
+            }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+            }
+        }
+        
+    });
       
     }
     @FXML // fx:id="blocksDisplayTable"
@@ -209,6 +292,28 @@ public class BlocksController implements Initializable {
         
     }
 
+      @FXML
+    private Button add;
+
+    @FXML
+    void addNewHouse(MouseEvent event) throws IOException {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/addHouse.fxml"));
+            Parent root; 
+        try {
+            root = (Parent)fxmlLoader.load();
+            NewHouseController controller = fxmlLoader.<NewHouseController>getController();
+            controller.initBlock(blocksCombo.getValue());
+            Stage newHouseStage = new Stage();
+            newHouseStage.setTitle("New House");
+            newHouseStage.setScene(new Scene(root));
+            newHouseStage.initModality(Modality.WINDOW_MODAL);
+            newHouseStage.initOwner(((Node)(event.getSource())).getScene().getWindow());
+            newHouseStage.show();
+        } catch (IOException ex) {
+            Logger.getLogger(BlocksController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+               
+    }
     
      @FXML
     void saveBlock(MouseEvent event) {
@@ -253,6 +358,7 @@ public class BlocksController implements Initializable {
         
     }
 
+    @Override
     public void reload(){
         filteredBlocksList.clear();
         filteredBlocksList.addAll(DatabaseHandler.getInstance().getBlocks());
@@ -316,12 +422,17 @@ public class BlocksController implements Initializable {
     }
     
     public static class RentalUnitTableRow{
-       private TextField rentalName, rentalNumOfUnits, monthlyAmount;
+       private TextField rentalName, rentalNumOfUnits, monthlyAmount,umemeMeterNumber, waterMeterNumber;
+
+       
        public RentalUnitTableRow(String unitNo){
             this.setUnitNo(unitNo);
             this.setRentalName(new TextField());
             this.setRentalNumOfUnits(new TextField());
             this.setMonthlyAmount(new TextField());
+            this.setUmemeMeterNumber(new TextField());
+            this.setWaterMeterNumber(new TextField());
+
        }
         public TextField getMonthlyAmount() {
             return monthlyAmount;
@@ -356,6 +467,21 @@ public class BlocksController implements Initializable {
             this.rentalNumOfUnits = rentalNumOfUnits;
             this.rentalNumOfUnits.setText("1");
         }
+         public TextField getUmemeMeterNumber() {
+            return umemeMeterNumber;
+        }
+
+        public void setUmemeMeterNumber(TextField umemeMeterNumber) {
+            this.umemeMeterNumber = umemeMeterNumber;
+        }
+
+        public TextField getWaterMeterNumber() {
+            return waterMeterNumber;
+        }
+
+        public void setWaterMeterNumber(TextField waterMeterNumber) {
+            this.waterMeterNumber = waterMeterNumber;
+        }
         
         public House generateHouse(){
             if(this.getRentalName().getCharacters().length()==0){
@@ -366,7 +492,7 @@ public class BlocksController implements Initializable {
                  this.getRentalNumOfUnits().requestFocus();
                   return null;
              }
-            return new House(this.getUnitNo(),this.getRentalName().getText(),Integer.parseInt(this.getRentalNumOfUnits().getText()),Double.parseDouble(monthlyAmount.getText()),null);
+            return new House(this.getUnitNo(),this.getRentalName().getText(),Integer.parseInt(this.getRentalNumOfUnits().getText()),Double.parseDouble(monthlyAmount.getText()),null, this.getUmemeMeterNumber().getText(),this.getWaterMeterNumber().getText());
         }
     }
     

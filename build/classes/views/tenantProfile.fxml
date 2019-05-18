@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.2465156794425087" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="579.0" prefWidth="880.0" stylesheets="views/app.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TenantProfileController">
+<SplitPane dividerPositions="0.2465156794425087" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="606.0" prefWidth="1156.0" stylesheets="views/app.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TenantProfileController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="577.0" prefWidth="268.0">
          <children>
@@ -194,6 +194,16 @@
                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                      </padding>
                   </HBox>
+                  <HBox>
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="126.0" text=" NOK Place of Work: ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="nokPlaceOfWorkTxt" prefHeight="17.0" prefWidth="122.0" text="070689593" />
+                     </children>
+                  </HBox>
                   <HBox prefHeight="27.0" prefWidth="227.0" spacing="5.0">
                      <children>
                         <Label prefHeight="19.0" prefWidth="83.0" text="NOK District">
@@ -313,13 +323,15 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="houseLabel" prefHeight="19.0" prefWidth="96.0" text="Room 9" textFill="#1646bf" />
+                                    <Label fx:id="houseLabel" prefHeight="19.0" prefWidth="96.0" text="Unassigned" textFill="#1646bf" />
                                     <Label prefHeight="19.0" prefWidth="104.0" text="Block">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="blockLabel" prefHeight="19.0" prefWidth="126.0" text="Block C" textFill="#095bd7" />
+                                    <Label fx:id="blockLabel" prefHeight="19.0" prefWidth="126.0" text="N/A" textFill="#095bd7" />
+                                    <Label prefHeight="36.0" prefWidth="126.0" text="Monthly Amount" />
+                                    <Label fx:id="monthlyAmountLabel" prefHeight="38.0" prefWidth="79.0" text="N/A" textFill="#083bf5" />
                                     <Region prefHeight="41.0" prefWidth="140.0" />
                                     <Button fx:id="editContractBtn" mnemonicParsing="false" onMouseClicked="#showContractEditPopUp" prefHeight="32.0" prefWidth="96.0" text="Edit" />
                                  </children>
@@ -327,11 +339,14 @@
                               <HBox prefHeight="38.0" prefWidth="538.0">
                                  <children>
                                     <Label prefHeight="38.0" prefWidth="106.0" text=" Date Joined" textAlignment="RIGHT" />
-                                    <Label fx:id="dateJoinedLabel" prefHeight="38.0" prefWidth="83.0" text="16-12-2017" textFill="#020de1" />
+                                    <Label fx:id="dateJoinedLabel" prefHeight="38.0" prefWidth="83.0" text="N/A" textFill="#020de1" />
                                     <Label prefHeight="38.0" prefWidth="125.0" text="Full Months Spent" />
-                                    <Label fx:id="monthsSpentLabel" prefHeight="42.0" prefWidth="44.0" text="30" textAlignment="CENTER" textFill="#0909ee" />
-                                    <Label prefHeight="36.0" prefWidth="126.0" text="Monthly Amount" />
-                                    <Label fx:id="monthlyAmountLabel" prefHeight="38.0" prefWidth="79.0" text="79,000,000" textFill="#083bf5" />
+                                    <Label fx:id="monthsSpentLabel" prefHeight="42.0" prefWidth="44.0" text="N/A" textAlignment="CENTER" textFill="#0909ee" />
+                                    <HBox />
+                                    <Label prefHeight="36.0" prefWidth="207.0" text="Advance Before System Upgrade" />
+                                    <Label fx:id="advanceAmountBeforeUpgradeLbl" prefHeight="38.0" prefWidth="55.0" text="N/A" textFill="#083bf5" />
+                                    <Label prefHeight="36.0" prefWidth="216.0" text="Arrears Before System Upgrade" />
+                                    <Label fx:id="arrearsBeforeUpgradeLbl" prefHeight="38.0" prefWidth="79.0" text="N/A" textFill="#f5280a" />
                                  </children>
                               </HBox>
                               <TableView fx:id="paymentsTable" prefHeight="428.0" prefWidth="539.0" VBox.vgrow="ALWAYS">
@@ -351,13 +366,13 @@
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="balanceLbl" prefHeight="21.0" prefWidth="105.0" text="400,000" textFill="#0246f2">
+                                    <Label fx:id="balanceLbl" prefHeight="21.0" prefWidth="105.0" text="0.0" textFill="#0246f2">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
                                     <Label prefHeight="36.0" prefWidth="126.0" text="Total Amount Paid" />
-                                    <Label fx:id="totalAmountPaidLabel" prefHeight="38.0" prefWidth="79.0" text="79,000,000" textFill="#083bf5" />
+                                    <Label fx:id="totalAmountPaidLabel" prefHeight="38.0" prefWidth="79.0" text="0.0" textFill="#083bf5" />
                                  </children>
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -105,6 +105,8 @@ public class DatabaseHandler {
                         "houseName varchar(30) NOT NULL,"+
                         "monthlyPrice double NOT NULL,"+
                         "numberOfRooms int NOT NULL,"+
+                        "umemeMeterNumber varchar(50),"+
+                        "waterMeterNumber varchar(50),"+
                         "availability int DEFAULT 1,"+
                         "blockID varchar(40)  NOT NULL,"
                         + "addedByUserId INT DEFAULT NULL,"
@@ -130,13 +132,16 @@ public class DatabaseHandler {
                         " startDate date NOT NULL,"+
                         "agreedMonthlyAmount double NOT NULL,"+
                         "houseID varchar(40) NOT NULL,"+
-                        "tenantID varchar(40) NOT NULL ,"
+                        "tenantID varchar(40) NOT NULL ,"+
+                         "advanceAmountBeforeStart double DEFAULT 0,"+
+                         "arrearsBeforeStart double DEFAULT 0,"
                         + "isTerminated INT DEFAULT 0,"
                         + "addedByUserId INT DEFAULT NULL,"
                          + "dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
+
                 statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
@@ -259,19 +264,21 @@ public class DatabaseHandler {
                         + "phoneNumber1 varchar(15) NOT NULL,"
                         + "phoneNumber2 varchar(15) DEFAULT NULL,"
                         + "maritalStatus varchar(15) NOT NULL,"
-                        + "numOfFamilyMembers int NOT NULL,"
+                        + "numOfFamilyMembers int DEFAULT 0,"
                         + "nextOfKinName varchar(50) NOT NULL,"
-                        + "nextOfKinDistrict varchar(30) DEFAULT NULL,"
-                        + "nextOfKinCounty varchar(30) DEFAULT NULL,"
-                        + "nextOfKinSubCounty varchar(30) DEFAULT NULL,"
-                        + "nextOfKinParish varchar(30) DEFAULT NULL,"
-                        + "nextOfKinVillage varchar(30) DEFAULT NULL,"
-                        + "nextOfKinContact varchar(30) DEFAULT NULL,"
+                        + "nextOfKinDistrict varchar(30),"
+                        + "nextOfKinCounty varchar(30),"
+                        + "nextOfKinSubCounty varchar(30),"
+                        + "nextOfKinParish varchar(30) ,"
+                        + "nextOfKinVillage varchar(30) ,"
+                        + "nextOfKinContact varchar(30)  NOT NULL,"
+                        + "nokPlaceOfWork varchar(50)  ,"
                         + "addedByUserId INT DEFAULT NULL,"
                          + "dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "dateLastModified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                         + "hasSynced INT DEFAULT 0"
                         + ")";
+                //
                 statement = this.connection.createStatement();
                 statement.execute(sql);
                 System.out.println(sql);
@@ -279,8 +286,7 @@ public class DatabaseHandler {
             
             //Creating the USERS_TABLE_NAME table
             rs = md.getTables(null, null, USERS_TABLE_NAME.toUpperCase(), null);
-            if(rs.next()){
-                
+            if(rs.next()){   
                 System.out.println(USERS_TABLE_NAME+" table is already created");
                
             }
@@ -293,8 +299,15 @@ public class DatabaseHandler {
                         + "password varchar(250) NOT NULL)";
                 statement = this.connection.createStatement();
                 statement.execute(sql);
-                this.connection.createStatement().execute("INSERT INTO "+USERS_TABLE_NAME+" (id,fistName,lastName,email,password) VALUES('1',Yvonne','Nalinnya','yvonne@gmail.com','yvonne123')");
-                System.out.println(sql);
+                //this.,','','yvonne@gmail.com','$2y$12$pBFV4Kx4pguBBiD7/gop/uVKVFcIXxcW1a4geYdtI7BqazJho6ktq')");
+                 PreparedStatement preparedStatement = this.connection.prepareStatement("INSERT INTO "+USERS_TABLE_NAME+" (id,fistName,lastName,email,password) VALUES(?,?,?,?,?)");
+                 preparedStatement.setInt(1, 1);
+                 preparedStatement.setString(2, "Defualt");
+                 preparedStatement.setString(3, "Admin");
+                 preparedStatement.setString(4, "admin@daaki.com");
+                 preparedStatement.setString(5, "$2y$12$0g0idkUQa5lwJEQdLHLit.g.cV0EyS6eK8w9JmzEQAII.faBwJtaq");
+                 preparedStatement.execute(); 
+                 System.out.println(sql);
             }
             //Creating the BANK_STATEMENTS_TABLE_NAME table
             rs = md.getTables(null, null, BANK_STATEMENTS_TABLE_NAME.toUpperCase(), null);
@@ -336,7 +349,7 @@ public class DatabaseHandler {
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
             this. connection = DriverManager.getConnection(DB_URL);
-            //System.out.println("SUCCEEDED ");
+            System.out.println("SUCCEEDED ");
 
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -353,7 +366,7 @@ public class DatabaseHandler {
     public boolean insertBlock(Block block) {
         String blockInsertSql ="INSERT INTO "+BLOCKS_TABLE_NAME+" (block_name,location,number_of_rentals,addedByUserId,record_id) VALUES(?,?,?,?,?)";
         String blockIdQuery ="SELECT record_id FROM "+BLOCKS_TABLE_NAME+" WHERE block_name = ? AND location = ? AND number_of_rentals = ?";
-        String houseInsertSql ="INSERT INTO "+HOUSES_TABLE_NAME+" (houseNumber,houseName,monthlyPrice,numberOfRooms,blockID,addedByUserId,record_id) VALUES (?,?,?,?,?,?,?)";
+        
         try {
              //" varchar(40) UNIQUE NOT NULL,"+
             PreparedStatement preparedStatement = this.connection.prepareStatement(blockInsertSql);
@@ -375,17 +388,13 @@ public class DatabaseHandler {
             if(rs.next()){
                 String blockId=rs.getString("record_id");
                 for(House x: block.getHousesList()){
-                    System.out.println(x.getUnitNo()+" : "+x.getRentalName()+" : "+x.getRentalNumOfUnits());
-                    preparedStatement = this.connection.prepareStatement(houseInsertSql);
-                    preparedStatement.setString(1, x.getUnitNo());
-                    preparedStatement.setString(2, x.getRentalName());
-                    preparedStatement.setDouble(3, x.getMonthlyAmount());
-                    preparedStatement.setInt(4,x.getRentalNumOfUnits());
-                    preparedStatement.setString(5,blockId);
-                    preparedStatement.setString(6, CurrentUser.getInstance().getUserId());
+                    x.setBlockId(blockId);
+                    try {
+                        this.insertHouse(x);
+                    } catch (Exception ex) {
+                        Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     
-                    preparedStatement.setString(7, DatabaseHandler.generateId("HS"));
-                    preparedStatement.execute();
                     try {
                         Thread.sleep(1);
                     } catch (InterruptedException ex) {
@@ -396,12 +405,64 @@ public class DatabaseHandler {
             }
             
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+           
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         return false;
     }
+    
+     public Boolean updateBlock(Block block) throws Exception {
+        Calendar calendar =Calendar.getInstance();
+        String blockInsertSql ="UPDATE "+BLOCKS_TABLE_NAME+" SET block_name=?,location=?,dateLastModified=?,hasSynced=0 WHERE record_id=?";
+             //" varchar(40) UNIQUE NOT NULL,"+
+        PreparedStatement preparedStatement;
+        try {
+            String blockId = block.getDatabaseId();
+            if(blockId ==null){
+                throw new Exception("The block has no Id");
+            }
+            preparedStatement = this.connection.prepareStatement(blockInsertSql);
+            preparedStatement.setString(1, block.getName());
+            preparedStatement.setString(2, block.getLocation());
+            preparedStatement.setTimestamp(3,new Timestamp(calendar.getTime().getTime()));
+            preparedStatement.setString(4, blockId);
+            preparedStatement.execute();
+            return true;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return false;
+        
+    }
 
+    public void insertHouse(House x) throws Exception{
+        String houseInsertSql ="INSERT INTO "+HOUSES_TABLE_NAME+" (houseNumber,houseName,monthlyPrice,numberOfRooms,blockID,addedByUserId,record_id,umemeMeterNumber,waterMeterNumber) VALUES (?,?,?,?,?,?,?,?,?)";
+        
+       
+        try {
+            String blockId = x.getBlockId();
+            if (blockId == null){
+                throw new Exception("No Block Id");
+            }
+            PreparedStatement preparedStatement = this.connection.prepareStatement(houseInsertSql);
+            preparedStatement.setString(1, x.getUnitNo());
+            preparedStatement.setString(2, x.getRentalName());
+            preparedStatement.setDouble(3, x.getMonthlyAmount());
+            preparedStatement.setInt(4,x.getRentalNumOfUnits());
+            preparedStatement.setString(5,blockId);
+            preparedStatement.setString(6, CurrentUser.getInstance().getUserId());
+            preparedStatement.setString(7, DatabaseHandler.generateId("HS"));
+            preparedStatement.setString(8, x.getUmemeMeterNumber());
+            preparedStatement.setString(9, x.getWaterMeterNumber());
+            preparedStatement.execute();
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+    }
     public ArrayList<House> getHousesList(String databaseId,boolean availableOnly) {
         String housesQuery;
         if(availableOnly){
@@ -418,7 +479,7 @@ public class DatabaseHandler {
             ArrayList<House> list = new ArrayList();
             while(rs.next()){
                 list.add(new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("availability"),
-                     rs.getString("addedByUserId")));
+                     rs.getString("umemeMeterNumber"), rs.getString("waterMeterNumber"), rs.getString("addedByUserId")));
             }   
             return list;
             
@@ -439,7 +500,7 @@ public class DatabaseHandler {
             ArrayList<House> list = new ArrayList();
             while(rs.next()){
                 list.add(new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("availability"),
-                     rs.getString("addedByUserId")));
+                      rs.getString("umemeMeterNumber"), rs.getString("waterMeterNumber"),rs.getString("addedByUserId")));
             }   
             return list;
             
@@ -458,7 +519,7 @@ public class DatabaseHandler {
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
                 return new House(rs.getString("record_id"),rs.getString("houseNumber"),rs.getString("houseName"),rs.getInt("numberOfRooms"),rs.getDouble("monthlyPrice"),rs.getString("blockID"),rs.getInt("availability"),
-                     rs.getString("addedByUserId"));
+                      rs.getString("umemeMeterNumber"), rs.getString("waterMeterNumber"),rs.getString("addedByUserId"));
             }   
             
             rs.close();
@@ -482,6 +543,7 @@ public class DatabaseHandler {
             blocksList.forEach((x) -> {
                 x.getHousesList();
             });
+           
             return blocksList;
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -489,7 +551,7 @@ public class DatabaseHandler {
         }
         return null;     
     }
-     public Block getBlock(String blockId) {
+    public Block getBlock(String blockId) {
           String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+" WHERE record_id =?";
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(blockQuery);
@@ -512,11 +574,11 @@ public class DatabaseHandler {
         return null;   
     }
     public String insertTenant(String firstName, String lastName, String maritalStatus, String nationality, String idType, String idNumber, int numOfFamMembers, 
-            String dateOfBirth, String phoneNumber, String nokName, String nokContack, String nokDistrict, String nokCounty,String nokSubCounty,String nokParish,String nokVillage) {
+            String dateOfBirth, String phoneNumber, String nokName, String nokContack, String nokDistrict, String nokCounty,String nokSubCounty,String nokParish,String nokVillage, String nokPlaceOfWork) {
         String sql ="INSERT INTO "+TENANTS_TABLE_NAME+" (firstName,lastName,maritalStatus,dateOfBirth,nationality,"
                 + "IdType,IdNumber,photoPath,phoneNumber1,phoneNumber2,"
                 + "numOfFamilyMembers,nextOfKinName,nextOfKinContact,addedByUserId,nextOfKinDistrict ,nextOfKinCounty ,"
-                + "nextOfKinSubCounty ,nextOfKinParish,nextOfKinVillage,record_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "nextOfKinSubCounty ,nextOfKinParish,nextOfKinVillage,record_id, nokPlaceOfWork) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
             preparedStatement.setString(1,firstName);
@@ -539,6 +601,7 @@ public class DatabaseHandler {
             preparedStatement.setString(18,nokParish);
             preparedStatement.setString(19,nokVillage);
             preparedStatement.setString(20,DatabaseHandler.generateId("TN"));
+             preparedStatement.setString(21,nokPlaceOfWork);
             preparedStatement.execute();
             String idQuery = "SELECT record_id FROM "+TENANTS_TABLE_NAME+" WHERE firstName = ? AND lastName = ? AND dateOfBirth = ? AND phoneNumber1 = ?";
             preparedStatement = this.connection.prepareStatement(idQuery);
@@ -596,8 +659,8 @@ public class DatabaseHandler {
      * @param agreedMonthlyAmount
      * @return contractId
      */
-    public String insertHouseContract(String associatedTenant, String associatedHouse, String startDate, Double agreedMonthlyAmount) {
-        String insertSql ="INSERT INTO " +HOUSE_RENTAL_CONTRACT_TABLE_NAME+" (startDate,agreedMonthlyAmount,houseID,tenantID,addedByUserId,record_id) VALUES(?,?,?,?,?,?)";
+    public String insertHouseContract(String associatedTenant, String associatedHouse, String startDate, Double agreedMonthlyAmount, Double advanceAmountBeforeStart,Double arrearsBeforeStart) {
+        String insertSql ="INSERT INTO " +HOUSE_RENTAL_CONTRACT_TABLE_NAME+" (startDate,agreedMonthlyAmount,houseID,tenantID,addedByUserId,record_id,advanceAmountBeforeStart,arrearsBeforeStart) VALUES(?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(insertSql);
             preparedStatement.setString(1, startDate);
@@ -606,6 +669,8 @@ public class DatabaseHandler {
             preparedStatement.setString(4, associatedTenant);
             preparedStatement.setString(5, CurrentUser.getInstance().getUserId());
             preparedStatement.setString(6,DatabaseHandler.generateId("CT"));
+            preparedStatement.setDouble(7, advanceAmountBeforeStart);
+            preparedStatement.setDouble(8, arrearsBeforeStart);
             preparedStatement.execute();     
             //set the  statements as unavailable
             changeHouseAvailability(associatedHouse, this.HOUSE_NOT_AVAILABLE);
@@ -687,6 +752,7 @@ public class DatabaseHandler {
                 HouseRentalContract contract = new HouseRentalContract(rs.getString("startDate"),
                         rs.getString("tenantID") , rs.getString("record_id") , 
                         rs.getString("houseID") , rs.getDouble("agreedMonthlyAmount"),
+                        rs.getDouble("advanceAmountBeforeStart"),rs.getDouble("arrearsBeforeStart"),
                      rs.getString("addedByUserId"));
                 return contract;
             }
@@ -730,6 +796,7 @@ public class DatabaseHandler {
                         rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
                         rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") , 
                         rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCounty"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
+                        rs.getString("nokPlaceOfWork"),
                      rs.getString("addedByUserId")));
             }
             return tenants;
@@ -750,6 +817,7 @@ public class DatabaseHandler {
                         rs.getString("dateOfBirth") , rs.getString("nationality") , rs.getString("phoneNumber1") ,rs.getString("idType"),
                         rs.getString("idNumber") ,rs.getString("maritalStatus"), rs.getInt("numOfFamilyMembers"), rs.getString("nextOfKinName") , 
                         rs.getString("nextOfKinContact"),rs.getString("nextOfKinDistrict"),rs.getString("nextOfKinCounty"),rs.getString("nextOfKinSubCounty"),rs.getString("nextOfKinParish"),rs.getString("nextOfKinVillage"),
+                      rs.getString("nokPlaceOfWork"),
                      rs.getString("addedByUserId"));
             }
             return null;
@@ -828,7 +896,7 @@ public class DatabaseHandler {
                 + "IdType=?,IdNumber=?,photoPath=?,phoneNumber1=?,phoneNumber2=?,"
                 + "numOfFamilyMembers=?,nextOfKinName=?,nextOfKinContact=?,"
                 + "dateLastModified=?,nextOfKinDistrict=? ,nextOfKinCounty=? ,"
-                + "nextOfKinSubCounty=? ,nextOfKinParish=?,nextOfKinVillage=?, hasSynced=0 WHERE record_id=?";
+                + "nextOfKinSubCounty=? ,nextOfKinParish=?,nextOfKinVillage=?,nokPlaceOfWork=?, hasSynced=0 WHERE record_id=?";
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(sql);
             preparedStatement.setString(1,tenant.getFirstName());
@@ -850,7 +918,8 @@ public class DatabaseHandler {
             preparedStatement.setString(17, tenant.getNokSubCounty());
             preparedStatement.setString(18, tenant.getNokParish());
             preparedStatement.setString(19, tenant.getNokVillage());
-            preparedStatement.setString(20,tenant.getTenantId());
+            preparedStatement.setString(20,tenant.getNokPlaceOfWork());
+             preparedStatement.setString(21,tenant.getTenantId());
             preparedStatement.execute();          
             return true;
             
@@ -942,7 +1011,7 @@ public class DatabaseHandler {
             return null;
     }
     public String updateContract(boolean shouldTerminate, String contractId, 
-       String houseId,String prevHouseId ,String tenantId, Double agreedAmount, String startDate) {
+       String houseId,String prevHouseId ,String tenantId, Double agreedAmount, String startDate, Double advanceAmountBeforeStart,Double arrearsBeforeStart) {
         Calendar calendar = Calendar.getInstance();
         
         if(shouldTerminate){
@@ -953,12 +1022,12 @@ public class DatabaseHandler {
                preparedStatement.setString(2, contractId);
                preparedStatement.setTimestamp(1,new Timestamp(calendar.getTime().getTime()));
                preparedStatement.execute();
-               changeHouseAvailability(prevHouseId, this.HOUSE_AVAILABLE);
+               this.changeHouseAvailability(prevHouseId, this.HOUSE_AVAILABLE);
                if(houseId==null){
-                   //do not create new statements
+                   //do not create new contract
                    return null;
                 }else{
-                    String id =this.insertHouseContract(tenantId, houseId, startDate, agreedAmount);
+                    String id =this.insertHouseContract(tenantId, houseId, startDate, agreedAmount,advanceAmountBeforeStart,arrearsBeforeStart);
                     changeHouseAvailability(houseId, this.HOUSE_NOT_AVAILABLE);
                     if(!prevHouseId.equals(houseId)){
                          //make previous statements available
@@ -973,7 +1042,7 @@ public class DatabaseHandler {
        }
        else{
            //update the current statements
-           String updateContractSql = "UPDATE "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" SET startDate =?,agreedMonthlyAmount=? ,houseID=?, tenantID=?,dateLastModified=?, hasSynced=0 WHERE record_id=?";
+           String updateContractSql = "UPDATE "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" SET startDate =?,agreedMonthlyAmount=? ,houseID=?, tenantID=?,dateLastModified=?,advanceAmountBeforeStart=?,arrearsBeforeStart=?, hasSynced=0 WHERE record_id=?";
            try {
                PreparedStatement preparedStatement = this.connection.prepareStatement(updateContractSql);
                preparedStatement.setString(1, startDate);
@@ -981,7 +1050,9 @@ public class DatabaseHandler {
                preparedStatement.setString(3, houseId);
                preparedStatement.setString(4, tenantId);
                preparedStatement.setTimestamp(5,new Timestamp(calendar.getTime().getTime()));
-               preparedStatement.setString(6, contractId);
+               preparedStatement.setDouble(6, advanceAmountBeforeStart);
+               preparedStatement.setDouble(7, arrearsBeforeStart);
+               preparedStatement.setString(8, contractId);
                preparedStatement.execute();
                //set the new statements as unavailable
                changeHouseAvailability(houseId, this.HOUSE_NOT_AVAILABLE);
@@ -992,20 +1063,53 @@ public class DatabaseHandler {
                return contractId;
            } catch (SQLException ex) {
                Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+               
            }
            
            
        }
        return null;
     }
-    private void changeHouseAvailability(String houseId, int availability) throws SQLException{
+    private void changeHouseAvailability(String houseId, int availability){
        Calendar calendar = Calendar.getInstance();
        String  updateHouseSql="UPDATE "+HOUSES_TABLE_NAME+" SET availability =?,dateLastModified=?,hasSynced=0 WHERE record_id = ?";
-       PreparedStatement  preparedStatement = this.connection.prepareStatement(updateHouseSql);
-       preparedStatement.setInt(1, availability);
-       preparedStatement.setTimestamp(2,new Timestamp(calendar.getTime().getTime()));
-       preparedStatement.setString(3, houseId);
-       preparedStatement.execute();
+       PreparedStatement  preparedStatement;
+        try {
+            preparedStatement = this.connection.prepareStatement(updateHouseSql);
+            preparedStatement.setInt(1, availability);
+            preparedStatement.setTimestamp(2,new Timestamp(calendar.getTime().getTime()));
+            preparedStatement.setString(3, houseId);
+            preparedStatement.execute();
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+       
+    }
+    public boolean updateHouse(House house){
+       Calendar calendar = Calendar.getInstance();
+       String  updateHouseSql="UPDATE "+HOUSES_TABLE_NAME+
+               " SET houseName =?,monthlyPrice=?,numberOfRooms=?,blockID=?,dateLastModified=?,hasSynced=0 ,umemeMeterNumber=?,waterMeterNumber=? WHERE record_id = ?";
+       PreparedStatement  preparedStatement;
+        try {
+            preparedStatement = this.connection.prepareStatement(updateHouseSql);
+            preparedStatement.setString(1, house.getRentalName());
+            preparedStatement.setDouble(2, house.getMonthlyAmount());
+            preparedStatement.setInt(3, house.getRentalNumOfUnits());
+            preparedStatement.setString(4, house.getBlockId());
+            preparedStatement.setTimestamp(5,new Timestamp(calendar.getTime().getTime()));
+            preparedStatement.setString(6, house.getUmemeMeterNumber());
+            preparedStatement.setString(7, house.getWaterMeterNumber());
+            preparedStatement.setString(8, house.getHouseId());
+            preparedStatement.execute();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
     public HashMap validateUser(String email, String password) {
        HashMap <String, String> userMap = new HashMap();
@@ -1045,6 +1149,7 @@ public class DatabaseHandler {
                 HouseRentalContract contract = new HouseRentalContract(rs.getString("startDate"),
                         rs.getString("tenantID") , rs.getString("record_id") , 
                         rs.getString("houseID") , rs.getDouble("agreedMonthlyAmount"),
+                         rs.getDouble("advanceAmountBeforeStart"),rs.getDouble("arrearsBeforeStart"),
                      rs.getString("addedByUserId"));
                 return contract;
             }
@@ -1068,12 +1173,13 @@ public class DatabaseHandler {
     
     public JSONArray getBlocksJSON(){
         JSONArray blocksArray =new  JSONArray();
-        String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+"";
+        String blockQuery ="SELECT * FROM "+BLOCKS_TABLE_NAME+" WHERE hasSynced=0";
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(blockQuery);
             ResultSet rs = preparedStatement.executeQuery();
-            JSONObject blocksObject = new JSONObject();
+            
             while(rs.next()){
+                JSONObject blocksObject = new JSONObject();
                 blocksObject.put("record_id", rs.getString("record_id"));
                 blocksObject.put("block_name", rs.getString("block_name"));
                 blocksObject.put("location", rs.getString("location"));
@@ -1084,11 +1190,14 @@ public class DatabaseHandler {
                 blocksObject.put("hasSynced", rs.getString("hasSynced"));
                 blocksArray.put(blocksObject); 
             }
+            //System.out.println(blocksArray+"Yess");
             return blocksArray;    
         } catch (SQLException ex) {
+            
             System.out.println(ex.getMessage());
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
+             ex.printStackTrace();
             Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return blocksArray;     
@@ -1096,16 +1205,19 @@ public class DatabaseHandler {
     public JSONArray getHousesJSON(){
         JSONArray housesArray =new  JSONArray();
           
-        String housesQuery="SELECT * FROM "+HOUSES_TABLE_NAME;
+        String housesQuery="SELECT * FROM "+HOUSES_TABLE_NAME+" WHERE hasSynced=0";
         try {
             PreparedStatement preparedStatement = this.connection.prepareStatement(housesQuery);
             ResultSet rs = preparedStatement.executeQuery();
-            JSONObject house = new JSONObject();
+           
             while(rs.next()){
+                JSONObject house = new JSONObject();
                 house.put("record_id", rs.getString("record_id"));
                 house.put("houseNumber", rs.getString("houseNumber"));
-                 house.put("houseName", rs.getString("houseName"));
+                house.put("houseName", rs.getString("houseName"));
                 house.put("numberOfRooms", rs.getString("numberOfRooms"));
+                house.put("waterMeterNumber", rs.getString("waterMeterNumber"));
+                house.put("umemeMeterNumber", rs.getString("umemeMeterNumber"));
                 house.put("monthlyPrice", rs.getString("monthlyPrice"));
                 house.put("blockID", rs.getString("blockID"));
                 house.put("availability", rs.getString("availability"));
@@ -1114,7 +1226,9 @@ public class DatabaseHandler {
                 house.put("dateLastModified", rs.getString("dateLastModified"));
                 house.put("hasSynced", rs.getString("hasSynced"));
                 housesArray.put(house);
+               
             }   
+            System.out.println(housesArray.toString());
             return housesArray;
             
         } catch (SQLException | JSONException ex) {
@@ -1127,19 +1241,22 @@ public class DatabaseHandler {
     public JSONArray getRentalContractsJSON(){
         JSONArray contractsArray =new  JSONArray();
           
-        String contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+"";
+        String contractQuery= "SELECT * FROM "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" WHERE hasSynced=0";;
         PreparedStatement preparedStatement;
        try{
         preparedStatement = this.connection.prepareStatement(contractQuery);
         ResultSet rs =preparedStatement.executeQuery();
 
-        JSONObject contract = new JSONObject();
+        
         while(rs.next()){
+            JSONObject contract = new JSONObject();
             contract.put("record_id", rs.getString("record_id"));
             contract.put("tenantID", rs.getString("tenantID"));
             contract.put("startDate", rs.getString("startDate"));
             contract.put("houseID", rs.getString("houseID"));
             contract.put("agreedMonthlyAmount", rs.getString("agreedMonthlyAmount"));
+            contract.put("advanceAmountBeforeStart", rs.getDouble("advanceAmountBeforeStart"));
+            contract.put("arrearsBeforeStart", rs.getDouble("arrearsBeforeStart"));
             contract.put("addedByUserId", rs.getString("addedByUserId"));
             contract.put("isTerminated", rs.getString("isTerminated"));
             contract.put("dateCreated", rs.getString("dateCreated"));
@@ -1158,36 +1275,39 @@ public class DatabaseHandler {
     }
     public JSONArray getTenantsJSON(){
         JSONArray tenantsArray =new  JSONArray();
-        String idQuery = "SELECT * FROM "+TENANTS_TABLE_NAME;
+        String idQuery = "SELECT * FROM "+TENANTS_TABLE_NAME+" WHERE hasSynced=0";
             PreparedStatement preparedStatement;
         try {
-            JSONObject tenants = new JSONObject();
+           
             preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
            
             while(rs.next()){
-                tenants.put("record_id", rs.getString("record_id"));
-                tenants.put("lastName", rs.getString("lastName"));
-                tenants.put("dateOfBirth", rs.getString("dateOfBirth"));
-                tenants.put("firstName", rs.getString("firstName"));
-                tenants.put("nationality", rs.getString("nationality"));
-                tenants.put("phoneNumber1", rs.getString("phoneNumber1"));
-                tenants.put("idType", rs.getString("idType"));
-                tenants.put("IdNumber", rs.getString("IdNumber"));
-                tenants.put("maritalStatus", rs.getString("maritalStatus"));
-                tenants.put("numOfFamilyMembers", rs.getString("numOfFamilyMembers"));
-                tenants.put("nextOfKinName", rs.getString("nextOfKinName"));
-                tenants.put("nextOfKinContact", rs.getString("nextOfKinContact"));
-                tenants.put("nextOfKinDistrict", rs.getString("nextOfKinDistrict"));
-                tenants.put("nextOfKinCounty", rs.getString("nextOfKinCounty"));
-                tenants.put("nextOfKinSubCounty", rs.getString("nextOfKinSubCounty"));
-                tenants.put("nextOfKinParish", rs.getString("nextOfKinParish"));
-                tenants.put("nextOfKinVillage", rs.getString("nextOfKinVillage"));
-                tenants.put("addedByUserId", rs.getString("addedByUserId"));
-                tenants.put("dateCreated", rs.getString("dateCreated"));
-                tenants.put("dateLastModified", rs.getString("dateLastModified"));
-                tenants.put("hasSynced", rs.getString("hasSynced"));
-                tenantsArray.put(tenants);     
+                JSONObject tenant = new JSONObject();
+                tenant.put("record_id", rs.getString("record_id"));
+                tenant.put("lastName", rs.getString("lastName"));
+                tenant.put("dateOfBirth", rs.getString("dateOfBirth"));
+                tenant.put("firstName", rs.getString("firstName"));
+                tenant.put("nationality", rs.getString("nationality"));
+                tenant.put("phoneNumber1", rs.getString("phoneNumber1"));
+                tenant.put("idType", rs.getString("idType"));
+                tenant.put("IdNumber", rs.getString("IdNumber"));
+                tenant.put("maritalStatus", rs.getString("maritalStatus"));
+                tenant.put("numOfFamilyMembers", rs.getString("numOfFamilyMembers"));
+                tenant.put("nextOfKinName", rs.getString("nextOfKinName"));
+                tenant.put("nextOfKinContact", rs.getString("nextOfKinContact"));
+                tenant.put("nextOfKinDistrict", rs.getString("nextOfKinDistrict"));
+                tenant.put("nextOfKinCounty", rs.getString("nextOfKinCounty"));
+                tenant.put("nextOfKinSubCounty", rs.getString("nextOfKinSubCounty"));
+                tenant.put("nextOfKinParish", rs.getString("nextOfKinParish"));
+                tenant.put("nextOfKinVillage", rs.getString("nextOfKinVillage"));
+                tenant.put("nokPlaceOfWork", rs.getString("nokPlaceOfWork"));
+                tenant.put("addedByUserId", rs.getString("addedByUserId"));
+                tenant.put("dateCreated", rs.getString("dateCreated"));
+                tenant.put("dateLastModified", rs.getString("dateLastModified"));
+                tenant.put("hasSynced", rs.getString("hasSynced"));
+                System.out.println(rs.getString("nokPlaceOfWork"));
+                tenantsArray.put(tenant);     
             }
             return tenantsArray;
         }catch(SQLException | JSONException e){
@@ -1199,13 +1319,14 @@ public class DatabaseHandler {
     
      public JSONArray getPaymentsJSON(){
         JSONArray paymentsArray =new  JSONArray();
-          String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME;
+          String idQuery = "SELECT * FROM "+PAYMENTS_TABLE_NAME+" WHERE hasSynced=0";
          PreparedStatement preparedStatement;
         try {
             preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
-            JSONObject payment = new JSONObject();
+           
             while(rs.next()){
+                JSONObject payment = new JSONObject();
                 payment.put("record_id", rs.getString("record_id"));
                 payment.put("datePaid", rs.getString("datePaid"));
                 payment.put("amountPaid", rs.getString("amountPaid"));
@@ -1232,13 +1353,14 @@ public class DatabaseHandler {
      
      public JSONArray getStatementsJSON(){
         JSONArray statementsArray =new  JSONArray();
-          String idQuery = "SELECT * FROM "+BANK_STATEMENTS_TABLE_NAME;
+          String idQuery = "SELECT * FROM "+BANK_STATEMENTS_TABLE_NAME+" WHERE hasSynced=0";
          PreparedStatement preparedStatement;
         try {
             preparedStatement = this.connection.prepareStatement(idQuery);
             ResultSet rs = preparedStatement.executeQuery();
-            JSONObject statements = new JSONObject();
+           
             while(rs.next()){
+                JSONObject statements = new JSONObject();
                 statements.put("record_id", rs.getString("record_id"));
                 statements.put("transactionDate", rs.getString("transactionDate"));
                 statements.put("valueDate", rs.getString("valueDate"));
@@ -1422,6 +1544,7 @@ public class DatabaseHandler {
                 + "nextOfKinName,nextOfKinContact,nextOfKinDistrict,nextOfKinCounty,nextOfKinSubCounty,nextOfKinParish,nextOfKinVillage,addedByUserId,dateCreated,dateLastModified,hasSynced) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
                 PreparedStatement preparedStatement;
+                System.out.println("Test "+tenant.get("IdNumber"));
                 preparedStatement = this.connection.prepareStatement(houseInsertSql);
                  preparedStatement.setString(1, tenant.getString("record_id"));
                  preparedStatement.setString(2, tenant.getString("lastName"));
@@ -1451,7 +1574,7 @@ public class DatabaseHandler {
     }   
     public void insertSyncedContract(JSONObject contract){
         String contractInsertSql ="INSERT INTO "+HOUSE_RENTAL_CONTRACT_TABLE_NAME+" (record_id,tenantID,startDate,houseID,agreedMonthlyAmount,addedByUserId,"
-                + "dateCreated,dateLastModified,hasSynced,isTerminated) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                + "dateCreated,dateLastModified,hasSynced,isTerminated,advanceAmountBeforeStart,arrearsBeforeStart) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
                 PreparedStatement preparedStatement;
                 preparedStatement = this.connection.prepareStatement(contractInsertSql);
@@ -1464,7 +1587,9 @@ public class DatabaseHandler {
                 preparedStatement.setString(7, contract.getString("dateCreated"));
                 preparedStatement.setString(8, contract.getString("dateLastModified"));
                 preparedStatement.setInt(9, 1);
-                preparedStatement.setInt(10, contract.getInt("isTerminated"));         
+                preparedStatement.setInt(10, contract.getInt("isTerminated"));
+                preparedStatement.setDouble(11, contract.getDouble("advanceAmountBeforeStart"));
+                preparedStatement.setDouble(12, contract.getDouble("arrearsBeforeStart"));
                 preparedStatement.execute();
             }catch(SQLException | JSONException ex){
                 Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -1540,4 +1665,6 @@ public class DatabaseHandler {
                 Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
             } 
     }
+
+   
   }

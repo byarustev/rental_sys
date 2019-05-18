@@ -41,6 +41,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -120,6 +121,11 @@ public class TenantProfileController implements Initializable,ReloadableControll
     ObservableList paymentsList ;
     @FXML // fx:id="statementsTableView"
     private TableView<BankStatement> statementsTableView; // Value injected by FXMLLoader
+        @FXML // fx:id="advanceAmountBeforeUpgradeLbl"
+    private Label advanceAmountBeforeUpgradeLbl; // Value injected by FXMLLoader
+
+    @FXML // fx:id="arrearsBeforeUpgradeLbl"
+    private Label arrearsBeforeUpgradeLbl; // Value injected by FXMLLoader
 
     @FXML // fx:id="monthlyReportTableView"
     private TableView<MonthReport> monthlyReportTableView; // Value injected by FXMLLoader
@@ -129,6 +135,9 @@ public class TenantProfileController implements Initializable,ReloadableControll
     private Button editContractBtn;
      @FXML // fx:id="editProfileBtn"
     private Button editProfileBtn; // Value injected by FXMLLoader
+     
+    @FXML // fx:id="nokPlaceOfWorkTxt"
+    private Label nokPlaceOfWorkTxt; // Value injected by FXMLLoader
     
     @FXML // This method is called by the FXMLLoader when initialization is complete
       /**
@@ -166,6 +175,7 @@ public class TenantProfileController implements Initializable,ReloadableControll
         this.nokSubCountyLbl.setText(this.tenant.getNokSubCounty());
         this.nokParishLbl.setText(this.tenant.getNokParish());
         this.nokVillageLbl.setText(this.tenant.getNokVillage());
+        this.nokPlaceOfWorkTxt.setText(this.tenant.getNokPlaceOfWork());
         try{
             if(!this.tenant.getAddedByUserId().equals(CurrentUser.getInstance().getUserId())){
                  editProfileBtn.setDisable(true);
@@ -176,13 +186,24 @@ public class TenantProfileController implements Initializable,ReloadableControll
         try{
             HouseRentalContract contract = (HouseRentalContract)this.tenant.getCurrentContract();
             if(contract !=null){
-                this.balanceLbl.setText(contract.computeAmountOwed()+"");
+               
+                String balanceColor = "";
+                double balance =contract.computeAmountOwed();
+                if(balance>0){
+                    balanceColor="#FF0000";
+                }else{
+                    balanceColor="#0000FF";
+                }
+                this.balanceLbl.setText(balance+"");
+                this.balanceLbl.setTextFill(Color.web(balanceColor));
                 this.dateJoinedLabel.setText(contract.getStartDate());
                 this.houseLabel.setText(contract.getCurrentHouse().getRentalName());
                 this.blockLabel.setText(contract.getCurrentHouse().getBlock().getName());
                 this.monthsSpentLabel.setText(contract.computeFullMonths()+"");
                 this.totalAmountPaidLabel.setText(contract.computeTotalPayments()+"");
                 monthlyAmountLabel.setText(contract.getAgreedMonthlyAmount()+"");
+                this.advanceAmountBeforeUpgradeLbl.setText(contract.getAdvanceAmountBeforeSysUpgrade()+"");
+                 this.arrearsBeforeUpgradeLbl.setText(contract.getArrearsBeforeSysUpgrade()+"");
                 try{
                     if(!contract.getAddedByUserId().equals(CurrentUser.getInstance().getUserId())){
                         editContractBtn.setDisable(true);
@@ -301,7 +322,7 @@ public class TenantProfileController implements Initializable,ReloadableControll
            return new ReadOnlyObjectWrapper(((BankStatement)param.getValue()).getAssociatedContract().getAssociatedTenant().getFullName());
            }
             catch(NullPointerException ex){
-                ex.printStackTrace();
+               
                return new ReadOnlyObjectWrapper("");
            }  
             }
@@ -406,7 +427,7 @@ public class TenantProfileController implements Initializable,ReloadableControll
             e.printStackTrace();
         }
     }
-      @FXML // This method is called by the FXMLLoader when initialization is complete
+    @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert nameLabel != null : "fx:id=\"nameLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nationalityLabel != null : "fx:id=\"nationalityLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
@@ -418,6 +439,7 @@ public class TenantProfileController implements Initializable,ReloadableControll
         assert numFamMemLabel != null : "fx:id=\"numFamMemLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokNameLabel != null : "fx:id=\"nokNameLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokContactLabel != null : "fx:id=\"nokContactLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert nokPlaceOfWorkTxt != null : "fx:id=\"nokPlaceOfWorkTxt\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokDistrictLbl != null : "fx:id=\"nokDistrictLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokCountyLbl != null : "fx:id=\"nokCountyLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert nokSubCountyLbl != null : "fx:id=\"nokSubCountyLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
@@ -426,10 +448,12 @@ public class TenantProfileController implements Initializable,ReloadableControll
         assert editProfileBtn != null : "fx:id=\"editProfileBtn\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert houseLabel != null : "fx:id=\"houseLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert blockLabel != null : "fx:id=\"blockLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert monthlyAmountLabel != null : "fx:id=\"monthlyAmountLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert editContractBtn != null : "fx:id=\"editContractBtn\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert dateJoinedLabel != null : "fx:id=\"dateJoinedLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert monthsSpentLabel != null : "fx:id=\"monthsSpentLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
-        assert monthlyAmountLabel != null : "fx:id=\"monthlyAmountLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert advanceAmountBeforeUpgradeLbl != null : "fx:id=\"advanceAmountBeforeUpgradeLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
+        assert arrearsBeforeUpgradeLbl != null : "fx:id=\"arrearsBeforeUpgradeLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert paymentsTable != null : "fx:id=\"paymentsTable\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert balanceLbl != null : "fx:id=\"balanceLbl\" was not injected: check your FXML file 'tenantProfile.fxml'.";
         assert totalAmountPaidLabel != null : "fx:id=\"totalAmountPaidLabel\" was not injected: check your FXML file 'tenantProfile.fxml'.";

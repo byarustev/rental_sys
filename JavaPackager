@@ -1,0 +1,15 @@
+#for mac DMG
+javapackager -deploy -native dmg -srcfiles RentalSystem.jar -appclass controllers.RentalSystem  -name DaakiRentalSystem -outdir deploy -outfile DaakiRentalSystem -v
+
+#for windows 
+javapackager -deploy -native dmg -srcfiles RentalSystem.jar -appclass controllers.RentalSystem  -name DaakiRentalSystem -outdir deploy -outfile DaakiRentalSystem -v
+
+
+#link
+https://docs.oracle.com/javase/8/docs/technotes/tools/unix/javapackager.html
+
+#link
+
+javapackager -deploy -native exe -Bruntime="/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre" -BsystemWide=true -BjvmOptions=-Xmx128m  -BjvmOptions=-Xms128m -outdir deploy -outfile DaakiRentalSystem -srcdir dist -srcfiles RentalSystem.jar  -appclass controllers.RentalSystem  -name RentalSystem  
+
+

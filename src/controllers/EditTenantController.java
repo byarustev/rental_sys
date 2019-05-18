@@ -16,12 +16,15 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 public class EditTenantController implements Initializable{
@@ -83,6 +86,10 @@ public class EditTenantController implements Initializable{
 
     @FXML // fx:id="nokVillageTxt"
     private TextField nokVillageTxt; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="nokPlaceOfWork"
+    private TextField nokPlaceOfWork; // Value injected by FXMLLoader
+    
     Tenant tenant;
     String []paymentOtions ={"Cash","Airtel Money","MTN Money","Bank"};
     String [] idTypes = {"National ID", "Driving Permit","Passport"};
@@ -131,6 +138,7 @@ public class EditTenantController implements Initializable{
         this.nokSubCountyTx.setText(this.tenant.getNokSubCounty());
         this.nokParishTxt.setText(this.tenant.getNokParish());
         this.nokVillageTxt.setText(this.tenant.getNokVillage());
+        this.nokPlaceOfWork.setText(this.tenant.getNokPlaceOfWork());
     }
     
     
@@ -153,8 +161,6 @@ public class EditTenantController implements Initializable{
             phoneNumberTxt.requestFocus();
         }else if(idTypeCombo.getValue()==null){
             idTypeCombo.requestFocus();
-        }else if(idNumberTxt.getText().isEmpty()){
-            idNumberTxt.requestFocus();
         }else if(noFamMembersTxt.getText().isEmpty()){
             noFamMembersTxt.requestFocus();
         }else if(nokNameTxt.getText().isEmpty()){
@@ -182,17 +188,23 @@ public class EditTenantController implements Initializable{
              tenant.setNokContack(nokContactTxt.getText());
              tenant.setNokDistrict(nokDistrictTxt.getText());
              tenant.setNokCounty(nokCountyTxt.getText());
+             tenant.setNokPlaceOfWork(this.nokPlaceOfWork.getText());
              this.tenant.setNokSubCounty(nokSubCountyTx.getText());
              this.tenant.setNokParish(nokParishTxt.getText());
              this.tenant.setNokVillage(nokVillageTxt.getText());
              if(tenant.update()){
                  parentController.initTenant(tenant);
-                 closeWindow(event);
+                    Alert alert = new Alert(Alert.AlertType.NONE, "Tenant Information Edited Successfully",ButtonType.OK);
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                    alert.setHeaderText(null);
+                    alert.setTitle("Success");
+                    alert.show();
+                    closeWindow(event);
              }
         }
     }
 
-     @FXML // This method is called by the FXMLLoader when initialization is complete
+        @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert fNameTxt != null : "fx:id=\"fNameTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
         assert lastNameTxt != null : "fx:id=\"lastNameTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
@@ -205,6 +217,7 @@ public class EditTenantController implements Initializable{
         assert noFamMembersTxt != null : "fx:id=\"noFamMembersTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
         assert nokNameTxt != null : "fx:id=\"nokNameTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
         assert nokContactTxt != null : "fx:id=\"nokContactTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
+        assert nokPlaceOfWork != null : "fx:id=\"nokPlaceOfWork\" was not injected: check your FXML file 'editTenant.fxml'.";
         assert nokDistrictTxt != null : "fx:id=\"nokDistrictTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
         assert nokCountyTxt != null : "fx:id=\"nokCountyTxt\" was not injected: check your FXML file 'editTenant.fxml'.";
         assert nokSubCountyTx != null : "fx:id=\"nokSubCountyTx\" was not injected: check your FXML file 'editTenant.fxml'.";

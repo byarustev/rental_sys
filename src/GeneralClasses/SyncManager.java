@@ -54,7 +54,7 @@ public class SyncManager {
         File syncFile = new File("sync.txt");
         try {
             FileOutputStream writer = new FileOutputStream(syncFile);
-            JSONObject rentalSys = new JSONObject();
+            
             JSONObject syncObject = new JSONObject();
             syncObject.put("blocks", DatabaseHandler.getInstance().getBlocksJSON());
             syncObject.put("tenants", DatabaseHandler.getInstance().getTenantsJSON());
@@ -62,7 +62,7 @@ public class SyncManager {
             syncObject.put("payments", DatabaseHandler.getInstance().getPaymentsJSON());
             syncObject.put("statements", DatabaseHandler.getInstance().getStatementsJSON());
             syncObject.put("houses", DatabaseHandler.getInstance().getHousesJSON());
-            //System.out.println(syncObject);
+            System.out.println(syncObject);
             sendJSONtoServer(syncObject);
             writer.write(syncObject.toString().getBytes());
             writer.close();
@@ -80,20 +80,26 @@ public class SyncManager {
             // URL and parameters for the connection, This particulary returns the information passed
             URL url;
         try {
-            String SERVER_URL ="http://daaki.rental.mubali.net/api/syncdata/post/";
+            String SERVER_URL="";
+            SERVER_URL ="http://daaki.rental.mubali.net/api/syncdata/post/";
+            //SERVER_URL ="http://localhost:8000/api/syncdata/post/";
             url = new URL(SERVER_URL);
             HttpURLConnection httpConnection  = (HttpURLConnection) url.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
-            httpConnection.setRequestProperty("Content-Type", "application/json");
+            httpConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             httpConnection.setRequestProperty("Accept", "application/json");
-            httpConnection.setReadTimeout(90000);
+            httpConnection.setReadTimeout(9000);
             httpConnection.setRequestProperty("Content-Length", String.valueOf(jsonData.toString().getBytes().length));
 
             // Writes the JSON parsed as string to the connection
             DataOutputStream wr = new DataOutputStream(httpConnection.getOutputStream());
-            wr.write(jsonData.toString().getBytes());
+            
+            wr.write(jsonData.toString().getBytes("UTF-8"));
+           
+            System.out.println(httpConnection.getRequestMethod());
             Integer responseCode = httpConnection.getResponseCode();
+            System.out.println(httpConnection.getRequestMethod());
             BufferedReader bufferedReader;
             // Creates a reader buffer
             if (responseCode > 199 && responseCode < 300) {
@@ -115,7 +121,7 @@ public class SyncManager {
                 content.append(line).append("\n");
             }*/
             bufferedReader.close();
-            
+            System.out.println(content.toString());
             JSONObject responseData = (JSONObject)new JSONTokener(content.toString()).nextValue();
             System.out.println(content.toString());
             updateLocalDatabase(responseData.getJSONObject("syncedData"));

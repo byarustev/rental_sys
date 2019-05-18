@@ -14,6 +14,7 @@ import GeneralClasses.Tenant;
 import database.DatabaseHandler;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -142,10 +143,22 @@ public class TenantsController implements Initializable {
     
     @FXML // fx:id="tenantsSearhTxt"
     private TextField tenantsSearhTxt; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="nokPlaceOfWorkTxt"
+    private TextField nokPlaceOfWorkTxt; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="advanceBeforeSystemUpgradeTxt"
+    private TextField advanceBeforeSystemUpgradeTxt; // Value injected by FXMLLoader
+
+    @FXML // fx:id="arrearsBeforeSystemUpgradeTxt"
+    private TextField arrearsBeforeSystemUpgradeTxt; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="startDatePicker"
+    private DatePicker startDatePicker; // Value injected by FXMLLoader
 
     @FXML // fx:id="blocksCombo"
     private ComboBox<Block> blocksFilterCombo; // Value injected by FXMLLoader
-    String []paymentOtions ={"Cash","Airtel Money","MTN Money","Bank"};
+    String []paymentOtions ={"Cash","Airtel Money","MTN Money","Bank","Cheque"};
      String [] idTypes = {"National ID", "Driving Permit","Passport"};
     /**
      * Initializes the controller class.
@@ -157,9 +170,10 @@ public class TenantsController implements Initializable {
       initializeAllTenantsTable();
       initializeTenantsOwedTable();
       this.reload();
+      this.resetFields();
     }    
     public void initializeAddTenantsForm(){
-        lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
+        //lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
       blocksList= FXCollections.observableArrayList(DatabaseHandler.getInstance().getBlocks());
       blockCombo.setItems(blocksList);
       rentalsList = FXCollections.observableArrayList();
@@ -223,6 +237,18 @@ public class TenantsController implements Initializable {
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                 NumberValidator.validateInteger(noFamMembersTxt);
             }
+        });
+        advanceBeforeSystemUpgradeTxt.textProperty().addListener(new ChangeListener(){
+           @Override
+           public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+               NumberValidator.validateInteger(advanceBeforeSystemUpgradeTxt);
+           }
+        });
+        arrearsBeforeSystemUpgradeTxt.textProperty().addListener(new ChangeListener(){
+           @Override
+           public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+               NumberValidator.validateInteger(arrearsBeforeSystemUpgradeTxt);
+           }
         });
     }
     public void initializeAllTenantsTable(){ 
@@ -560,31 +586,24 @@ public class TenantsController implements Initializable {
             phoneNumberTxt.requestFocus();
         }else if(idTypeCombo.getValue()==null){
             idTypeCombo.requestFocus();
-        }else if(idNumberTxt.getText().isEmpty()){
-            idNumberTxt.requestFocus();
         }else if(noFamMembersTxt.getText().isEmpty()){
             noFamMembersTxt.requestFocus();
         }else if(nokNameTxt.getText().isEmpty()){
             nokNameTxt.requestFocus();
         }else if(nokContactTxt.getText().isEmpty()){
             nokContactTxt.requestFocus();
-        }else if(nokDistrictTxt.getText().isEmpty()){
-            nokDistrictTxt.requestFocus();
-        }else if(nokCountyTxt.getText().isEmpty()){
-            nokCountyTxt.requestFocus();
-        }else if(nokSubCountyTx.getText().isEmpty()){
-            nokSubCountyTx.requestFocus();
-        }else if(nokParishTxt.getText().isEmpty()){
-            nokParishTxt.requestFocus();
-        }else if(nokVillageTxt.getText().isEmpty()){
-            nokVillageTxt.requestFocus();
+        }else if(nokPlaceOfWorkTxt.getText().isEmpty()){
+            nokPlaceOfWorkTxt.requestFocus();
         }else if(blockCombo.getValue()== null){
             blockCombo.requestFocus();
         }else if(rentalsCombo.getValue() == null){
             rentalsCombo.requestFocus();
         }else if(dobDatePicker.getValue() ==null){
             dobDatePicker.requestFocus();
-        } else if(monthlyFeeTxt.getText().isEmpty()){
+        }else if(this.startDatePicker.getValue() ==null){
+            startDatePicker.requestFocus();
+        }
+        else if(monthlyFeeTxt.getText().isEmpty()){
             monthlyFeeTxt.requestFocus();
         } else if(depositTxt.getText().isEmpty() && !receivedByTxt.getText().isEmpty()){
             depositTxt.requestFocus();
@@ -600,16 +619,20 @@ public class TenantsController implements Initializable {
             }
             String maritalStatus=((RadioButton)statusGroup.getSelectedToggle()).getText();
             Tenant tenant = new Tenant(lastNameTxt.getText(), fNameTxt.getText(),date, countriesCombo.getValue()
-                    , phoneNumberTxt.getText(), idTypeCombo.getValue(),idNumberTxt.getText(), maritalStatus, Integer.parseInt(noFamMembersTxt.getText()), nokNameTxt.getText(), nokContactTxt.getText(),nokDistrictTxt.getText(),nokCountyTxt.getText(),nokSubCountyTx.getText(),nokParishTxt.getText(),nokVillageTxt.getText());
+                    , phoneNumberTxt.getText(), idTypeCombo.getValue(),idNumberTxt.getText(),
+                    maritalStatus, Integer.parseInt(noFamMembersTxt.getText()), nokNameTxt.getText(), 
+                    nokContactTxt.getText(),nokDistrictTxt.getText(),nokCountyTxt.getText(),nokSubCountyTx.getText(),
+                    nokParishTxt.getText(),nokVillageTxt.getText(),nokPlaceOfWorkTxt.getText());
            // lastNameTxt.setText("Kasumba"); phoneNumberTxt.setText("0752615075");fNameTxt.setText("Kasumba");idNumberTxt.setText("7892374HJF");noFamMembersTxt.setText("5");nokNameTxt.setText("Lubega");nokContactTxt.setText("07867542452");
            // nokDistrictTxt.getText(),nokCountyTxt.getText(),nokSubCountyTx.getText(),nokParishTxt.getText(),nokVillageTxt.getText()
            String tenantId =tenant.save();
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDateTime now  = LocalDateTime.now();
-            String startDate = now.format(dtf);
+            //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            //LocalDateTime now  = LocalDateTime.now();
+            String startDate = this.startDatePicker.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String houseId = rentalsCombo.getValue().getHouseId();
             //amountPaid,datePaid,receiptNumber,modeOfPayment,tenantID,contractID,receivedBy
-            HouseRentalContract contract = new HouseRentalContract(startDate, tenantId,houseId,Double.parseDouble(monthlyFeeTxt.getText()));
+            HouseRentalContract contract = new HouseRentalContract(startDate, tenantId,houseId,Double.parseDouble(monthlyFeeTxt.getText()),Double.parseDouble(advanceBeforeSystemUpgradeTxt.getText()),Double.parseDouble(arrearsBeforeSystemUpgradeTxt.getText()));
+
             String contractId=contract.saveContract();
             if(contractId !=null && !depositTxt.getText().isEmpty()){
                 Payment payment = new Payment(startDate, Double.parseDouble(depositTxt.getText()), contractId, receivedByTxt.getText(), tenantId, paymentModeCombo.getValue(),referenceNumberTxt.getText());
@@ -658,8 +681,9 @@ public class TenantsController implements Initializable {
         receivedByTxt.setText("");
         paymentModeCombo.setValue(paymentOtions[0]);
         dobDatePicker.setValue(null);
+        this.startDatePicker.setValue(LocalDate.now());
     }
-      @FXML // This method is called by the FXMLLoader when initialization is complete
+       @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert tenantsOwedSearhTxt != null : "fx:id=\"tenantsOwedSearhTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert blocksOwedFilterCombo != null : "fx:id=\"blocksOwedFilterCombo\" was not injected: check your FXML file 'tenants.fxml'.";
@@ -679,18 +703,23 @@ public class TenantsController implements Initializable {
         assert dobDatePicker != null : "fx:id=\"dobDatePicker\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokNameTxt != null : "fx:id=\"nokNameTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokContactTxt != null : "fx:id=\"nokContactTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert nokPlaceOfWorkTxt != null : "fx:id=\"nokPlaceOfWorkTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokDistrictTxt != null : "fx:id=\"nokDistrictTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokCountyTxt != null : "fx:id=\"nokCountyTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokSubCountyTx != null : "fx:id=\"nokSubCountyTx\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokParishTxt != null : "fx:id=\"nokParishTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert nokVillageTxt != null : "fx:id=\"nokVillageTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert advanceBeforeSystemUpgradeTxt != null : "fx:id=\"advanceBeforeSystemUpgradeTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert arrearsBeforeSystemUpgradeTxt != null : "fx:id=\"arrearsBeforeSystemUpgradeTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert blockCombo != null : "fx:id=\"blockCombo\" was not injected: check your FXML file 'tenants.fxml'.";
         assert rentalsCombo != null : "fx:id=\"rentalsCombo\" was not injected: check your FXML file 'tenants.fxml'.";
         assert monthlyFeeTxt != null : "fx:id=\"monthlyFeeTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+        assert startDatePicker != null : "fx:id=\"startDatePicker\" was not injected: check your FXML file 'tenants.fxml'.";
         assert depositTxt != null : "fx:id=\"depositTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert receivedByTxt != null : "fx:id=\"receivedByTxt\" was not injected: check your FXML file 'tenants.fxml'.";
         assert paymentModeCombo != null : "fx:id=\"paymentModeCombo\" was not injected: check your FXML file 'tenants.fxml'.";
         assert referenceNumberTxt != null : "fx:id=\"referenceNumberTxt\" was not injected: check your FXML file 'tenants.fxml'.";
+
     }
     
 }

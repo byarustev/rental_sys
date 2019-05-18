@@ -29,6 +29,24 @@ public class House{
     private Block block;
     private int availability=1;
     private String addedByUserId;
+    private String umemeMeterNumber;
+
+    public String getUmemeMeterNumber() {
+        return umemeMeterNumber;
+    }
+
+    public void setUmemeMeterNumber(String umemeMeterNumber) {
+        this.umemeMeterNumber = umemeMeterNumber;
+    }
+
+    public String getWaterMeterNumber() {
+        return waterMeterNumber;
+    }
+
+    public void setWaterMeterNumber(String waterMeterNumber) {
+        this.waterMeterNumber = waterMeterNumber;
+    }
+    private String waterMeterNumber;
 
     public String getAddedByUserId() {
         return addedByUserId;
@@ -91,16 +109,18 @@ public class House{
         public void setRentalNumOfUnits(int rentalNumOfUnits) {
             this.rentalNumOfUnits = rentalNumOfUnits;
         }
-       public House(String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId){
+       public House(String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId,String umemeMeterNumber, String waterMeterNumber){
             this.setUnitNo(unitNo);
             this.setRentalName(rentalName);
             this.setRentalNumOfUnits(rentalNumOfUnits);
             this.setMonthlyAmount(monthlyAmount);
-            setBlockId(blockId);
+            this.setBlockId(blockId);
+            this.setWaterMeterNumber(waterMeterNumber);
+            this.setUmemeMeterNumber(umemeMeterNumber);
        }
        
-       public House(String id,String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId, int availability,String addedById) {
-            this(unitNo,rentalName,rentalNumOfUnits,monthlyAmount,blockId);
+       public House(String id,String unitNo, String rentalName, int rentalNumOfUnits, Double monthlyAmount, String blockId, int availability,String umemeMeterNumber, String waterMeterNumber,String addedById) {
+            this(unitNo,rentalName,rentalNumOfUnits,monthlyAmount,blockId,umemeMeterNumber,waterMeterNumber);
             this.addedByUserId = addedById;
             this.houseId =id;
             this.setAvailability(availability);
@@ -147,6 +167,8 @@ public class House{
                  house.put("monthlyAmount", this.monthlyAmount);
                  house.put("houseId", this.houseId);
                  house.put("addedByUserId", this.addedByUserId);
+                 house.put("waterMeterNumber", this.waterMeterNumber);
+                 house.put("umemeMeterNumber", this.umemeMeterNumber);
                  return house;
             } catch (JSONException ex) {
                 Logger.getLogger(Payment.class.getName()).log(Level.SEVERE, null, ex);
@@ -154,4 +176,21 @@ public class House{
         return null;
             
         }
+        
+        public boolean save(){
+            if(this.houseId != null){
+                //just make updates
+                 return DatabaseHandler.getInstance().updateHouse(this);
+            }else{
+                try {
+                    DatabaseHandler.getInstance().insertHouse(this);
+                } catch (Exception ex) {
+                    Logger.getLogger(House.class.getName()).log(Level.SEVERE, null, ex);
+                    return false;
+                }
+            }
+            return true;
+        }
     }
+
+

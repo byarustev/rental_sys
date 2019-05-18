@@ -22,6 +22,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
@@ -59,8 +60,9 @@ public class LoginController implements Initializable {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("views/dashboard.fxml"));
                 Parent root = (Parent)fxmlLoader.load();
                 Stage dashboardStage = new Stage();
-                dashboardStage.setTitle("Daaki Investiments Rental Management System");
+                dashboardStage.setTitle("Daaki Developments Rental Management System");
                 dashboardStage.setScene(new Scene(root));
+                 dashboardStage.getIcons().add(new Image("/images/daaki_icon.png"));
                dashboardStage.setResizable(false);
                 ((Node)(event.getSource())).getScene().getWindow().hide();
                 dashboardStage.show();   
